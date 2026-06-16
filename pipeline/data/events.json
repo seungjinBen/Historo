@@ -1,0 +1,32 @@
+{
+  "events": [
+    {
+      "id": "sejong-hunmin-1446",
+      "title": "세종대왕, 훈민정음을 반포하다",
+      "year": 1446,
+      "king": "세종",
+      "source": "세종실록 113권 (세종 28년 9월)",
+      "factCard": "1446년, 세종대왕이 백성 누구나 쉽게 배울 수 있는 새 글자 '훈민정음'을 만들어 세상에 펴냈어요.",
+      "factContext": "세종은 한자를 모르는 백성이 글을 몰라 억울한 일을 당하는 것을 안타까워했다. 그래서 집현전 학자들과 함께 배우기 쉬운 28자의 새 문자를 만들었다. 일부 신하(최만리 등)는 중국과 다른 글자를 만드는 것에 반대했지만, 세종은 백성을 위한다는 뜻을 굽히지 않고 훈민정음을 반포했다.",
+      "character": {
+        "name": "세종대왕",
+        "appearance": "a kind-faced Korean Joseon-dynasty king with a short beard, wearing a red royal robe (gonryongpo) with a golden dragon roundel on the chest and shoulders, and a black ikseongwan cap — a soft black silk cap with two short rounded wing-like flaps standing UPRIGHT at the BACK of the cap (not spread out to the sides)"
+      },
+      "_note": "factCard/factContext는 통설 기준. 제출 전 국사편찬위 실록 DB(sillok.history.go.kr)로 표현·연도 최종 검수 권장."
+    },
+    {
+      "id": "yi-myeongnyang-1597",
+      "title": "이순신, 명량에서 적은 배로 맞서다",
+      "year": 1597,
+      "king": "선조",
+      "source": "난중일기 / 선조실록 (정유년 1597년 9월)",
+      "factCard": "1597년, 이순신 장군이 얼마 남지 않은 배로 수백 척의 적 함대를 좁은 명량 바다에서 막아냈어요.",
+      "factContext": "칠천량 해전의 큰 패배로 조선 수군의 배는 거의 남지 않았다. 이순신은 좁고 물살이 매우 빠른 명량(울돌목)의 지형을 지혜롭게 이용해, 적은 수의 배로 일본의 거대한 함대를 상대했고 크게 승리했다.",
+      "character": {
+        "name": "이순신",
+        "appearance": "a determined Korean Joseon-dynasty naval admiral with a stern face, wearing dark traditional military armor and a helmet, standing on the wooden deck of a turtle ship (geobukseon)"
+      },
+      "_note": "배의 척수(12척 vs 13척)는 사료마다 차이가 있어 factCard에서 숫자를 일부러 뺐다. 숫자를 넣을 경우 출처 명시 + 검수 필요."
+    }
+  ]
+}
