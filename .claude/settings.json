@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd /c/dev/historo/web && ls)",
+      "Read(//c/c/dev/historo/**)",
+      "Bash(curl -s http://localhost:3099/)"
+    ]
+  }
+}
