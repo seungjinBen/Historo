@@ -6,6 +6,12 @@
 
 import { useEffect, useRef, useState } from "react";
 
+// ── 연표 노드 미리보기 경로 (eventId → pathKey) ──────────────────────
+const NODE_PREVIEW_PATH: Record<string, string> = {
+  "sejong-hunmin-1446": "0-0-0",
+  "yi-myeongnyang-1597": "0-0-0",
+};
+
 type Panel = { scene: string; sceneEn: string };
 type StoryNode = {
   narration: string;
@@ -19,7 +25,11 @@ type EventMeta = {
   title: string;
   year: number;
   king: string;
+  era: string;
+  category: string;
+  status: "ready" | "coming";
   source: string;
+  sillokUrl?: string | null;
   factCard: string;
 };
 
@@ -91,6 +101,26 @@ function Cut({ eventId, pathKey, index, scene }: { eventId: string; pathKey: str
   );
 }
 
+function MiniPanel({ eventId, pathKey, n }: { eventId: string; pathKey: string; n: number }) {
+  const [err, setErr] = useState(false);
+  const [ok, setOk] = useState(false);
+  return (
+    <div className="mini-panel">
+      {err ? (
+        <div className="mini-ph">{n}</div>
+      ) : (
+        <img
+          src={imgUrl(eventId, `${pathKey}_panel${n}.png`)}
+          alt={`${n}번 컷`}
+          className={ok ? "loaded" : ""}
+          onLoad={() => setOk(true)}
+          onError={() => setErr(true)}
+        />
+      )}
+    </div>
+  );
+}
+
 function SpeakBtn({
   text,
   speak,
@@ -108,7 +138,7 @@ function SpeakBtn({
       onClick={() => (speaking ? stop() : speak(text))}
       aria-label={speaking ? "읽기 멈추기" : "텍스트 읽어주기"}
     >
-      {speaking ? "⏹ 멈추기" : "🔊 읽어주기"}
+      {speaking ? "멈추기" : "읽어주기"}
     </button>
   );
 }
@@ -128,6 +158,8 @@ export default function Page() {
   const [speaking, setSpeaking] = useState(false);
   const [autoRead, setAutoRead] = useState(false);
   const koVoiceRef = useRef<SpeechSynthesisVoice | null>(null);
+
+  const [previewEventId, setPreviewEventId] = useState<string | null>(null);
 
   const [kidStoryOpen, setKidStoryOpen] = useState(false);
   const [kidStoryData, setKidStoryData] = useState<KidStory | null>(null);
@@ -158,6 +190,16 @@ export default function Page() {
       window.speechSynthesis.cancel();
     };
   }, []);
+
+  // ESC 키로 사건 미리보기 패널 닫기
+  useEffect(() => {
+    if (!previewEventId) return;
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPreviewEventId(null);
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [previewEventId]);
 
   // 화면 전환 시 이전 발화 중단 + kidStory 초기화
   useEffect(() => {
@@ -242,6 +284,7 @@ export default function Page() {
     setTree(null);
     setNode(null);
     setPath([]);
+    setPreviewEventId(null);
   };
 
   if (error) return <div className="wrap"><div className="panel-card center">{error}</div></div>;
@@ -260,7 +303,7 @@ export default function Page() {
           aria-pressed={autoRead}
           aria-label={autoRead ? "자동 읽어주기 끄기" : "자동 읽어주기 켜기"}
         >
-          {autoRead ? "🔊 자동 읽기 켬" : "🔈 자동 읽기 꺼짐"}
+          {autoRead ? "자동 읽기 켬" : "자동 읽기"}
         </button>
       </div>
 
@@ -268,37 +311,159 @@ export default function Page() {
         <div className="screen" key="home">
           <div className="hero">
             <p className="hero-msg">
-              실록 속 그날로 들어가, 내가 직접 &lsquo;만약에&rsquo;를 골라<br />
-              나만의 역사 4컷을 만들어요
+              700년 전 역사 속으로, 나만의 이야기를 만들어봐요
             </p>
-            <div className="hero-steps">
-              <div className="hero-step">
-                <span className="hero-step-icon">📚</span>
-                <span className="hero-step-label">① 역사 사건 고르기</span>
-              </div>
-              <span className="hero-arrow">→</span>
-              <div className="hero-step">
-                <span className="hero-step-icon">🤔</span>
-                <span className="hero-step-label">② &lsquo;만약에&rsquo; 선택하기</span>
-              </div>
-              <span className="hero-arrow">→</span>
-              <div className="hero-step">
-                <span className="hero-step-icon">🎨</span>
-                <span className="hero-step-label">③ 나만의 4컷 완성</span>
-              </div>
+          </div>
+          {/* ── 핵심 기능 3가지 ── */}
+          <div className="feat-grid" role="list">
+            <div className="feat-card" role="listitem">
+              <svg className="feat-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+              </svg>
+              <div className="feat-title">실록을 쉬운 이야기로</div>
+              <div className="feat-desc">700년 전 실록 기록을 AI가 아이 눈높이로 풀어줘요</div>
+            </div>
+            <div className="feat-card" role="listitem">
+              <svg className="feat-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/>
+              </svg>
+              <div className="feat-title">내가 만드는 만약에</div>
+              <div className="feat-desc">&lsquo;만약에&rsquo;를 골라 나만의 역사 4컷을 창작해요</div>
+            </div>
+            <div className="feat-card" role="listitem">
+              <svg className="feat-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              <div className="feat-title">누구나 함께</div>
+              <div className="feat-desc">읽어주기로 글이 어려운 아이도 함께, 사건은 계속 늘어나요</div>
             </div>
           </div>
-          <p className="section-label">이런 이야기를 만들 수 있어요</p>
-          <div className="grid">
-            {events.map((ev, i) => (
-              <div key={ev.id} className="ev-card" style={{ animationDelay: `${i * 0.06}s` }} onClick={() => openEvent(ev)}>
-                <div className="ev-thumb"><Thumb eventId={ev.id} /></div>
-                <div className="ev-body">
-                  <span className="ev-year">{ev.year}년 · {ev.king}</span>
-                  <div className="ev-title">{ev.title}</div>
+
+          <p className="section-label">역사의 길 · 조선 1392–1897</p>
+          <div className="timeline">
+            {["조선 초기", "조선 중기", "조선 후기"].map((era) => {
+              const eraEvents = events
+                .filter((ev) => ev.era === era)
+                .sort((a, b) => a.year - b.year);
+              if (eraEvents.length === 0) return null;
+              return (
+                <div key={era} className="tl-era">
+                  <div className="tl-era-label">{era}</div>
+                  <div className="tl-list">
+                    {eraEvents.map((ev, idx) => (
+                      <div key={ev.id} className="tl-item">
+                        <div className={"tl-dot" + (ev.status === "ready" ? " ready" : "")} />
+                        {ev.status === "ready" ? (
+                          <>
+                            <div
+                              className={"tl-card ready" + (previewEventId === ev.id ? " peek-open" : "")}
+                              style={{ animationDelay: `${idx * 0.07}s` }}
+                            >
+                              <div className="tl-inner">
+                                <div className="tl-mini" aria-hidden="true">
+                                  <div className="mini-comic">
+                                    {[1, 2, 3, 4].map((n) => (
+                                      <MiniPanel
+                                        key={n}
+                                        eventId={ev.id}
+                                        pathKey={NODE_PREVIEW_PATH[ev.id] ?? "0-0-0"}
+                                        n={n}
+                                      />
+                                    ))}
+                                  </div>
+                                </div>
+                                <div className="tl-content">
+                                  <div className="tl-meta">
+                                    <span className="tl-year">{ev.year}</span>
+                                    <span className="tl-king">{ev.king}</span>
+                                    <span className="tl-cat">{ev.category}</span>
+                                  </div>
+                                  <div className="tl-title">{ev.title}</div>
+                                  <div className="tl-actions">
+                                    <button
+                                      className="tl-btn-primary"
+                                      onClick={() => openEvent(ev)}
+                                      aria-label={`${ev.title} 이야기 만들기`}
+                                    >
+                                      이야기 만들기 →
+                                    </button>
+                                    <button
+                                      className="tl-btn-peek"
+                                      onClick={() => setPreviewEventId((id) => id === ev.id ? null : ev.id)}
+                                      aria-expanded={previewEventId === ev.id}
+                                      aria-controls={`peek-${ev.id}`}
+                                    >
+                                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                        <circle cx="12" cy="12" r="3"/>
+                                      </svg>
+                                      무슨 일이 있었을까?
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            {previewEventId === ev.id && (
+                              <div
+                                className="tl-peek"
+                                id={`peek-${ev.id}`}
+                                role="region"
+                                aria-label={`${ev.title} 사건 미리보기`}
+                              >
+                                <p className="peek-text">{ev.factCard}</p>
+                                <div className="peek-source">출처 · {ev.source}</div>
+                                {ev.sillokUrl && (
+                                  <a
+                                    href={ev.sillokUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="peek-sillok"
+                                  >
+                                    실록 원문 보기 →
+                                  </a>
+                                )}
+                                <button className="peek-cta" onClick={() => openEvent(ev)}>
+                                  이제 내 이야기 만들기 →
+                                </button>
+                              </div>
+                            )}
+                          </>
+                        ) : (
+                          <div
+                            className="tl-card coming"
+                            aria-label={`${ev.year}년 ${ev.title} — 곧 만나요`}
+                          >
+                            <div className="tl-inner">
+                              <div className="tl-mini" aria-hidden="true">
+                                <div className="mini-locked">
+                                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                  </svg>
+                                </div>
+                              </div>
+                              <div className="tl-content">
+                                <div className="tl-meta">
+                                  <span className="tl-year">{ev.year}</span>
+                                  <span className="tl-king">{ev.king}</span>
+                                  <span className="tl-cat">{ev.category}</span>
+                                </div>
+                                <div className="tl-title">{ev.title}</div>
+                                <span className="tl-lock">곧 만나요</span>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
@@ -306,7 +471,7 @@ export default function Page() {
       {screen === "intro" && event && (
         <div className="panel-card screen" key="intro">
           <button className="back" onClick={home}>← 다른 이야기 고르기</button>
-          <span className="badge fact">📜 실제로 있었던 일</span>
+          <span className="badge fact">실제 역사</span>
           <p className="fact-text">{event.factCard}</p>
           <SpeakBtn text={event.factCard} speak={doSpeak} stop={doStop} speaking={speaking} />
           <div className="source">출처 · {event.source}</div>
@@ -322,9 +487,9 @@ export default function Page() {
         <div className="panel-card screen" key={`play-${path.length}`}>
           <button className="back" onClick={home}>← 처음으로</button>
           {path.length === 0 ? (
-            <span className="badge fact">📜 실제 역사에서 출발해요</span>
+            <span className="badge fact">실제 역사</span>
           ) : (
-            <span className="badge imagine">✨ 지금부터는 상상 이야기</span>
+            <span className="badge imagine">상상 이야기</span>
           )}
           {totalSteps > 0 && <Steps current={path.length} total={totalSteps} />}
           <p className="narr">{node.narration}</p>
@@ -342,7 +507,7 @@ export default function Page() {
       {screen === "comic" && event && node?.panels && (
         <div className="panel-card screen" key="comic">
           <button className="back" onClick={home}>← 처음으로</button>
-          <span className="badge imagine">✨ 상상 이야기 · 내가 만든 4컷</span>
+          <span className="badge imagine">상상 이야기 · 내가 만든 4컷</span>
           <div className="comic-grid">
             {node.panels.map((p, i) => (
               <Cut key={i} eventId={event.id} pathKey={path.join("-")} index={i} scene={p.scene} />
@@ -368,12 +533,12 @@ export default function Page() {
               aria-expanded={kidStoryOpen}
               aria-controls="kidstory-section"
             >
-              🔎 진짜로는 어떻게 됐을까?
+              진짜로는 어떻게 됐을까?
               <span className="kidstory-chevron">{kidStoryOpen ? "▲" : "▼"}</span>
             </button>
             {kidStoryOpen && (
               <div className="kidstory-section" id="kidstory-section">
-                <span className="badge fact">📜 실제 역사</span>
+                <span className="badge fact">실제 역사</span>
                 {kidStoryLoading && <p className="kidstory-status">불러오는 중…</p>}
                 {kidStoryError && <p className="kidstory-status">잠시 후 다시 눌러보세요.</p>}
                 {kidStoryData && (
@@ -383,7 +548,6 @@ export default function Page() {
                       <div className="funfacts">
                         {kidStoryData.funFacts.map((f, i) => (
                           <div key={i} className="funfact-card">
-                            <span className="funfact-icon">💡</span>
                             <span className="funfact-text">{f}</span>
                           </div>
                         ))}
@@ -400,7 +564,7 @@ export default function Page() {
                           rel="noopener noreferrer"
                           className="sillok-link"
                         >
-                          📜 실록 원문에서 직접 확인하기 ↗
+                          실록 원문에서 직접 확인하기 →
                         </a>
                       ) : (
                         <span>출처 · {kidStoryData.source}</span>
