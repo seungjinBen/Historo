@@ -1,0 +1,96 @@
+{
+  "events": [
+    {
+      "id": "jangnyeongsil-jagyeokru-1434",
+      "title": "장영실, 자격루를 완성하다",
+      "year": 1434,
+      "king": "세종",
+      "era": "조선 초기",
+      "category": "발명",
+      "status": "coming",
+      "source": "세종실록 64권 (세종 16년 7월)",
+      "sillokUrl": null,
+      "factCard": "1434년, 천재 발명가 장영실이 스스로 시보를 알리는 물시계 '자격루'를 완성했어요. 한 번 물을 채우면 스스로 종과 북을 쳐서 시각을 알려줬어요.",
+      "factContext": "",
+      "character": null
+    },
+    {
+      "id": "sejong-cheukugi-1441",
+      "title": "세종, 측우기로 빗물을 재다",
+      "year": 1441,
+      "king": "세종",
+      "era": "조선 초기",
+      "category": "과학",
+      "status": "coming",
+      "source": "세종실록 (세종 23년)",
+      "sillokUrl": null,
+      "factCard": "1441년, 세종대왕이 전국에 측우기를 설치해 빗물의 양을 처음으로 체계적으로 재기 시작했어요. 세계 최초의 표준화된 강우량 측정 기구예요.",
+      "factContext": "",
+      "character": null
+    },
+    {
+      "id": "sejong-hunmin-1446",
+      "title": "세종대왕, 훈민정음을 반포하다",
+      "year": 1446,
+      "king": "세종",
+      "era": "조선 초기",
+      "category": "문자",
+      "status": "ready",
+      "source": "세종실록 113권 (세종 28년 9월)",
+      "sillokUrl": null,
+      "factCard": "1446년, 세종대왕이 백성 누구나 쉽게 배울 수 있는 새 글자 '훈민정음'을 만들어 세상에 펴냈어요.",
+      "factContext": "세종은 한자를 모르는 백성이 글을 몰라 억울한 일을 당하는 것을 안타까워했다. 그래서 집현전 학자들과 함께 배우기 쉬운 28자의 새 문자를 만들었다. 일부 신하(최만리 등)는 중국과 다른 글자를 만드는 것에 반대했지만, 세종은 백성을 위한다는 뜻을 굽히지 않고 훈민정음을 반포했다.",
+      "character": {
+        "name": "세종대왕",
+        "appearance": "a kind-faced Korean Joseon-dynasty king with a short beard, wearing a red royal robe (gonryongpo) with a golden dragon roundel on the chest and shoulders, and a black ikseongwan cap — a soft black silk cap with two short rounded wing-like flaps standing UPRIGHT at the BACK of the cap (not spread out to the sides)"
+      },
+      "_note": "factCard/factContext는 통설 기준. 제출 전 국사편찬위 실록 DB(sillok.history.go.kr)로 표현·연도 최종 검수 권장."
+    },
+    {
+      "id": "yi-myeongnyang-1597",
+      "title": "이순신, 명량에서 적은 배로 맞서다",
+      "year": 1597,
+      "king": "선조",
+      "era": "조선 중기",
+      "category": "전쟁",
+      "status": "ready",
+      "source": "난중일기 / 선조실록 (정유년 1597년 9월)",
+      "sillokUrl": null,
+      "factCard": "1597년, 이순신 장군이 얼마 남지 않은 배로 수백 척의 적 함대를 좁은 명량 바다에서 막아냈어요.",
+      "factContext": "칠천량 해전의 큰 패배로 조선 수군의 배는 거의 남지 않았다. 이순신은 좁고 물살이 매우 빠른 명량(울돌목)의 지형을 지혜롭게 이용해, 적은 수의 배로 일본의 거대한 함대를 상대했고 크게 승리했다.",
+      "character": {
+        "name": "이순신",
+        "appearance": "a determined Korean Joseon-dynasty naval admiral with a stern face, wearing dark traditional military armor and a helmet, standing on the wooden deck of a turtle ship (geobukseon)"
+      },
+      "_note": "배의 척수(12척 vs 13척)는 사료마다 차이가 있어 factCard에서 숫자를 일부러 뺐다. 숫자를 넣을 경우 출처 명시 + 검수 필요."
+    },
+    {
+      "id": "gwanghaegun-junglib-1619",
+      "title": "광해군, 중립으로 나라를 지키다",
+      "year": 1619,
+      "king": "광해군",
+      "era": "조선 중기",
+      "category": "정치",
+      "status": "coming",
+      "source": "광해군일기 (광해군 11년)",
+      "sillokUrl": null,
+      "factCard": "1619년, 광해군은 명나라와 후금 사이에서 어느 쪽도 적으로 만들지 않는 실리 중립 외교를 펼쳐 나라를 지켰어요.",
+      "factContext": "",
+      "character": null
+    },
+    {
+      "id": "jeongjo-hwaseong-1796",
+      "title": "정조, 수원 화성을 세우다",
+      "year": 1796,
+      "king": "정조",
+      "era": "조선 후기",
+      "category": "건축",
+      "status": "coming",
+      "source": "정조실록 / 화성성역의궤 (정조 20년)",
+      "sillokUrl": null,
+      "factCard": "1796년, 정조가 개혁의 꿈을 담아 새 도시 수원에 화성을 완공했어요. 거중기 등 새 기술을 써서 2년 9개월 만에 완성한 조선 건축의 걸작이에요.",
+      "factContext": "",
+      "character": null
+    }
+  ]
+}

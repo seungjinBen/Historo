@@ -1,0 +1,50 @@
+{
+  "0-0-0": [
+    "0-0-0_panel1.png",
+    "0-0-0_panel2.png",
+    "0-0-0_panel3.png",
+    "0-0-0_panel4.png"
+  ],
+  "0-0-1": [
+    "0-0-1_panel1.png",
+    "0-0-1_panel2.png",
+    "0-0-1_panel3.png",
+    "0-0-1_panel4.png"
+  ],
+  "0-1-0": [
+    "0-1-0_panel1.png",
+    "0-1-0_panel2.png",
+    "0-1-0_panel3.png",
+    "0-1-0_panel4.png"
+  ],
+  "0-1-1": [
+    "0-1-1_panel1.png",
+    "0-1-1_panel2.png",
+    "0-1-1_panel3.png",
+    "0-1-1_panel4.png"
+  ],
+  "1-0-0": [
+    "1-0-0_panel1.png",
+    "1-0-0_panel2.png",
+    "1-0-0_panel3.png",
+    "1-0-0_panel4.png"
+  ],
+  "1-0-1": [
+    "1-0-1_panel1.png",
+    "1-0-1_panel2.png",
+    "1-0-1_panel3.png",
+    "1-0-1_panel4.png"
+  ],
+  "1-1-0": [
+    "1-1-0_panel1.png",
+    "1-1-0_panel2.png",
+    "1-1-0_panel3.png",
+    "1-1-0_panel4.png"
+  ],
+  "1-1-1": [
+    "1-1-1_panel1.png",
+    "1-1-1_panel2.png",
+    "1-1-1_panel3.png",
+    "1-1-1_panel4.png"
+  ]
+}

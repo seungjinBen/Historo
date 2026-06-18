@@ -9,13 +9,13 @@
 /build
 
 # 생성된 4컷 이미지 (용량 큼, 스크립트로 재생성 가능)
-# 이미지도 레포에 올리려면 아래 두 줄을 지우세요.
+# → 배포(Vercel)에서 이미지를 보여주려고 web/public/images 는 올림.
+#   pipeline 원본(output/images)만 제외해 용량 절약.
 **/output/images/
-**/public/images/
 
-# pipeline → web/public 으로 복사한 데이터 (원본은 pipeline/ 에 있음)
-**/public/data/
-**/public/trees/
+# pipeline 원본 데이터는 제외 (web/public 으로 복사된 것만 배포에 포함)
+pipeline/output/
+pipeline/data/
 
 # env / secrets (API 키 절대 커밋 금지)
 .env
