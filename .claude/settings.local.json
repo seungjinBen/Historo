@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell($env:ANTHROPIC_API_KEY = $null; [System.Environment]::SetEnvironmentVariable\\(\"ANTHROPIC_API_KEY\", $null, \"Process\"\\); Write-Output \"ANTHROPIC_API_KEY unset\")",
+      "PowerShell([System.Environment]::SetEnvironmentVariable\\(\"ANTHROPIC_API_KEY\", $null, \"User\"\\); [System.Environment]::SetEnvironmentVariable\\(\"ANTHROPIC_API_KEY\", $null, \"Machine\"\\); $env:ANTHROPIC_API_KEY = $null; Write-Output \"User level: $\\([System.Environment]::GetEnvironmentVariable\\('ANTHROPIC_API_KEY', 'User'\\)\\)\"; Write-Output \"Machine level: $\\([System.Environment]::GetEnvironmentVariable\\('ANTHROPIC_API_KEY', 'Machine'\\)\\)\")",
+      "PowerShell(Write-Output \"User level: '$\\([System.Environment]::GetEnvironmentVariable\\('ANTHROPIC_API_KEY', 'User'\\)\\)'\"; Write-Output \"Machine level: '$\\([System.Environment]::GetEnvironmentVariable\\('ANTHROPIC_API_KEY', 'Machine'\\)\\)'\"; Write-Output \"Current session: '$env:ANTHROPIC_API_KEY'\")",
+      "PowerShell(Remove-Item *)",
+      "Bash(npx --offline tsc --noEmit)",
+      "Bash(npx --offline eslint app/myeongnyang.tsx app/page.tsx)",
+      "Bash(npx --offline eslint app/myeongnyang.tsx)",
+      "Bash(npx --offline next build)",
+      "Bash(npx *)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3737/)",
+      "Bash(curl *)",
+      "Bash(./node_modules/.bin/eslint app/myeongnyang.tsx)",
+      "Bash(./node_modules/.bin/next build *)"
+    ]
+  }
+}

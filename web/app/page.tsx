@@ -5,6 +5,7 @@
 // 나중에 Spring Boot로 옮길 때는 아래 fetch 경로만 백엔드 주소로 바꾸면 된다.
 
 import { useEffect, useRef, useState } from "react";
+import MyeongnyangExperience from "./myeongnyang";
 
 // ── 연표 노드 미리보기 경로 (eventId → pathKey) ──────────────────────
 const NODE_PREVIEW_PATH: Record<string, string> = {
@@ -143,7 +144,7 @@ function SpeakBtn({
   );
 }
 
-type Screen = "home" | "intro" | "play" | "comic";
+type Screen = "home" | "intro" | "play" | "comic" | "myeongnyang";
 
 export default function Page() {
   const [screen, setScreen] = useState<Screen>("home");
@@ -343,6 +344,27 @@ export default function Page() {
             </div>
           </div>
 
+          {/* ── 이순신 명량해전 — 추천 체험 ── */}
+          <div className="myn-feature">
+            <div className="myn-feature-thumb">
+              <Thumb eventId="yi-myeongnyang-1597" />
+            </div>
+            <div className="myn-feature-body">
+              <span className="myn-feature-tag">오늘의 이야기</span>
+              <div className="myn-feature-title">이순신 장군의 명량해전</div>
+              <p className="myn-feature-desc">
+                남은 배는 단 몇 척. 내가 이순신이라면 어떻게 했을까요? 학년에 맞춰 &lsquo;만약에&rsquo;를 골라 나만의 4컷 이야기를 만들어요.
+              </p>
+              <button
+                className="myn-feature-btn"
+                onClick={() => setScreen("myeongnyang")}
+                aria-label="이순신 장군의 명량해전 이야기 만들기"
+              >
+                이야기 만들기 →
+              </button>
+            </div>
+          </div>
+
           <p className="section-label">역사의 길 · 조선 1392–1897</p>
           <div className="timeline">
             {["조선 초기", "조선 중기", "조선 후기"].map((era) => {
@@ -466,6 +488,16 @@ export default function Page() {
             })}
           </div>
         </div>
+      )}
+
+      {screen === "myeongnyang" && (
+        <MyeongnyangExperience
+          key="myeongnyang"
+          onHome={home}
+          speak={doSpeak}
+          stop={doStop}
+          speaking={speaking}
+        />
       )}
 
       {screen === "intro" && event && (
