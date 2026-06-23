@@ -25,7 +25,16 @@
       "Bash(echo \"build exit: $?\")",
       "Bash(echo \"tsc: $?\")",
       "Bash(echo \"lint: $?\")",
-      "Bash(echo \"build: $?\")"
+      "Bash(echo \"build: $?\")",
+      "PowerShell(Test-Path *)",
+      "PowerShell(Out-Null *)",
+      "Bash(python -c \"import json,sys; d=json.load\\(sys.stdin\\); [print\\(e['id'], e.get\\('status'\\), e.get\\('title'\\)\\) for e in d['events']]\")",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('/c/dev/historo/web/public/data/events.json'\\)\\); [print\\(e['id'], e.get\\('status'\\), e.get\\('title'\\)\\) for e in d['events']]\")",
+      "PowerShell(Get-Process *)",
+      "PowerShell(Get-Item *)",
+      "PowerShell(Out-File *)",
+      "Bash(echo \"EXIT:$?\")",
+      "Bash(echo \"TSC:$?\")"
     ]
   }
 }

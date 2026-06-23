@@ -22,7 +22,7 @@ import {
   SOURCE,
   STEP_LABELS,
   STEP_STATS,
-} from "./myeongnyang";
+} from "./data";
 
 // ── 책장 넘김 효과음 (Web Audio · 합성) ─────────────
 let sharedCtx: AudioContext | null = null;
