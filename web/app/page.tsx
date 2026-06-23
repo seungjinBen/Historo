@@ -7,6 +7,7 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import MyeongnyangExperience from "./myeongnyang-book";
 import MeokdolChat from "./components/MeokdolChat";
+import { generateImage } from "./lib/ws";
 
 // ── 초등학생 시선 우선순위 (선택모드 박스 그리드 정렬) ─────────────────
 const KID_ORDER = [
@@ -116,28 +117,51 @@ function Thumb({ eventId }: { eventId: string }) {
   );
 }
 
+const EVENT_TITLE: Record<string, string> = {
+  "yi-myeongnyang-1597": "이순신 명량해전 (1597년, 조선)",
+  "sejong-hunmin-1446": "세종대왕 훈민정음 창제 (1446년, 조선)",
+};
+
 function Cut({ eventId, pathKey, index, scene }: { eventId: string; pathKey: string; index: number; scene: string }) {
   const [err, setErr] = useState(false);
   const [ok, setOk] = useState(false);
+  const [genUrl, setGenUrl] = useState<string | null>(null);
+  const [generating, setGenerating] = useState(false);
+
+  async function handleError() {
+    setErr(true);
+    setGenerating(true);
+    const evTitle = EVENT_TITLE[eventId] || "조선시대 역사 장면";
+    const prompt = `조선시대 어린이 그림책 일러스트, 수묵화 느낌, 따뜻한 색감. 사건: ${evTitle}. 장면 ${index + 1}: ${scene}. 말풍선·텍스트 없이 그림만.`;
+    const url = await generateImage(prompt);
+    setGenUrl(url);
+    setGenerating(false);
+    if (url) setOk(true);
+  }
+
+  const src = genUrl || imgUrl(eventId, `${pathKey}_panel${index + 1}.png`);
+
   return (
     <div className="cut" style={{ animationDelay: `${index * 0.13}s` }}>
       <div className="num">{index + 1}</div>
-      {err ? (
+      {err && !genUrl && (
         <div className="ph">
-          {scene}
-          <br />
-          <span style={{ opacity: 0.6 }}>(그림 준비 중)</span>
+          {generating ? (
+            <span style={{ fontSize: 13, opacity: 0.7 }}>그림 그리는 중…</span>
+          ) : (
+            <span style={{ fontSize: 13, opacity: 0.6 }}>{scene}</span>
+          )}
         </div>
-      ) : (
-        <img
-          src={imgUrl(eventId, `${pathKey}_panel${index + 1}.png`)}
-          alt={scene}
-          className={ok ? "loaded" : ""}
-          onLoad={() => setOk(true)}
-          onError={() => setErr(true)}
-        />
       )}
-      {!err && <div className="cap">{scene}</div>}
+      <img
+        src={src}
+        alt={scene}
+        className={ok ? "loaded" : ""}
+        style={{ display: err && !genUrl ? "none" : undefined }}
+        onLoad={() => { setOk(true); setErr(false); }}
+        onError={err ? undefined : handleError}
+      />
+      {<div className="cap">{scene}</div>}
     </div>
   );
 }

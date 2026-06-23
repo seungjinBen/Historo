@@ -28,6 +28,24 @@ export type StreamHandlers = {
   onError?: (e: string) => void;
 };
 
+export async function generateImage(prompt: string): Promise<string | null> {
+  let s: WebSocket;
+  try { s = await connect(); } catch { return null; }
+  const reqId = Math.random().toString(36).slice(2);
+  return new Promise((resolve) => {
+    const onMsg = (e: MessageEvent) => {
+      let d: { type: string; url?: string; reqId?: string; error?: string };
+      try { d = JSON.parse(e.data); } catch { return; }
+      if (d.reqId && d.reqId !== reqId) return;
+      if (d.type === "image") { s.removeEventListener("message", onMsg); resolve(d.url || null); }
+      else if (d.type === "error") { s.removeEventListener("message", onMsg); resolve(null); }
+    };
+    s.addEventListener("message", onMsg);
+    try { s.send(JSON.stringify({ action: "image", reqId, payload: { prompt } })); }
+    catch { resolve(null); }
+  });
+}
+
 export async function streamAI(
   action: string,
   payload: Record<string, unknown>,
