@@ -5145,7 +5145,7 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   .sejong-svg { max-width: 160px; }
   .hero-mascot-bubble-text { font-size: 14.5px; }
   .hero-flow-label { font-size: 15px; }
-  .hero-flow-sub { font-size: 12px; }
+  .hero-flow-sub { display: none; }
 }
 @media (max-width: 540px) {
   .hero-mascot {
@@ -5483,6 +5483,7 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   .how-steps { gap: 12px; }
   .how-step { padding: 18px 18px 20px; }
   .how-step-title { font-size: 17px; }
+  .how-step-desc { display: none; }
   .how-mascot {
     position: static;
     width: 72px;
@@ -6837,4 +6838,16 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   .login-title {
     font-size: 26px;
   }
+}
+
+/* ════════════════════════════════════════
+   모바일(≤720px) — 카드 내부 부가 설명/썸네일 정리
+   각 카드의 제목·핵심만 남기고 회색 보조 텍스트와
+   연표 4컷 미리보기는 숨겨 가독성을 확보한다.
+════════════════════════════════════════ */
+@media (max-width: 720px) {
+  .event-fact { display: none; }
+  .tl-mini { display: none; }
+  .sillok-pillars-sub { display: none; }
+  .sillok-pillar-desc { display: none; }
 }
