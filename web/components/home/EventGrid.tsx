@@ -49,6 +49,18 @@ type Props = {
 };
 
 export function EventGrid({ events, heritage, onOpenEvent }: Props) {
+  const [expanded, setExpanded] = useState(false);
+  const sorted = events
+    .slice()
+    .sort((a, b) => {
+      const ai = KID_ORDER.indexOf(a.id);
+      const bi = KID_ORDER.indexOf(b.id);
+      if (ai === -1 && bi === -1) return a.year - b.year;
+      if (ai === -1) return 1;
+      if (bi === -1) return -1;
+      return ai - bi;
+    });
+  const hasMore = sorted.length > 4;
   return (
     <section className="home-section" id="events-section">
       <div className="section-header">
@@ -56,18 +68,8 @@ export function EventGrid({ events, heritage, onOpenEvent }: Props) {
         <h2 className="section-header-title">좋아하는 이야기부터 골라봐요</h2>
         <p className="section-header-sub">관심 가는 사건의 박스를 눌러 4컷 이야기를 만들어보세요.</p>
       </div>
-      <div className="event-grid">
-        {events
-          .slice()
-          .sort((a, b) => {
-            const ai = KID_ORDER.indexOf(a.id);
-            const bi = KID_ORDER.indexOf(b.id);
-            if (ai === -1 && bi === -1) return a.year - b.year;
-            if (ai === -1) return 1;
-            if (bi === -1) return -1;
-            return ai - bi;
-          })
-          .map((ev, idx) => {
+      <div className={"event-grid" + (!expanded ? " is-collapsed" : "")}>
+        {sorted.map((ev, idx) => {
             const heritageData = ev.heritageId && heritage ? heritage[ev.heritageId] : null;
             return (
               <div
@@ -108,6 +110,18 @@ export function EventGrid({ events, heritage, onOpenEvent }: Props) {
             );
           })}
       </div>
+      {hasMore && (
+        <div className="event-grid-toggle-wrap">
+          <button
+            type="button"
+            className="event-grid-toggle"
+            onClick={() => setExpanded((v) => !v)}
+            aria-expanded={expanded}
+          >
+            {expanded ? "접기 ▲" : `더 보기 (+${sorted.length - 4}) ▼`}
+          </button>
+        </div>
+      )}
     </section>
   );
 }

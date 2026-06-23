@@ -621,7 +621,7 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
 .hero-sub em {
   font-style: normal;
   font-family: 'Jua', sans-serif;
-  color: var(--imagine-deep);
+  color: var(--red);
 }
 @media (max-width: 720px) {
   .hero { padding: 6px 0 22px; }
@@ -867,7 +867,7 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   outline-offset: 3px;
 }
 
-/* 카드 안 '무슨 일이 있었을까?' 강조 인디케이터 */
+/* 카드 안 '무슨 일이 있었을까?' 강조 인디케이터 — 테두리만 */
 .tl-peek-hint {
   display: inline-flex;
   align-items: center;
@@ -876,24 +876,21 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   font-family: 'Jua', sans-serif;
   font-size: 13.5px;
   color: var(--red);
-  background: rgba(200, 69, 59, 0.08);
+  background: transparent;
   padding: 6px 12px 6px 10px;
   border-radius: 999px;
-  border: 1px solid rgba(200, 69, 59, 0.18);
-  transition: background .15s ease, border-color .15s ease;
+  border: 1px solid rgba(200, 69, 59, 0.32);
+  transition: border-color .15s ease, color .15s ease;
 }
 .tl-card.heritage .tl-peek-hint {
   color: #8A6324;
-  background: rgba(181, 139, 78, 0.10);
-  border-color: rgba(181, 139, 78, 0.28);
+  border-color: rgba(181, 139, 78, 0.42);
 }
 .tl-card.clickable:hover .tl-peek-hint {
-  background: rgba(200, 69, 59, 0.16);
-  border-color: rgba(200, 69, 59, 0.32);
+  border-color: var(--red);
 }
 .tl-card.heritage.clickable:hover .tl-peek-hint {
-  background: rgba(181, 139, 78, 0.20);
-  border-color: rgba(181, 139, 78, 0.42);
+  border-color: #B58B4E;
 }
 .tl-peek-chev {
   font-size: 9px;
@@ -3504,10 +3501,21 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   .tl-heritage-count { font-size: 10px; padding: 1px 6px; }
 
   .tl-heritage-peek  { padding: 14px 12px 16px; }
-  .heritage-grid     { grid-template-columns: 1fr; gap: 12px; }
-  .heritage-body     { padding: 10px 12px 12px; }
-  .heritage-name     { font-size: 13.5px; }
-  .heritage-docent   { font-size: 12.5px; }
+  .heritage-grid     { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .heritage-item     { border-radius: 10px; }
+  .heritage-thumb    { aspect-ratio: 4 / 3; }
+  .heritage-thumb img { padding: 6px; }
+  .heritage-body     { padding: 8px 9px 10px; gap: 4px; }
+  .heritage-name     { font-size: 12px; line-height: 1.25; }
+  .heritage-docent   {
+    font-size: 10.5px;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .heritage-source   { font-size: 9.5px; padding-top: 4px; }
 
   .myn-feature { flex-direction: column; gap: 14px; }
   .myn-feature-thumb { width: 100%; aspect-ratio: 16/9; }
@@ -4647,25 +4655,204 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
 .mbook-ctrl:disabled { opacity: .4; cursor: default; }
 .mbook-ctrl-note { font-size: 12.5px; color: var(--mbook-ink-soft); }
 
-/* 모바일 — 두 면을 위/아래로 적층 */
+/* ════════════════════════════════════════
+   동화책 — 모바일(≤720px): 책 메타포 단순화
+   닫힘  = 단일 표지 카드 (3/4 portrait)
+   펼침  = LEFT/RIGHT 두 면을 위/아래 카드로 적층, 정상 흐름
+   3D 플립·표지 분할·잎(leaf) 비활성화
+════════════════════════════════════════ */
 @media (max-width: 720px) {
-  .mbook-stage { min-height: 480px; }
-  .mbook-spread-wrap { aspect-ratio: auto; height: auto; }
+  /* 모바일은 애니메이션 가볍게 — 단, 0으로 만들면 animationend가 안 뜨는
+     브라우저가 있어서 충분히 작지만 0은 아닌 값으로 둠 */
+  .mbook-screen {
+    --mbook-flip-ms: 220ms;
+    --mbook-open-ms: 360ms;
+  }
+
+  .mbook-stage {
+    min-height: auto;
+    padding: 14px 4px;
+    perspective: none;
+    gap: 16px;
+  }
+
+  /* 셸 — 닫힘/오프닝 단계에만 표지 비율을 유지, 펼침 단계에선 콘텐츠 흐름 */
+  .mbook-shell {
+    width: min(360px, 100%);
+    aspect-ratio: auto;
+    margin: 0 auto;
+    transform-style: flat;
+    filter: drop-shadow(0 12px 22px rgba(40, 22, 8, .18));
+    animation: none;
+  }
+  .mbook-stage.mbook-phase-closed .mbook-shell,
+  .mbook-stage.mbook-phase-opening .mbook-shell {
+    aspect-ratio: 3 / 4;
+  }
+  .mbook-stage.mbook-phase-open .mbook-shell {
+    width: 100%;
+    aspect-ratio: auto;
+  }
+  /* 펼침 단계에선 책 두께 라인은 시각적으로 어색 — 숨김 */
+  .mbook-stage.mbook-phase-open .mbook-stack { display: none; }
+
+  /* 스프레드 — 정상 흐름, 위/아래로 적층 */
   .mbook-spread {
     position: relative;
+    inset: auto;
     flex-direction: column;
     height: auto;
+    transform-style: flat;
+    width: 100%;
   }
   .mbook-half { width: 100%; height: auto; }
-  .mbook-half-left .mbook-paper { border-radius: 8px 8px 0 0; border-bottom: 0; }
-  .mbook-half-right .mbook-paper { border-radius: 0 0 8px 8px; }
-  .mbook-side { min-height: 320px; padding: 22px 20px; }
-  .mbook-half-right .mbook-side { padding: 22px 20px; }
+  /* 종이가 absolute라 half가 auto일 때 0px로 붕괴 — 모바일은 정상 흐름으로 */
+  .mbook-half .mbook-paper {
+    position: relative;
+    inset: auto;
+  }
+  .mbook-half-left .mbook-paper {
+    border-radius: 10px 10px 0 0;
+    border-bottom: 0;
+  }
+  .mbook-half-right .mbook-paper { border-radius: 0 0 10px 10px; }
+
+  /* 페이지 사이드 — 내부 스크롤 풀고 정상 흐름으로 */
+  .mbook-side {
+    position: relative;
+    height: auto;
+    min-height: 0;
+    padding: 20px 18px;
+    overflow-y: visible;
+    scrollbar-gutter: auto;
+  }
+  .mbook-half-right .mbook-side { padding: 20px 18px; }
   .mbook-h2 { font-size: 19px; }
   .mbook-q-prompt { font-size: 17px; }
-  /* 모바일에서는 단순 페이드/슬라이드로 — 3D 플립 효과는 데스크탑에 한정 */
-  .mbook-leaf, .mbook-leaf-shade { display: none !important; }
+
+  /* 3D 플립 잎 — DOM 에는 두되 시각적으로만 숨김.
+     주의: display:none 으로 죽이면 animationend 가 안 떠서 setFlip(null) 이 영원히 안 불림 → 플립 상태 영구 고정. */
+  .mbook-leaf, .mbook-leaf-shade {
+    opacity: 0;
+    pointer-events: none;
+    transform-style: flat;
+    z-index: -1;
+  }
   .mbook-spine-shadow { display: none; }
+
+  /* 도착 스프레드(target)는 모바일에서 정상 흐름으로 쌓이면 페이지가 두 배로 길어져 어색 — 시각적으로 숨김.
+     단, animationend 이벤트 발화는 leaf 에서 일어나므로 base-target 를 숨겨도 무방. */
+  .mbook-base.mbook-base-target {
+    position: absolute;
+    inset: 0;
+    opacity: 0 !important;
+    pointer-events: none;
+    z-index: -1;
+  }
+  /* 플립 동안 source 페이드 아웃도 끔 — 짧은 시간에 콘텐츠가 사라졌다가 같은 자리에서 새 내용으로 바뀜 */
+  .mbook-stage.is-flipping .mbook-base-source { animation: none; }
+
+  /* 닫힘 표지 — 분할 회전 대신 단일 표지 카드 */
+  .mbook-cover-spine { display: none; }
+  .mbook-cover-half.right { display: none; }
+  .mbook-cover-half.left {
+    width: 100%;
+    border-radius: 10px;
+  }
+  .mbook-cover-half.left .mbook-cover-face {
+    width: 100%;
+    left: 0;
+    right: 0;
+    border-radius: 10px;
+    padding: 18px;
+  }
+  .mbook-cover-half.left .mbook-cover-back { display: none; }
+
+  /* 오프닝 — 좌우 회전 대신 left 절반에 페이드/슬라이드.
+     주의: phase 전환은 .mbook-cover-half.left 의 animationend 가 트리거함.
+     따라서 left 에 반드시 동작하는 애니메이션을 걸어야 phase 가 "open" 으로 진행됨. */
+  .mbook-stage.mbook-phase-opening .mbook-cover-half.right {
+    animation: none;
+  }
+  .mbook-stage.mbook-phase-opening .mbook-cover-half.left {
+    animation: mbook-mobile-cover-out var(--mbook-open-ms) ease-out forwards;
+  }
+  .mbook-stage.mbook-phase-opening .mbook-cover-overlay {
+    animation: none;
+  }
+  @keyframes mbook-mobile-cover-out {
+    0%   { opacity: 1; transform: translateY(0) scale(1); }
+    100% { opacity: 0; transform: translateY(-12px) scale(0.97); }
+  }
+
+  /* 표지 프레임 내부 — 좁은 폭에 맞게 살짝 축소 */
+  .mbook-cover-frame { padding: 24px 16px; max-width: 280px; }
+  .mbook-cover-eyebrow {
+    font-size: 10px;
+    letter-spacing: 3px;
+    margin-bottom: 12px;
+    padding: 3px 12px;
+  }
+  .mbook-cover-sub { font-size: 12px; }
+
+  /* ── 콘텐츠 축소 — 페이지 길이 단축 ── */
+  /* 인트로 일러스트 */
+  .mbook-side-lead { gap: 8px; }
+  .mbook-side-lead .mbook-illust {
+    aspect-ratio: 16 / 10;
+    max-width: 280px;
+    margin: 4px auto 0;
+  }
+  .mbook-side-quote { font-size: 14.5px; margin-top: 10px; }
+  .mbook-side-cite { font-size: 12px; }
+
+  /* 4컷·실제 한 컷 — flex 기반에서 명시적 비율 카드로 */
+  .mbook-panel {
+    flex: 0 0 auto;
+    aspect-ratio: 4 / 3;
+    max-height: 220px;
+  }
+  .mbook-panel img { flex: 0 1 auto; height: 100%; }
+  .mbook-side-comic { gap: 8px; }
+  .mbook-side-real-cut .mbook-panel { max-height: 220px; }
+
+  /* 실록 본문 */
+  .mbook-real-title { font-size: 16px; line-height: 1.4; margin: 0 0 4px; }
+  .mbook-real-p { font-size: 12.5px; line-height: 1.75; }
+  .mbook-narr { font-size: 13px; line-height: 1.75; }
+  .mbook-h2 { font-size: 17px; margin: 2px 0 4px; }
+
+  /* 유물 카드 — 모바일 컴팩트 */
+  .mbook-side-heritage { gap: 10px; }
+  .mbook-heritage-card { gap: 8px; padding: 8px; }
+  .mbook-heritage-thumb { aspect-ratio: 4 / 3; max-height: 160px; }
+
+  /* 컨트롤 바 — 뷰포트 하단 fixed로 항상 보이게 */
+  .mbook-screen { padding-bottom: 96px; }
+  .mbook-controls {
+    position: fixed;
+    left: 12px;
+    right: 12px;
+    bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+    z-index: 30;
+    margin: 0;
+    padding: 8px 12px;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    max-width: none;
+  }
+  .mbook-ctrl { font-size: 13px; padding: 7px 14px; }
+  .mbook-ctrl-note { font-size: 11.5px; }
+
+  /* 학년 드롭다운 — 좁은 종이 안에서 아래로 열면 잘림. 위로 열기. */
+  .mbook-grade-menu {
+    top: auto;
+    bottom: calc(100% + 6px);
+    left: 0;
+    right: auto;
+  }
 }
 
 /* 인쇄 */
@@ -4961,15 +5148,33 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   .hero-flow-sub { font-size: 12px; }
 }
 @media (max-width: 540px) {
-  .hero-mascot { grid-template-columns: 1fr; gap: 16px; padding: 20px 18px 22px; text-align: center; }
-  .hero-mascot-figure { flex-direction: row; justify-content: center; gap: 14px; }
-  .sejong-svg { max-width: 110px; }
+  .hero-mascot {
+    grid-template-columns: 96px 1fr;
+    gap: 10px;
+    padding: 14px 12px 16px;
+    text-align: left;
+  }
+  .hero-mascot::after { display: none; }
+  .hero-mascot-figure { flex-direction: column; gap: 6px; }
+  .sejong-svg { max-width: 86px; }
+  .hero-mascot-name { font-size: 10.5px; padding: 2px 8px; letter-spacing: 0.4px; }
+  .hero-mascot-body { gap: 10px; min-width: 0; }
+  .hero-mascot-bubble { padding: 10px 12px 12px; border-radius: 14px; }
   .hero-mascot-bubble::before { display: none; }
-  .hero-flow { flex-wrap: wrap; gap: 8px; }
-  .hero-flow-step { flex: 1 1 calc(50% - 8px); padding: 12px 4px 14px; }
-  .hero-flow-arrow { display: none; }
-  .hero-flow-label { font-size: 14.5px; }
-  .hero-flow-sub { font-size: 11.5px; }
+  .hero-mascot-bubble-tag { font-size: 9.5px; padding: 2px 8px; letter-spacing: 1.2px; margin-bottom: 6px; }
+  .hero-mascot-bubble-text { font-size: 11.5px; line-height: 1.55; }
+  .hero-flow { flex-wrap: nowrap; gap: 2px; }
+  .hero-flow-step {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 6px 2px 8px;
+    border-radius: 8px;
+    gap: 2px;
+  }
+  .hero-flow-num { width: 18px; height: 18px; font-size: 10px; }
+  .hero-flow-label { font-size: 10.5px; margin-top: 0; }
+  .hero-flow-sub { font-size: 8.5px; line-height: 1.25; }
+  .hero-flow-arrow { display: inline-flex; font-size: 11px; opacity: 0.4; }
 }
 
 /* ════════════════════════════════════════
@@ -5031,6 +5236,12 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
 @media (max-width: 640px) {
   .hero-actions { grid-template-columns: repeat(2, 1fr); }
   .hero-action { padding: 14px 14px; }
+}
+@media (max-width: 540px) {
+  .hero-actions { gap: 8px; margin: 18px 0 0; }
+  .hero-action { padding: 10px 10px; gap: 7px; border-radius: 12px; }
+  .hero-action-icon svg { width: 17px; height: 17px; }
+  .hero-action-label { font-size: 12px; letter-spacing: 0; }
 }
 
 /* ════════════════════════════════════════
@@ -5157,9 +5368,22 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   .gallery-grid { grid-template-columns: repeat(2, 1fr); }
   .gallery-book:last-child { grid-column: 1 / -1; max-width: 60%; margin: 0 auto; }
 }
-@media (max-width: 420px) {
-  .gallery-grid { grid-template-columns: 1fr; }
-  .gallery-book:last-child { max-width: none; }
+@media (max-width: 540px) {
+  .gallery-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .gallery-book:last-child { grid-column: auto; max-width: none; margin: 0; }
+  .gallery-book-cover { padding: 12px 6px 10px; border-radius: 5px 8px 8px 5px; }
+  .gallery-book-cover::before { inset: 8px; }
+  .gallery-book-eyebrow {
+    font-size: 7.5px;
+    padding: 2px 5px;
+    letter-spacing: 0.8px;
+    margin-bottom: 6px;
+  }
+  .gallery-book-title { font-size: 11.5px; line-height: 1.2; margin-bottom: 4px; letter-spacing: -0.1px; }
+  .gallery-book-sub { font-size: 8.5px; letter-spacing: 0.2px; margin-bottom: 6px; }
+  .gallery-book-orn { font-size: 8px; letter-spacing: 2px; }
+  .gallery-book-spine { width: 5px; }
+  .gallery-book-caption { font-size: 9.5px; }
 }
 
 /* ════════════════════════════════════════
@@ -5256,7 +5480,7 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   .how-mascot .meokdol-svg { max-width: 80px; }
 }
 @media (max-width: 720px) {
-  .how-steps { grid-template-columns: 1fr; gap: 12px; }
+  .how-steps { gap: 12px; }
   .how-step { padding: 18px 18px 20px; }
   .how-step-title { font-size: 17px; }
   .how-mascot {
@@ -5265,6 +5489,26 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
     margin: 14px auto 0;
   }
   .how-mascot .meokdol-svg { max-width: 72px; }
+}
+@media (max-width: 540px) {
+  .how-steps { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .how-step { padding: 10px 6px 12px; gap: 5px; border-radius: 12px; }
+  .how-step-num { font-size: 9.5px; padding: 3px 7px; letter-spacing: 0.8px; }
+  .how-step-title { font-size: 12px; line-height: 1.25; }
+  .how-step-desc { font-size: 10.5px; line-height: 1.5; }
+  /* 먹돌이는 헤더 위쪽 우측으로 살짝 들어 올리고, 본문은 전체 폭으로 중앙 정렬 유지 */
+  .how-section-header { padding-right: 0; }
+  .how-mascot {
+    position: absolute;
+    right: 0;
+    top: -10px;
+    bottom: auto;
+    width: 52px;
+    margin: 0;
+    z-index: 2;
+  }
+  .how-mascot .meokdol-svg { max-width: 52px; }
+  .how-mascot-name { font-size: 9.5px; padding: 1px 7px; letter-spacing: 0.3px; }
 }
 
 /* ════════════════════════════════════════
@@ -5440,9 +5684,47 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   .event-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
 }
 @media (max-width: 560px) {
-  .event-grid { grid-template-columns: 1fr; }
-  .event-title { font-size: 17.5px; }
-  .event-body { padding: 14px 14px 16px; }
+  .event-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .event-title { font-size: 13.5px; line-height: 1.3; margin-bottom: 6px; -webkit-line-clamp: 2; }
+  .event-body { padding: 9px 9px 10px; }
+  .event-meta { font-size: 10px; gap: 3px 5px; margin-bottom: 5px; }
+  .event-cat { font-size: 9px; padding: 1px 5px; }
+  .event-fact { font-size: 10.5px; line-height: 1.5; margin: 0 0 8px; -webkit-line-clamp: 3; }
+  .event-cta { font-size: 11px; padding: 6px 10px; }
+  .event-lock, .event-note { font-size: 10.5px; }
+  .event-thumb-ph { font-size: 11px; }
+}
+.event-grid-toggle-wrap {
+  display: none;
+}
+@media (max-width: 560px) {
+  .event-grid.is-collapsed > .event-box:nth-child(n+5) {
+    display: none;
+  }
+  .event-grid-toggle-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 14px 0 0;
+  }
+  .event-grid-toggle {
+    font-family: 'Jua', sans-serif;
+    font-size: 12.5px;
+    color: var(--red);
+    background: rgba(200, 69, 59, 0.06);
+    border: 1px solid rgba(200, 69, 59, 0.22);
+    border-radius: 999px;
+    padding: 7px 16px;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .event-grid-toggle:hover {
+    background: rgba(200, 69, 59, 0.12);
+    border-color: rgba(200, 69, 59, 0.36);
+  }
+  .event-grid-toggle:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+  }
 }
 
 /* ════════════════════════════════════════
@@ -5897,6 +6179,25 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   .sillok-pillars-grid { grid-template-columns: 1fr; }
   .sillok-pillar { padding: 18px 18px; }
 }
+@media (max-width: 540px) {
+  .sillok-pillars { padding: 16px 12px 16px; border-radius: 16px; }
+  .sillok-pillars-head { margin-bottom: 12px; }
+  .sillok-pillars-eyebrow { font-size: 9.5px; letter-spacing: 1.6px; padding: 3px 10px; margin-bottom: 8px; }
+  .sillok-pillars-title { font-size: 14px; line-height: 1.35; margin: 0 0 4px; letter-spacing: -0.3px; }
+  .sillok-pillars-title em::after { bottom: 1px; height: 3px; }
+  .sillok-pillars-sub { font-size: 11px; line-height: 1.4; }
+  .sillok-pillars-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .sillok-pillar { padding: 10px 8px 10px; border-radius: 10px; }
+  .sillok-pillar-icon {
+    width: 24px;
+    height: 24px;
+    border-radius: 7px;
+    margin-bottom: 6px;
+  }
+  .sillok-pillar-icon svg { width: 14px; height: 14px; }
+  .sillok-pillar-title { font-size: 11.5px; margin-bottom: 4px; line-height: 1.25; }
+  .sillok-pillar-desc { font-size: 10px; line-height: 1.45; }
+}
 
 /* ════════════════════════════════════════
    채팅 화면 (먹돌이와 대화)
@@ -6080,7 +6381,7 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   margin: 0 2px 0 0;
 }
 
-/* 카드 우측 끝 — 관련 유물 토글 버튼 */
+/* 카드 우측 끝 — 관련 유물 토글 버튼 (테두리만) */
 .tl-heritage-btn {
   align-self: stretch;
   margin-left: auto;
@@ -6092,28 +6393,25 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   flex-shrink: 0;
   min-width: 64px;
   padding: 10px 12px;
-  background: linear-gradient(180deg, #FFF8EC 0%, #F5E8C8 100%);
-  border: 1px solid #E4D2A8;
+  background: transparent;
+  border: 1px solid rgba(181, 139, 78, 0.45);
   border-radius: 12px;
   color: #6F4A18;
   font-family: 'Jua', sans-serif;
   cursor: pointer;
-  transition: transform .14s ease, box-shadow .14s ease, border-color .14s ease, background .14s ease;
+  transition: border-color .14s ease, color .14s ease;
 }
 .tl-heritage-btn:hover {
-  transform: translateY(-1px);
-  border-color: #C99B5A;
-  box-shadow: 0 4px 12px rgba(201, 136, 42, 0.22);
+  border-color: #B58B4E;
+  color: #4E330B;
 }
-.tl-heritage-btn:active { transform: translateY(0); }
 .tl-heritage-btn:focus-visible {
-  outline: 2px solid #C99B5A;
+  outline: 2px solid #B58B4E;
   outline-offset: 2px;
 }
 .tl-heritage-btn.on {
-  background: linear-gradient(180deg, #F5E2B5 0%, #E9CC8C 100%);
-  border-color: #C99B5A;
-  box-shadow: inset 0 1px 3px rgba(140, 95, 30, 0.18);
+  border-color: #B58B4E;
+  color: #4E330B;
 }
 .tl-heritage-btn-label {
   font-size: 11.5px;
@@ -6130,6 +6428,80 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
     padding: 8px 10px;
   }
   .tl-heritage-btn-label { font-size: 11px; }
+}
+
+/* 연표 — 모바일: 설명 축약, 4개만 표시, 접기/펴기, 버튼 멘트 심플화 */
+.timeline-sub-short { display: none; }
+.timeline-sub-long { display: inline; }
+.tl-peek-hint-text-short { display: none; }
+.tl-peek-hint-text-full { display: inline; }
+.tl-heritage-btn-label-short { display: none; }
+.tl-heritage-btn-label-full { display: inline; }
+.timeline-toggle-wrap { display: none; }
+@media (max-width: 540px) {
+  .timeline-sub-long { display: none; }
+  .timeline-sub-short { display: inline; }
+  .tl-peek-hint-text-full { display: none; }
+  .tl-peek-hint-text-short { display: inline; }
+  .tl-heritage-btn-label-full { display: none; }
+  .tl-heritage-btn-label-short { display: inline; }
+  .timeline.is-collapsed .tl-item[data-flat-hidden="true"] { display: none; }
+  .timeline.is-collapsed .tl-era[data-era-hidden="true"] { display: none; }
+  .timeline-toggle-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 14px 0 0;
+  }
+  .timeline-toggle {
+    font-family: 'Jua', sans-serif;
+    font-size: 12.5px;
+    color: var(--red);
+    background: rgba(200, 69, 59, 0.06);
+    border: 1px solid rgba(200, 69, 59, 0.22);
+    border-radius: 999px;
+    padding: 7px 16px;
+    cursor: pointer;
+    transition: background .15s ease, border-color .15s ease;
+  }
+  .timeline-toggle:hover {
+    background: rgba(200, 69, 59, 0.12);
+    border-color: rgba(200, 69, 59, 0.36);
+  }
+  .timeline-toggle:focus-visible {
+    outline: 2px solid var(--red);
+    outline-offset: 2px;
+  }
+  .tl-peek-hint { font-size: 11.5px; padding: 4px 10px 4px 8px; gap: 4px; }
+  .tl-heritage-btn { min-width: 48px; padding: 6px 8px; }
+  .tl-heritage-btn-label { font-size: 10.5px; letter-spacing: 0; }
+
+  .tl-peek { padding: 12px 12px 14px; }
+  .peek-history { gap: 10px; margin-bottom: 12px; }
+  .peek-history-section {
+    padding: 10px 12px 12px;
+    border-radius: 10px;
+    border-left: 3px solid var(--red);
+  }
+  .peek-history-title {
+    font-family: 'Gowun Dodum', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 1.4;
+    margin: 0 0 6px;
+    color: var(--red-deep);
+    letter-spacing: 0;
+  }
+  .peek-history-p {
+    font-size: 12.5px;
+    line-height: 1.7;
+    margin: 0 0 6px;
+  }
+  .peek-text { font-size: 13px; line-height: 1.65; margin: 0 0 10px; }
+  .peek-source { font-size: 11px; margin-bottom: 10px; }
+  .peek-sillok { font-size: 11.5px; padding: 5px 12px 6px; margin-bottom: 12px; }
+  .peek-col-eyebrow { font-size: 10.5px; letter-spacing: 1.2px; }
+  .peek-cta { font-size: 13px; padding: 10px 14px; border-radius: 8px; }
+  .peek-cta-pending { font-size: 12px; padding: 10px 14px; }
 }
 
 /* ════════════════════════════════════════
@@ -6207,6 +6579,42 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   color: var(--ink-soft);
   margin: 0 auto;
   max-width: 640px;
+}
+@media (max-width: 540px) {
+  .site-footer {
+    margin-top: 32px;
+    padding: 18px 14px 20px;
+    border-radius: 12px;
+  }
+  .site-footer-eyebrow {
+    font-family: 'Gowun Dodum', sans-serif;
+    font-weight: 700;
+    text-transform: none;
+    letter-spacing: 0.2px;
+    font-size: 11.5px;
+    margin-bottom: 8px;
+    color: var(--ink-soft);
+  }
+  .site-footer-sources {
+    gap: 4px 2px;
+    margin: 0 0 10px;
+  }
+  .site-footer-source a {
+    font-family: 'Gowun Dodum', sans-serif;
+    font-size: 11px;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  .site-footer-sep {
+    font-family: 'Gowun Dodum', sans-serif;
+    font-size: 11px;
+    margin: 0 3px;
+  }
+  .site-footer-note {
+    font-family: 'Gowun Dodum', sans-serif;
+    font-size: 10.5px;
+    line-height: 1.6;
+  }
 }
 
 /* ════════════════════════════════════════

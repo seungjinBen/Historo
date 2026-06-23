@@ -102,28 +102,58 @@ export function Timeline({
   setHeritagePreviewEventId,
   onOpenEvent,
 }: Props) {
+  const [expanded, setExpanded] = useState(false);
+  const ERAS = ["조선 초기", "조선 중기", "조선 후기"] as const;
+  const flatIndex = new Map<string, number>();
+  const eraMinIndex: Record<string, number> = {};
+  let counter = 0;
+  ERAS.forEach((era) => {
+    events
+      .filter((ev) => ev.era === era)
+      .sort((a, b) => a.year - b.year)
+      .forEach((ev) => {
+        if (!(era in eraMinIndex)) eraMinIndex[era] = counter;
+        flatIndex.set(ev.id, counter);
+        counter += 1;
+      });
+  });
+  const totalEvents = counter;
+  const hasMore = totalEvents > 4;
   return (
     <section className="home-section" id="study-timeline-section">
       <div className="section-header">
         <span className="section-header-eyebrow" id="study-timeline">역사의 길</span>
         <h2 className="section-header-title">조선 1392 — 1897</h2>
         <p className="section-header-sub">
-          시대 순으로 사건을 펼쳐봐요. 점을 누르면 무슨 일이 있었는지 들여다보고,
-          <br />
-          <HeritageIcon size={15} className="section-header-icon" /> 표시가 있는 사건은 그 시대의 실제 유물까지 함께 만날 수 있어요.
+          <span className="timeline-sub-long">
+            시대 순으로 사건을 펼쳐봐요. 점을 누르면 무슨 일이 있었는지 들여다보고,
+            <br />
+            <HeritageIcon size={15} className="section-header-icon" /> 표시가 있는 사건은 그 시대의 실제 유물까지 함께 만날 수 있어요.
+          </span>
+          <span className="timeline-sub-short">
+            점을 눌러 사건과 <HeritageIcon size={13} className="section-header-icon" />유물을 살펴봐요.
+          </span>
         </p>
       </div>
-      <div className="timeline">
-        {["조선 초기", "조선 중기", "조선 후기"].map((era) => {
+      <div className={"timeline" + (expanded ? "" : " is-collapsed")}>
+        {ERAS.map((era) => {
           const eraEvents = events
             .filter((ev) => ev.era === era)
             .sort((a, b) => a.year - b.year);
           if (eraEvents.length === 0) return null;
+          const eraStart = eraMinIndex[era] ?? Infinity;
+          const eraHidden = eraStart >= 4;
           return (
-            <div key={era} className="tl-era">
+            <div
+              key={era}
+              className="tl-era"
+              data-era-hidden={eraHidden ? "true" : "false"}
+            >
               <div className="tl-era-label">{era}</div>
               <div className="tl-list">
                 {eraEvents.map((ev, idx) => {
+                  const flat = flatIndex.get(ev.id) ?? 0;
+                  const flatHidden = flat >= 4;
                   const heritageData = ev.heritageId && heritage ? heritage[ev.heritageId] : null;
                   const historySections = HISTORY_CONTENT[ev.id] ?? null;
                   const isHistoryOpen = previewEventId === ev.id;
@@ -132,7 +162,11 @@ export function Timeline({
 
                   if (ev.status === "coming") {
                     return (
-                      <div key={ev.id} className="tl-item">
+                      <div
+                        key={ev.id}
+                        className="tl-item"
+                        data-flat-hidden={flatHidden ? "true" : "false"}
+                      >
                         <div className="tl-dot" />
                         <div
                           className="tl-card coming"
@@ -170,7 +204,11 @@ export function Timeline({
                     (isHistoryOpen || isHeritageOpen ? " peek-open" : "");
 
                   return (
-                    <div key={ev.id} className="tl-item">
+                    <div
+                      key={ev.id}
+                      className="tl-item"
+                      data-flat-hidden={flatHidden ? "true" : "false"}
+                    >
                       <div className={"tl-dot " + ev.status} />
                       <div
                         className={cardClass}
@@ -215,7 +253,8 @@ export function Timeline({
                                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                                 <circle cx="12" cy="12" r="3"/>
                               </svg>
-                              <span>무슨 일이 있었을까?</span>
+                              <span className="tl-peek-hint-text-full">무슨 일이 있었을까?</span>
+                              <span className="tl-peek-hint-text-short">역사</span>
                               <span className="tl-peek-chev" aria-hidden="true">{isHistoryOpen ? "▲" : "▼"}</span>
                             </div>
                           </div>
@@ -230,7 +269,8 @@ export function Timeline({
                               aria-label={`${ev.title} 관련 유물 ${isHeritageOpen ? "닫기" : "보기"}`}
                             >
                               <HeritageIcon size={18} />
-                              <span className="tl-heritage-btn-label">관련 유물</span>
+                              <span className="tl-heritage-btn-label tl-heritage-btn-label-full">관련 유물</span>
+                              <span className="tl-heritage-btn-label tl-heritage-btn-label-short">유물</span>
                               <span className="tl-heritage-btn-chev" aria-hidden="true">{isHeritageOpen ? "▲" : "▼"}</span>
                             </button>
                           )}
@@ -305,6 +345,18 @@ export function Timeline({
           );
         })}
       </div>
+      {hasMore && (
+        <div className="timeline-toggle-wrap">
+          <button
+            type="button"
+            className="timeline-toggle"
+            onClick={() => setExpanded((v) => !v)}
+            aria-expanded={expanded}
+          >
+            {expanded ? "접기 ▲" : `더 보기 (+${totalEvents - 4}) ▼`}
+          </button>
+        </div>
+      )}
     </section>
   );
 }

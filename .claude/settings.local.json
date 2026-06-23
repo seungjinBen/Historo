@@ -34,7 +34,8 @@
       "PowerShell(Get-Item *)",
       "PowerShell(Out-File *)",
       "Bash(echo \"EXIT:$?\")",
-      "Bash(echo \"TSC:$?\")"
+      "Bash(echo \"TSC:$?\")",
+      "Read(//c/Users/byeon/AppData/Local/Temp/claude/C--dev-historo/75702c1e-b9c6-4860-bf19-c1a068f8fdde/tasks/**)"
     ]
   }
 }
