@@ -6,6 +6,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import MyeongnyangExperience from "./myeongnyang";
+import MyeongnyangBookExperience from "./myeongnyang-book";
 
 // ── 연표 노드 미리보기 경로 (eventId → pathKey) ──────────────────────
 const NODE_PREVIEW_PATH: Record<string, string> = {
@@ -23,15 +24,31 @@ type StoryNode = {
 type Tree = { eventId: string; root: StoryNode };
 type EventMeta = {
   id: string;
+  heritageId?: string;
   title: string;
   year: number;
   king: string;
   era: string;
   category: string;
-  status: "ready" | "coming";
+  status: "ready" | "coming" | "heritage";
   source: string;
   sillokUrl?: string | null;
   factCard: string;
+};
+
+type HeritageItem = {
+  id: string;
+  name: string;
+  imagePath: string;
+  docentText: string;
+  source: string;
+  sourceUrl: string;
+};
+type HeritageEvent = {
+  id: string;
+  title: string;
+  year: string;
+  heritageItems: HeritageItem[];
 };
 
 type KidStory = {
@@ -122,6 +139,40 @@ function MiniPanel({ eventId, pathKey, n }: { eventId: string; pathKey: string; 
   );
 }
 
+function HeritageItemCard({ item }: { item: HeritageItem }) {
+  const [err, setErr] = useState(false);
+  const [ok, setOk] = useState(false);
+  return (
+    <div className="heritage-item">
+      <div className="heritage-thumb">
+        {err ? (
+          <div className="heritage-thumb-ph">유물 이미지 준비 중</div>
+        ) : (
+          <img
+            src={item.imagePath}
+            alt={item.name}
+            className={ok ? "loaded" : ""}
+            onLoad={() => setOk(true)}
+            onError={() => setErr(true)}
+          />
+        )}
+      </div>
+      <div className="heritage-body">
+        <div className="heritage-name">{item.name}</div>
+        <p className="heritage-docent">{item.docentText}</p>
+        <a
+          className="heritage-source"
+          href={item.sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          출처 · {item.source} →
+        </a>
+      </div>
+    </div>
+  );
+}
+
 function SpeakBtn({
   text,
   speak,
@@ -144,7 +195,7 @@ function SpeakBtn({
   );
 }
 
-type Screen = "home" | "intro" | "play" | "comic" | "myeongnyang";
+type Screen = "home" | "intro" | "play" | "comic" | "myeongnyang" | "myeongnyang-book";
 
 export default function Page() {
   const [screen, setScreen] = useState<Screen>("home");
@@ -161,6 +212,8 @@ export default function Page() {
   const koVoiceRef = useRef<SpeechSynthesisVoice | null>(null);
 
   const [previewEventId, setPreviewEventId] = useState<string | null>(null);
+  const [heritageOpenEventId, setHeritageOpenEventId] = useState<string | null>(null);
+  const [heritage, setHeritage] = useState<Record<string, HeritageEvent> | null>(null);
 
   const [kidStoryOpen, setKidStoryOpen] = useState(false);
   const [kidStoryData, setKidStoryData] = useState<KidStory | null>(null);
@@ -172,6 +225,17 @@ export default function Page() {
       .then((r) => r.json())
       .then((d) => setEvents(d.events))
       .catch(() => setError("data/events.json 을 불러오지 못했어요. public/data/ 에 복사했는지 확인해 주세요."));
+  }, []);
+
+  useEffect(() => {
+    fetch("/heritage.json")
+      .then((r) => r.json())
+      .then((d: { events: HeritageEvent[] }) => {
+        const map: Record<string, HeritageEvent> = {};
+        d.events.forEach((e) => { map[e.id] = e; });
+        setHeritage(map);
+      })
+      .catch(() => {});
   }, []);
 
   // 한국어 음성 로드: getVoices()는 비동기로 채워지므로 voiceschanged를 기다림
@@ -192,15 +256,18 @@ export default function Page() {
     };
   }, []);
 
-  // ESC 키로 사건 미리보기 패널 닫기
+  // ESC 키로 미리보기·유물 패널 닫기
   useEffect(() => {
-    if (!previewEventId) return;
+    if (!previewEventId && !heritageOpenEventId) return;
     const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setPreviewEventId(null);
+      if (e.key === "Escape") {
+        setPreviewEventId(null);
+        setHeritageOpenEventId(null);
+      }
     };
     window.addEventListener("keydown", handleEsc);
     return () => window.removeEventListener("keydown", handleEsc);
-  }, [previewEventId]);
+  }, [previewEventId, heritageOpenEventId]);
 
   // 화면 전환 시 이전 발화 중단 + kidStory 초기화
   useEffect(() => {
@@ -286,6 +353,7 @@ export default function Page() {
     setNode(null);
     setPath([]);
     setPreviewEventId(null);
+    setHeritageOpenEventId(null);
   };
 
   if (error) return <div className="wrap"><div className="panel-card center">{error}</div></div>;
@@ -344,6 +412,35 @@ export default function Page() {
             </div>
           </div>
 
+          {/* ── 동화책 모드 — 같은 명량해전을 책으로 펼쳐 체험 ── */}
+          <div className="mbook-feature">
+            <div className="mbook-feature-illust" aria-hidden="true">
+              <div className="mbook-mini">
+                <div className="mbook-mini-cover">
+                  <span className="mbook-mini-eyebrow">실제 역사</span>
+                  <span className="mbook-mini-title">이순신 장군과<br/>명량의 기적</span>
+                  <span className="mbook-mini-orn">◆</span>
+                </div>
+                <span className="mbook-mini-pages" aria-hidden="true" />
+              </div>
+              <span className="mbook-feature-sparkle" aria-hidden="true">✦</span>
+            </div>
+            <div className="mbook-feature-body">
+              <span className="mbook-feature-tag">동화책 모드 · 새로 나왔어요</span>
+              <div className="mbook-feature-title">한 권의 책으로 펼쳐보기</div>
+              <p className="mbook-feature-desc">
+                닫힌 책을 살짝 누르면 양옆으로 스르륵 펼쳐져요. 책장을 한 장씩 넘기며 &lsquo;만약에&rsquo;를 골라요 — 같은 이야기, 새로운 몰입.
+              </p>
+              <button
+                className="mbook-feature-btn"
+                onClick={() => setScreen("myeongnyang-book")}
+                aria-label="이순신 장군의 명량해전 — 동화책으로 펼쳐보기"
+              >
+                책 펼쳐보기 →
+              </button>
+            </div>
+          </div>
+
           {/* ── 이순신 명량해전 — 추천 체험 ── */}
           <div className="myn-feature">
             <div className="myn-feature-thumb">
@@ -376,26 +473,159 @@ export default function Page() {
                 <div key={era} className="tl-era">
                   <div className="tl-era-label">{era}</div>
                   <div className="tl-list">
-                    {eraEvents.map((ev, idx) => (
-                      <div key={ev.id} className="tl-item">
-                        <div className={"tl-dot" + (ev.status === "ready" ? " ready" : "")} />
-                        {ev.status === "ready" ? (
-                          <>
+                    {eraEvents.map((ev, idx) => {
+                      const heritageData = ev.heritageId && heritage ? heritage[ev.heritageId] : null;
+                      const heritageBtn = heritageData ? (
+                        <button
+                          className={"tl-heritage-col" + (heritageOpenEventId === ev.id ? " open" : "")}
+                          onClick={() => setHeritageOpenEventId((id) => id === ev.id ? null : ev.id)}
+                          aria-expanded={heritageOpenEventId === ev.id}
+                          aria-controls={`heritage-${ev.id}`}
+                          aria-label={`${ev.title} 관련 유물 ${heritageData.heritageItems.length}점 보기`}
+                        >
+                          <svg className="tl-heritage-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                            <path d="M3 21h18"/>
+                            <path d="M5 21V10"/>
+                            <path d="M19 21V10"/>
+                            <path d="M9 21v-6h6v6"/>
+                            <path d="M12 3 3 9h18z"/>
+                          </svg>
+                          <span className="tl-heritage-label">관련 유물</span>
+                          <span className="tl-heritage-count">{heritageData.heritageItems.length}점</span>
+                        </button>
+                      ) : null;
+
+                      const heritagePeek = heritageData && heritageOpenEventId === ev.id ? (
+                        <div
+                          className="tl-heritage-peek"
+                          id={`heritage-${ev.id}`}
+                          role="region"
+                          aria-label={`${ev.title} 관련 유물`}
+                        >
+                          <div className="heritage-peek-head">
+                            <span className="heritage-peek-eyebrow">관련 유물 · {heritageData.heritageItems.length}점</span>
+                            <span className="heritage-peek-title">{heritageData.title}</span>
+                          </div>
+                          <div className="heritage-grid">
+                            {heritageData.heritageItems.map((item) => (
+                              <HeritageItemCard key={item.id} item={item} />
+                            ))}
+                          </div>
+                        </div>
+                      ) : null;
+
+                      return (
+                        <div key={ev.id} className="tl-item">
+                          <div className={"tl-dot" + (ev.status === "ready" ? " ready" : ev.status === "heritage" ? " heritage" : "")} />
+                          {ev.status === "ready" ? (
+                            <>
+                              <div
+                                className={"tl-card ready" + (previewEventId === ev.id ? " peek-open" : "") + (heritageOpenEventId === ev.id ? " heritage-open" : "")}
+                                style={{ animationDelay: `${idx * 0.07}s` }}
+                              >
+                                <div className="tl-inner">
+                                  <div className="tl-mini" aria-hidden="true">
+                                    <div className="mini-comic">
+                                      {[1, 2, 3, 4].map((n) => (
+                                        <MiniPanel
+                                          key={n}
+                                          eventId={ev.id}
+                                          pathKey={NODE_PREVIEW_PATH[ev.id] ?? "0-0-0"}
+                                          n={n}
+                                        />
+                                      ))}
+                                    </div>
+                                  </div>
+                                  <div className="tl-content">
+                                    <div className="tl-meta">
+                                      <span className="tl-year">{ev.year}</span>
+                                      <span className="tl-king">{ev.king}</span>
+                                      <span className="tl-cat">{ev.category}</span>
+                                    </div>
+                                    <div className="tl-title">{ev.title}</div>
+                                    <div className="tl-actions">
+                                      <button
+                                        className="tl-btn-primary"
+                                        onClick={() => openEvent(ev)}
+                                        aria-label={`${ev.title} 이야기 만들기`}
+                                      >
+                                        이야기 만들기 →
+                                      </button>
+                                      <button
+                                        className="tl-btn-peek"
+                                        onClick={() => setPreviewEventId((id) => id === ev.id ? null : ev.id)}
+                                        aria-expanded={previewEventId === ev.id}
+                                        aria-controls={`peek-${ev.id}`}
+                                      >
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                                          <circle cx="12" cy="12" r="3"/>
+                                        </svg>
+                                        무슨 일이 있었을까?
+                                      </button>
+                                    </div>
+                                  </div>
+                                  {heritageBtn}
+                                </div>
+                              </div>
+                              {previewEventId === ev.id && (
+                                <div
+                                  className="tl-peek"
+                                  id={`peek-${ev.id}`}
+                                  role="region"
+                                  aria-label={`${ev.title} 사건 미리보기`}
+                                >
+                                  <p className="peek-text">{ev.factCard}</p>
+                                  <div className="peek-source">출처 · {ev.source}</div>
+                                  {ev.sillokUrl && (
+                                    <a
+                                      href={ev.sillokUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="peek-sillok"
+                                    >
+                                      실록 원문 보기 →
+                                    </a>
+                                  )}
+                                  <button className="peek-cta" onClick={() => openEvent(ev)}>
+                                    이제 내 이야기 만들기 →
+                                  </button>
+                                </div>
+                              )}
+                              {heritagePeek}
+                            </>
+                          ) : ev.status === "heritage" ? (
+                            <>
+                              <div
+                                className={"tl-card heritage" + (heritageOpenEventId === ev.id ? " heritage-open" : "")}
+                                style={{ animationDelay: `${idx * 0.07}s` }}
+                              >
+                                <div className="tl-inner">
+                                  <div className="tl-content">
+                                    <div className="tl-meta">
+                                      <span className="tl-year">{ev.year}</span>
+                                      <span className="tl-king">{ev.king}</span>
+                                      <span className="tl-cat">{ev.category}</span>
+                                    </div>
+                                    <div className="tl-title">{ev.title}</div>
+                                  </div>
+                                  {heritageBtn}
+                                </div>
+                              </div>
+                              {heritagePeek}
+                            </>
+                          ) : (
                             <div
-                              className={"tl-card ready" + (previewEventId === ev.id ? " peek-open" : "")}
-                              style={{ animationDelay: `${idx * 0.07}s` }}
+                              className="tl-card coming"
+                              aria-label={`${ev.year}년 ${ev.title} — 곧 만나요`}
                             >
                               <div className="tl-inner">
                                 <div className="tl-mini" aria-hidden="true">
-                                  <div className="mini-comic">
-                                    {[1, 2, 3, 4].map((n) => (
-                                      <MiniPanel
-                                        key={n}
-                                        eventId={ev.id}
-                                        pathKey={NODE_PREVIEW_PATH[ev.id] ?? "0-0-0"}
-                                        n={n}
-                                      />
-                                    ))}
+                                  <div className="mini-locked">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                      <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                      <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                                    </svg>
                                   </div>
                                 </div>
                                 <div className="tl-content">
@@ -405,83 +635,14 @@ export default function Page() {
                                     <span className="tl-cat">{ev.category}</span>
                                   </div>
                                   <div className="tl-title">{ev.title}</div>
-                                  <div className="tl-actions">
-                                    <button
-                                      className="tl-btn-primary"
-                                      onClick={() => openEvent(ev)}
-                                      aria-label={`${ev.title} 이야기 만들기`}
-                                    >
-                                      이야기 만들기 →
-                                    </button>
-                                    <button
-                                      className="tl-btn-peek"
-                                      onClick={() => setPreviewEventId((id) => id === ev.id ? null : ev.id)}
-                                      aria-expanded={previewEventId === ev.id}
-                                      aria-controls={`peek-${ev.id}`}
-                                    >
-                                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                        <circle cx="12" cy="12" r="3"/>
-                                      </svg>
-                                      무슨 일이 있었을까?
-                                    </button>
-                                  </div>
+                                  <span className="tl-lock">곧 만나요</span>
                                 </div>
                               </div>
                             </div>
-                            {previewEventId === ev.id && (
-                              <div
-                                className="tl-peek"
-                                id={`peek-${ev.id}`}
-                                role="region"
-                                aria-label={`${ev.title} 사건 미리보기`}
-                              >
-                                <p className="peek-text">{ev.factCard}</p>
-                                <div className="peek-source">출처 · {ev.source}</div>
-                                {ev.sillokUrl && (
-                                  <a
-                                    href={ev.sillokUrl}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="peek-sillok"
-                                  >
-                                    실록 원문 보기 →
-                                  </a>
-                                )}
-                                <button className="peek-cta" onClick={() => openEvent(ev)}>
-                                  이제 내 이야기 만들기 →
-                                </button>
-                              </div>
-                            )}
-                          </>
-                        ) : (
-                          <div
-                            className="tl-card coming"
-                            aria-label={`${ev.year}년 ${ev.title} — 곧 만나요`}
-                          >
-                            <div className="tl-inner">
-                              <div className="tl-mini" aria-hidden="true">
-                                <div className="mini-locked">
-                                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                                  </svg>
-                                </div>
-                              </div>
-                              <div className="tl-content">
-                                <div className="tl-meta">
-                                  <span className="tl-year">{ev.year}</span>
-                                  <span className="tl-king">{ev.king}</span>
-                                  <span className="tl-cat">{ev.category}</span>
-                                </div>
-                                <div className="tl-title">{ev.title}</div>
-                                <span className="tl-lock">곧 만나요</span>
-                              </div>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    ))}
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               );
@@ -493,6 +654,16 @@ export default function Page() {
       {screen === "myeongnyang" && (
         <MyeongnyangExperience
           key="myeongnyang"
+          onHome={home}
+          speak={doSpeak}
+          stop={doStop}
+          speaking={speaking}
+        />
+      )}
+
+      {screen === "myeongnyang-book" && (
+        <MyeongnyangBookExperience
+          key="myeongnyang-book"
           onHome={home}
           speak={doSpeak}
           stop={doStop}

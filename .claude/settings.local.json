@@ -13,7 +13,19 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3737/)",
       "Bash(curl *)",
       "Bash(./node_modules/.bin/eslint app/myeongnyang.tsx)",
-      "Bash(./node_modules/.bin/next build *)"
+      "Bash(./node_modules/.bin/next build *)",
+      "Bash(echo \"tsc exit: $?\")",
+      "Bash(echo \"lint exit: $?\")",
+      "Bash(awk 'NR<3335 || NR>3720' /c/dev/historo/web/app/globals.css)",
+      "Bash(mv /tmp/globals.css.new /c/dev/historo/web/app/globals.css)",
+      "Bash(sed -n '3330,3340p' /c/dev/historo/web/app/globals.css)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(git stash *)",
+      "Bash(echo \"main exit: $?\")",
+      "Bash(echo \"build exit: $?\")",
+      "Bash(echo \"tsc: $?\")",
+      "Bash(echo \"lint: $?\")",
+      "Bash(echo \"build: $?\")"
     ]
   }
 }

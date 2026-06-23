@@ -1,0 +1,394 @@
+{
+  "events": [
+    {
+      "id": "evt01",
+      "title": "세종대왕의 훈민정음 반포",
+      "year": "1446년",
+      "heritageItems": [
+        {
+          "id": "evt01_01",
+          "name": "국보 훈민정음 해례본",
+          "imagePath": "/images/heritage/evt01_01.jpg",
+          "docentText": "한글을 왜 만들었고 어떻게 쓰는지 자세히 적어둔 세상에 단 하나뿐인 한글 설명서 책이란다!",
+          "source": "국가유산청",
+          "sourceUrl": "https://www.khs.go.kr/main.html"
+        },
+        {
+          "id": "evt01_02",
+          "name": "세종대왕 동상",
+          "imagePath": "/images/heritage/evt01_02.jpg",
+          "docentText": "우리가 교과서나 만원에서 자주 보는 인자한 세종대왕님의 동상은 서울 덕수궁에 위치해있어.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        },
+        {
+          "id": "evt01_03",
+          "name": "보물 용비어천가",
+          "imagePath": "/images/heritage/evt01_03.jpg",
+          "docentText": "한글이 완성된 후, 우리 글자가 얼마나 아름답고 실용적인지 시험해보기 위해 한글로 처음 찍어낸 뜻깊은 책이야.",
+          "source": "국립중앙박물관",
+          "sourceUrl": "https://www.emuseum.go.kr"
+        },
+        {
+          "id": "evt01_04",
+          "name": "집현전 학사 관복",
+          "imagePath": "/images/heritage/evt01_04.jpg",
+          "docentText": "세종대왕님과 함께 밤새워 한글을 연구하고 토론했던 신하들이 궁궐에서 입던 멋진 옷이란다.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        }
+      ]
+    },
+    {
+      "id": "evt02",
+      "title": "이순신 장군의 명량해전",
+      "year": "1597년",
+      "heritageItems": [
+        {
+          "id": "evt02_01",
+          "name": "이순신 장군 표준영정",
+          "imagePath": "/images/heritage/evt02_01.jpg",
+          "docentText": "단 13척의 배로 수많은 왜선을 물리친 이순신 장군님의 영정이야. 굳게 다문 입술과 매서운 눈빛에서 바다를 지키겠다는 위엄과 웅장한 기백이 느껴지지 않니?",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        },
+        {
+          "id": "evt02_02",
+          "name": "전통군선 판옥선",
+          "imagePath": "/images/heritage/evt02_02.jpg",
+          "docentText": "조선 수군의 무적 전투함이야. 2층 구조로 설계되어서 아래층에서는 노를 안전하게 젓고, 높은 위층에서는 왜군을 내려다보며 화포를 쏟아부을 수 있었던 명량해전의 숨은 주인공이란다.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        },
+        {
+          "id": "evt02_03",
+          "name": "장검",
+          "imagePath": "/images/heritage/evt02_03.jpg",
+          "docentText": "장군님이 늘 침소에 걸어두고 마음을 다잡으셨던 무려 2미터가 넘는 거대한 칼이야. 칼날에는 '한 번 휘둘러 쓸어버리니 피가 강산을 물들인다'라는 비장한 시가 새겨져 있단다.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        },
+        {
+          "id": "evt02_04",
+          "name": "국보 난중일기",
+          "imagePath": "/images/heritage/evt02_04.jpg",
+          "docentText": "치열했던 7년간의 전쟁 속에서 장군님이 매일 밤 직접 쓰신 친필 일기야. 긴박한 전투 기록뿐만 아니라, 나라를 걱정하고 돌아가신 어머니를 그리워하는 인간적인 슬픔까지 고스란히 담겨있단다.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        }
+      ]
+    },
+    {
+      "id": "evt03",
+      "title": "장영실의 자격루 발명",
+      "year": "1434년",
+      "heritageItems": [
+        {
+          "id": "evt03_01",
+          "name": "국보 창경궁 자격루",
+          "imagePath": "/images/heritage/evt03_01.jpg",
+          "docentText": "물이 흘러내려 인형이 스스로 종과 북을 쳐서 시간을 알려주던 조선 시대의 똑똑한 자동 알람시계야.",
+          "source": "국립고궁박물관",
+          "sourceUrl": "https://www.gogung.go.kr/gogung/main/main.do"
+        },
+        {
+          "id": "evt03_02",
+          "name": "보물 앙부일구 (해시계)",
+          "imagePath": "/images/heritage/evt03_02.jpg",
+          "docentText": "가마솥 모양의 그릇 안에 그림자가 비쳐서 시간과 계절을 읽을 수 있게 만든 백성들을 위한 해시계란다.",
+          "source": "국립고궁박물관",
+          "sourceUrl": "https://www.gogung.go.kr/gogung/main/main.do"
+        },
+        {
+          "id": "evt03_03",
+          "name": "국보 혼천의 (천문시계)",
+          "imagePath": "/images/heritage/evt03_03.jpg",
+          "docentText": "하늘의 별자리와 해, 달이 어떻게 움직이는지 실시간으로 관찰할 수 있도록 만든 정밀한 우주 관측 기구야.",
+          "source": "국립고궁박물관",
+          "sourceUrl": "https://www.gogung.go.kr/gogung/main/main.do"
+        },
+        {
+          "id": "evt03_04",
+          "name": "국보 공주 충청감영 측우기",
+          "imagePath": "/images/heritage/evt03_04.jpg",
+          "docentText": "비가 얼마나 내렸는지 세계에서 최초로 정확하게 잴 수 있도록 만든 조선 시대의 과학적인 빗물 측정기란다.",
+          "source": "국립중앙박물관",
+          "sourceUrl": "https://www.emuseum.go.kr"
+        }
+      ]
+    },
+    {
+      "id": "evt04",
+      "title": "태조 이성계의 조선 건국",
+      "year": "1392년",
+      "heritageItems": [
+        {
+          "id": "evt04_01",
+          "name": "국보 조선태조어진",
+          "imagePath": "/images/heritage/evt04_01.jpg",
+          "docentText": "조선을 처음 세운 태조 이성계 왕의 실제 모습을 그린 유일한 초상화로, 푸른색 임금님 옷이 아주 웅장해.",
+          "source": "국립고궁박물관",
+          "sourceUrl": "https://www.gogung.go.kr/gogung/main/main.do"
+        },
+        {
+          "id": "evt04_02",
+          "name": "태조 고황제 어보 (대조보)",
+          "imagePath": "/images/heritage/evt04_02.jpg",
+          "docentText": "태조 이성계가 조선을 세우고 왕이 되었음을 증명하는 거대하고 멋진 황금빛 임금님의 도장이란다.",
+          "source": "국립고궁박물관",
+          "sourceUrl": "https://www.gogung.go.kr/gogung/main/main.do"
+        },
+        {
+          "id": "evt04_03",
+          "name": "국보 천상열차분야지도 각석",
+          "imagePath": "/images/heritage/evt04_03.jpg",
+          "docentText": "조선 건국의 정당함을 널리 알리기 위해, 고구려 시대의 별자리를 돌판에 다시 정밀하게 새겨 넣은 보물이야.",
+          "source": "국립고궁박물관",
+          "sourceUrl": "https://www.gogung.go.kr/gogung/main/main.do"
+        },
+        {
+          "id": "evt04_04",
+          "name": "보물 조선경국전",
+          "imagePath": "/images/heritage/evt04_04.jpg",
+          "docentText": "이성계를 도운 일등 공신 정도전이 '앞으로 조선은 이런 법으로 다스려야 한다'며 세운 최초의 국가 설계도야.",
+          "source": "국립중앙박물관",
+          "sourceUrl": "https://www.emuseum.go.kr"
+        }
+      ]
+    },
+    {
+      "id": "evt05",
+      "title": "광해군의 중립 외교",
+      "year": "17세기 초",
+      "heritageItems": [
+        {
+          "id": "evt05_01",
+          "name": "광해군일기 원문 및 서체",
+          "imagePath": "/images/heritage/evt05_01.jpg",
+          "docentText": "치열했던 국제 정세 속에서 백성들을 지키기 위해 고군분투했던 광해군 임금님의 기록이 담긴 역사책이야.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        },
+        {
+          "id": "evt05_02",
+          "name": "보물 조선지도",
+          "imagePath": "/images/heritage/evt05_02.jpg",
+          "docentText": "명나라와 후금(청나라)이라는 두 강대국 사이에서 우리 영토와 백성을 지키기 위해 감시하던 국경선의 모습이란다.",
+          "source": "국가유산청",
+          "sourceUrl": "https://www.khs.go.kr/main.html"
+        },
+        {
+          "id": "evt05_03",
+          "name": "외교 사신용 마패",
+          "imagePath": "/images/heritage/evt05_03.jpg",
+          "docentText": "조선의 외교관들이 외국을 오가며 왕의 명령을 전할 때 신분을 증명하기 위해 허리에 차고 다니던 패야.",
+          "source": "국립고궁박물관",
+          "sourceUrl": "https://www.gogung.go.kr/gogung/main/main.do"
+        },
+        {
+          "id": "evt05_04",
+          "name": "동국신속삼강행실도 (광해군 간행)",
+          "imagePath": "/images/heritage/evt05_04.jpg",
+          "docentText": "전쟁이 끝난 후 백성들의 마음을 위로하고 나라를 다시 일으키기 위해 광해군 때 그림을 넣어 널리 퍼뜨린 책이야.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        }
+      ]
+    },
+    {
+      "id": "evt06",
+      "title": "신사임당의 예술 활동",
+      "year": "16세기",
+      "heritageItems": [
+        {
+          "id": "evt06_01",
+          "name": "신사임당 필 초충도 화첩",
+          "imagePath": "/images/heritage/evt06_01.jpg",
+          "docentText": "풀과 벌레, 쥐와 수박 등 주변의 자연을 아주 따뜻하고 세밀하게 그려낸 조선 최고의 그림 작품이란다.",
+          "source": "국립중앙박물관",
+          "sourceUrl": "https://www.emuseum.go.kr"
+        },
+        {
+          "id": "evt06_02",
+          "name": "신사임당 표준영정",
+          "imagePath": "/images/heritage/evt06_02.jpg",
+          "docentText": "훌륭한 어머니이자 시대를 앞서간 천재 예술가였던 신사임당의 단아한 모습을 담은 공식 초상화야.",
+          "source": "전통문화포털",
+          "sourceUrl": "https://www.kculture.or.kr/main/kculture"
+        },
+        {
+          "id": "evt06_03",
+          "name": "벼루와 벼루통",
+          "imagePath": "/images/heritage/evt06_03.jpg",
+          "docentText": "신사임당이 연못가 검은 대나무 숲 옆에서 먹을 갈아 아름다운 시를 쓰고 그림을 그리던 문방사우 유물이야.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        },
+        {
+          "id": "evt06_04",
+          "name": "조선 후기 자수 초충도 병풍",
+          "imagePath": "/images/heritage/evt06_04.jpg",
+          "docentText": "신사임당이 그린 풀벌레 그림을 바탕으로, 비단실을 한 땀 한 땀 정성스럽게 수놓아 만든 아름다운 병풍이야.",
+          "source": "국립중앙박물관",
+          "sourceUrl": "https://www.emuseum.go.kr"
+        }
+      ]
+    },
+    {
+      "id": "evt07",
+      "title": "김홍도의 풍속화 제작",
+      "year": "18세기",
+      "heritageItems": [
+        {
+          "id": "evt07_01",
+          "name": "보물 김홍도 필 풍속도 화첩 - 서당",
+          "imagePath": "/images/heritage/evt07_01.jpg",
+          "docentText": "훈장님께 혼이 났는지 눈물을 닦는 학동과, 그 모습이 고소해서 킥킥 웃는 친구들의 장난기 가득한 조선 시대 교실 풍경이란다.",
+          "source": "국가유산청",
+          "sourceUrl": "https://www.khs.go.kr/main.html"
+        },
+        {
+          "id": "evt07_02",
+          "name": "보물 김홍도 필 풍속도 화첩 - 무동",
+          "imagePath": "/images/heritage/evt07_02.jpg",
+          "docentText": "신나게 장구를 치고 피리를 부는 악사들과, 그 장단에 맞춰 흥겹게 춤을 추는 아이의 모습이 담긴 신나는 그림이야.",
+          "source": "국립중앙박물관",
+          "sourceUrl": "https://www.emuseum.go.kr"
+        },
+        {
+          "id": "evt07_03",
+          "name": "조선 후기 상평통보",
+          "imagePath": "/images/heritage/evt07_03.jpg",
+          "docentText": "김홍도의 풍속화 속 엿장수나 대장간에서 백성들이 물건을 사고팔 때 실제로 사용하던 엽전이야.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        },
+        {
+          "id": "evt07_04",
+          "name": "보물 김홍도 필 풍속도 화첩 - 씨름",
+          "imagePath": "/images/heritage/evt07_04.jpg",
+          "docentText": "두 사람이 샅바를 잡고 힘을 겨루는 씨름판과, 누가 이길지 가슴 졸이며 구경하는 사람들의 생생한 표정이 살아있는 그림이란다.",
+          "source": "국립중앙박물관",
+          "sourceUrl": "https://www.emuseum.go.kr"
+        }
+      ]
+    },
+    {
+      "id": "evt08",
+      "title": "정약용의 거중기 발명",
+      "year": "1792년",
+      "heritageItems": [
+        {
+          "id": "evt08_01",
+          "name": "보물 화성성역의궤 도면",
+          "imagePath": "/images/heritage/evt08_01.jpg",
+          "docentText": "수원화성을 어떻게 쌓았는지 거중기 도면부터 일꾼들의 월급까지 하나하나 다 적어둔 유네스코 기록유산이야.",
+          "source": "국립중앙박물관",
+          "sourceUrl": "https://www.emuseum.go.kr"
+        },
+        {
+          "id": "evt08_02",
+          "name": "거중기",
+          "imagePath": "/images/heritage/evt08_02.jpg",
+          "docentText": "도르래의 원리를 이용해 아주 무거운 돌도 번쩍 들어 올려 성벽을 튼튼하게 쌓게 도와준 정약용의 천재적 발명품이지.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        },
+        {
+          "id": "evt08_03",
+          "name": "정약용 필적 여유당전서",
+          "imagePath": "/images/heritage/evt08_03.jpg",
+          "docentText": "백성들이 더 잘살 수 있는 세상을 만들기 위해 정약용 선생이 평생 과학, 정치, 법을 연구해 남긴 500권의 책이야.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        },
+        {
+          "id": "evt08_04",
+          "name": "사적 수원 화성 성벽 구조도",
+          "imagePath": "/images/heritage/evt08_04.jpg",
+          "docentText": "거중기를 활용한 덕분에 다른 나라보다 훨씬 빠르고 튼튼하게 완성할 수 있었던 동양 최고의 아름다운 성곽이야.",
+          "source": "국가유산청",
+          "sourceUrl": "https://www.khs.go.kr/main.html"
+        }
+      ]
+    },
+    {
+      "id": "evt09",
+      "title": "허준의 동의보감 완성",
+      "year": "1613년",
+      "heritageItems": [
+        {
+          "id": "evt09_01",
+          "name": "국보 동의보감 본문",
+          "imagePath": "/images/heritage/evt09_01.jpg",
+          "docentText": "돈이 없어 치료를 못 받는 백성이 없도록 우리 땅의 약초와 치료법을 모아 만든 아시아 최고의 의학 백과사전이야.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        },
+        {
+          "id": "evt09_02",
+          "name": "조선 시대 동제 침통 (의료용 침통)",
+          "imagePath": "/images/heritage/evt09_02.jpg",
+          "docentText": "아픈 백성들의 몸을 치료해 주기 위해 의원 선생님들이 침을 안전하게 넣어서 가지고 다니던 멋진 무늬의 금속 통이란다.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        },
+        {
+          "id": "evt09_03",
+          "name": "조선 시대 오지 약탕기",
+          "imagePath": "/images/heritage/evt09_03.jpg",
+          "docentText": "동의보감에 적힌 처방대로 산에서 캐온 몸에 좋은 약초들을 정성껏 달여 내던 도자기 약탕기 유물이야.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        },
+        {
+          "id": "evt09_04",
+          "name": "조선 시대 의료용 약저울",
+          "imagePath": "/images/heritage/evt09_04.jpg",
+          "docentText": "백성들에게 정확한 양의 약재를 나누어주기 위해 아주 미세한 무게까지 재던 정밀한 나무 저울과 보관함이야.",
+          "source": "국립중앙박물관",
+          "sourceUrl": "https://www.emuseum.go.kr"
+        }
+      ]
+    },
+    {
+      "id": "evt10",
+      "title": "박연의 아악 정리",
+      "year": "1430년",
+      "heritageItems": [
+        {
+          "id": "evt10_01",
+          "name": "조선 시대 궁중 악기 편경",
+          "imagePath": "/images/heritage/evt10_01.jpg",
+          "docentText": "돌을 깎아 만든 악기로, 날씨가 변해도 소리가 절대 변하지 않아 조선 음악의 기준이 된 박연의 핵심 악기야.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        },
+        {
+          "id": "evt10_02",
+          "name": "조선 시대 궁중 악기 편종",
+          "imagePath": "/images/heritage/evt10_02.jpg",
+          "docentText": "16개의 청동 종을 틀에 매달아 웅장하고 아름다운 소리를 내는 조선 왕실 의례의 주인공 같은 타악기란다.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        },
+        {
+          "id": "evt10_03",
+          "name": "국악 이론서 악학궤범",
+          "imagePath": "/images/heritage/evt10_03.jpg",
+          "docentText": "조선의 음악과 춤, 악기 만드는 법과 연주자들의 옷차림까지 그림으로 완벽하게 정리해 둔 음악 교과서야.",
+          "source": "한국민족문화대백과사전",
+          "sourceUrl": "https://encykorea.aks.ac.kr/"
+        },
+        {
+          "id": "evt10_04",
+          "name": "세종실록악보",
+          "imagePath": "/images/heritage/evt10_04.jpg",
+          "docentText": "박연이 정리한 아름다운 궁중 음악 '아악'의 멜로디를 가로세로 바둑판 모양의 조선식 음표로 기록한 악보란다.",
+          "source": "한국학중앙연구원",
+          "sourceUrl": "https://www.aks.ac.kr/index.do"
+        }
+      ]
+    }
+  ]
+}

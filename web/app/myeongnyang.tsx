@@ -9,11 +9,11 @@
 
 import { useEffect, useState } from "react";
 
-const EVENT_ID = "yi-myeongnyang-1597";
-const SOURCE = "조선왕조실록 · 선조실록 (정유년 1597년 11월)";
+export const EVENT_ID = "yi-myeongnyang-1597";
+export const SOURCE = "조선왕조실록 · 선조실록 (정유년 1597년 11월)";
 const SILLOK_URL = "https://sillok.history.go.kr/id/kna_13011010_005";
 
-const REAL_HISTORY_SECTIONS: { title: string; paragraphs: string[] }[] = [
+export const REAL_HISTORY_SECTIONS: { title: string; paragraphs: string[] }[] = [
   {
     title: "1. 남은 배는 단 13척, 나라가 위험해요!",
     paragraphs: [
@@ -48,7 +48,7 @@ const REAL_HISTORY_SECTIONS: { title: string; paragraphs: string[] }[] = [
   },
 ];
 
-const REAL_PANELS: { src: string; caption: string; bubble: string }[] = [
+export const REAL_PANELS: { src: string; caption: string; bubble: string }[] = [
   {
     src: "/images/test/1-1.png",
     caption: "남은 배는 단 13척!",
@@ -70,7 +70,7 @@ const REAL_PANELS: { src: string; caption: string; bubble: string }[] = [
     bubble: "우리가 마침내\n서해를 지켜냈다!",
   },
 ];
-const REAL_ENDING =
+export const REAL_ENDING =
   "1597년 명량 — 13척으로 130여 척을 막아낸 진짜 역사. 이순신 장군의 통찰과 용기가 서해 바닷길을 지켜냈어요.";
 
 // ── 문화재 렌즈 — 실제 4컷에 겹쳐 띄울 고증 포인트 ──────────
@@ -152,12 +152,12 @@ const HERITAGE_BY_PANEL: Record<number, HeritagePoint | undefined> = HERITAGE_PO
 );
 
 // ── 아이콘 ─────────────────────────────────────────────
-type IconKey =
+export type IconKey =
   | "hand" | "users" | "book"
   | "flag" | "shield" | "drum"
   | "star" | "spark" | "leaf";
 
-function Icon({ name }: { name: IconKey }) {
+export function Icon({ name }: { name: IconKey }) {
   const common = {
     width: 26,
     height: 26,
@@ -254,19 +254,19 @@ function Icon({ name }: { name: IconKey }) {
 }
 
 // ── 데이터 ─────────────────────────────────────────────
-type Tone = "red" | "blue" | "yellow";
-type Opt = { label: string; desc?: string; scene: string; icon: IconKey; tone: Tone; ending?: string };
-type QSet = { prompt: string; options: [Opt, Opt, Opt] };
-type GradeData = { lead: string; climax: string; questions: [QSet, QSet, QSet] };
+export type Tone = "red" | "blue" | "yellow";
+export type Opt = { label: string; desc?: string; scene: string; icon: IconKey; tone: Tone; ending?: string };
+export type QSet = { prompt: string; options: [Opt, Opt, Opt] };
+export type GradeData = { lead: string; climax: string; questions: [QSet, QSet, QSet] };
 
-const GRADES = [
+export const GRADES = [
   { key: "1-2", label: "1~2학년", emoji: "🐣" },
   { key: "3-4", label: "3~4학년", emoji: "🌱" },
   { key: "5-6", label: "5~6학년", emoji: "📚" },
 ] as const;
-type GradeKey = (typeof GRADES)[number]["key"];
+export type GradeKey = (typeof GRADES)[number]["key"];
 
-const DATA: Record<GradeKey, GradeData> = {
+export const DATA: Record<GradeKey, GradeData> = {
   "1-2": {
     lead:
       "1597년 가을, 좁은 바다 명량. 우리에게 남은 배는 단 13척, 적의 배는 130척이 넘어요. 장군이 너를 돌아보며 묻습니다 — 작전 참모야, 우리는 어떻게 해야 할까?",
@@ -480,7 +480,7 @@ const DATA: Record<GradeKey, GradeData> = {
 };
 
 // ── 몰입형 카피 — 단계별 전황 ──────
-const STEP_LABELS = [
+export const STEP_LABELS = [
   "장군의 첫 번째 질문",
   "장군의 두 번째 질문",
   "장군의 마지막 결정",
@@ -488,7 +488,7 @@ const STEP_LABELS = [
 
 // step마다 적 함대 수와 상황이 변하며 전투 진행을 직관적으로 보여줌
 // (우리 13척은 그대로 — 실제 명량해전에서도 조선 함선은 한 척도 잃지 않았다)
-const STEP_STATS = [
+export const STEP_STATS = [
   { ours: "13척",  enemy: "130척",      phase: "출항 직전" },
   { ours: "13척",  enemy: "약 110척",   phase: "교전 시작" },
   { ours: "13척",  enemy: "약 70척",    phase: "결전의 순간" },
@@ -496,7 +496,7 @@ const STEP_STATS = [
 
 // 선택 직후 다음 화면 상단에 1줄 토스트로 띄울 "내 선택의 결과" 카피
 // 인덱스: EFFECTS[step][optionIndex] — 모든 학년 공통 (개념이 같음)
-const EFFECTS: readonly (readonly string[])[] = [
+export const EFFECTS: readonly (readonly string[])[] = [
   [
     "거센 물살이 적 함대의 진격을 막아낸다",
     "어둠 속에서 우리 배가 적의 허를 찌른다",
@@ -1190,6 +1190,7 @@ export default function MyeongnyangExperience({ onHome, speak, stop, speaking }:
   const o3 = data.questions[2].options[picks[2]];
   const scenes = [o1.scene, o2.scene, data.climax, o3.scene];
   const ending = o3.ending ?? "";
+
 
   return (
     <div className="screen myn-screen" key="myn-comic">
