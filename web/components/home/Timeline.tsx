@@ -270,7 +270,7 @@ export function Timeline({
                               className="peek-sillok"
                               onClick={(e) => e.stopPropagation()}
                             >
-                              실록 원문 보기 →
+                              원문 보기 →
                             </a>
                           )}
                           <MakeStoryCta ev={ev} onOpenEvent={onOpenEvent} />

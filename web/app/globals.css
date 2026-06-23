@@ -970,18 +970,27 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
 .peek-sillok {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 6px;
   font-family: 'Jua', sans-serif;
   font-size: 13px;
-  color: var(--red);
+  color: var(--red-deep);
   text-decoration: none;
-  border-bottom: 1px solid rgba(200,69,59,.3);
-  padding-bottom: 1px;
+  background: #FFF8EC;
+  border: 1px solid rgba(200, 69, 59, 0.28);
+  border-radius: 999px;
+  padding: 6px 14px 7px;
   margin-bottom: 18px;
-  transition: color .15s ease, border-color .15s ease;
+  transition: color .15s ease, border-color .15s ease, background .15s ease, transform .14s ease, box-shadow .15s ease;
 }
-.peek-sillok:hover { color: var(--red-deep); border-color: var(--red); }
-.peek-sillok:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.peek-sillok:hover {
+  color: #fff;
+  background: linear-gradient(180deg, var(--red) 0%, var(--red-deep) 100%);
+  border-color: var(--red-deep);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(160, 53, 44, 0.22);
+}
+.peek-sillok:active { transform: translateY(0); }
+.peek-sillok:focus-visible { outline: 2px solid var(--red); outline-offset: 3px; }
 
 /* 펼침 패널 — 4단계 역사 콘텐츠 */
 .peek-history {
@@ -1267,13 +1276,29 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
 
 .heritage-thumb {
   position: relative;
-  aspect-ratio: 4/3;
-  background: var(--bg-muted);
+  aspect-ratio: 1/1;
+  background:
+    radial-gradient(ellipse at 50% 45%, #FAF1DE 0%, #E9DBBE 100%);
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.heritage-thumb::after {
+  /* 박물관 도록 액자 — 안쪽 가장자리 미세한 음영 */
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow:
+    inset 0 0 0 1px rgba(140, 100, 50, 0.08),
+    inset 0 -36px 48px -28px rgba(140, 100, 50, 0.15);
+  pointer-events: none;
 }
 .heritage-thumb img {
   width: 100%; height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  padding: 10px;
+  box-sizing: border-box;
   display: block;
   opacity: 0;
   transition: opacity .4s ease;
@@ -4113,7 +4138,9 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   gap: 12px;
   z-index: 1;
   font-family: 'Gowun Dodum', sans-serif;
-  overflow: auto;
+  overflow-y: auto;
+  /* 스크롤바가 생겼다 사라지면서 콘텐츠가 흔들리지 않도록 폭을 항상 예약 */
+  scrollbar-gutter: stable;
 }
 .mbook-half-right .mbook-side { padding: 30px 36px 30px 28px; }
 .mbook-eyebrow {
@@ -4219,7 +4246,6 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
 .mbook-choice:hover {
   background: #FFF6D8;
   border-color: var(--mbook-accent);
-  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(140, 42, 34, .12);
 }
 .mbook-choice.tone-red    { border-left-width: 5px; border-left-color: #C8453B; }
@@ -4484,10 +4510,10 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
 .mbook-heritage-card {
   position: relative;
   display: grid;
-  grid-template-columns: 90px 1fr;
-  gap: 12px;
+  grid-template-columns: 130px 1fr;
+  gap: 14px;
   margin: 0;
-  padding: 10px 12px 10px 10px;
+  padding: 12px 14px 12px 12px;
   background: rgba(255, 250, 232, .85);
   border: 1px solid rgba(140, 90, 30, .35);
   border-radius: 8px;
@@ -4510,16 +4536,29 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   z-index: 2;
 }
 .mbook-heritage-thumb {
-  width: 90px; height: 90px;
-  border-radius: 6px;
+  position: relative;
+  width: 130px; height: 130px;
+  border-radius: 8px;
   overflow: hidden;
-  background: #E9DDBE;
+  background:
+    radial-gradient(ellipse at 50% 45%, #FAF1DE 0%, #E9DBBE 100%);
   border: 1px solid rgba(140, 90, 30, .35);
   display: flex; align-items: center; justify-content: center;
 }
+.mbook-heritage-thumb::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow:
+    inset 0 0 0 1px rgba(140, 100, 50, 0.08),
+    inset 0 -32px 42px -22px rgba(140, 100, 50, 0.18);
+  pointer-events: none;
+}
 .mbook-heritage-thumb img {
   width: 100%; height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  padding: 8px;
+  box-sizing: border-box;
   display: block;
 }
 .mbook-heritage-thumb-ph {
