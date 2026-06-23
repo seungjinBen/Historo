@@ -6,6 +6,7 @@
 
 import { Fragment, useEffect, useRef, useState } from "react";
 import MyeongnyangExperience from "./myeongnyang-book";
+import MeokdolChat from "./components/MeokdolChat";
 
 // ── 초등학생 시선 우선순위 (선택모드 박스 그리드 정렬) ─────────────────
 const KID_ORDER = [
@@ -1333,49 +1334,7 @@ export default function Page() {
       )}
 
       {screen === "chat" && (
-        <div className="panel-card screen chat-screen" key="chat">
-          <button className="back" onClick={home}>← 홈으로</button>
-          <div className="chat-head">
-            <div className="meokdol-avatar small" aria-hidden="true">
-              <span className="meokdol-mascot">먹</span>
-            </div>
-            <div className="chat-head-text">
-              <div className="chat-persona">먹돌이</div>
-              <div className="chat-meta">역사 친구 · AI</div>
-            </div>
-          </div>
-          <div className="chat-msgs" aria-live="polite">
-            <div className="chat-bubble ai">
-              <p>안녕! 나는 먹돌이야.</p>
-              <p>어떤 역사가 궁금해? 글로 길게 써도 되고, 단어 한두 개만 알려줘도 돼.</p>
-              <p>예) &ldquo;전쟁 이야기&rdquo;, &ldquo;세종대왕&rdquo;, &ldquo;신기한 발명품&rdquo;…</p>
-            </div>
-          </div>
-          <form
-            className="chat-input-row"
-            onSubmit={(e) => { e.preventDefault(); chatSend(); }}
-          >
-            <input
-              className="chat-input"
-              type="text"
-              placeholder="궁금한 시대나 인물을 자유롭게 말해보세요…"
-              value={chatDraft}
-              onChange={(e) => setChatDraft(e.target.value)}
-              aria-label="채팅 입력"
-              autoFocus
-            />
-            <button
-              className="chat-send"
-              type="submit"
-              aria-label="보내기"
-            >
-              보내기 →
-            </button>
-          </form>
-          <div className="chat-hint">
-            보내기를 누르면 그 주제에 맞는 4컷 이야기가 펼쳐져요.
-          </div>
-        </div>
+        <MeokdolChat key="chat" onBack={home} />
       )}
 
       {screen === "intro" && event && (
