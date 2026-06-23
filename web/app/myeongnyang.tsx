@@ -863,7 +863,92 @@ function ReportSheet({
   );
 }
 
-type Sub = "intro" | "play" | "comic";
+type Sub = "intro" | "play" | "comic" | "study";
+
+// 실제 역사 공부 — 페이지 흐름 (0-3: 컷+본문, 4: 유물 4점, 5: 끝맺음)
+const STUDY_PAGE_COUNT = 6;
+
+// ── 동화책 — 상상 4컷 한 줄 (왼쪽 그림 + 오른쪽 본문) ───────
+function BookRow({ index, pathKey, scene }: { index: number; pathKey: string; scene: string }) {
+  const [err, setErr] = useState(false);
+  const [ok, setOk] = useState(false);
+  return (
+    <div className="book-row" style={{ animationDelay: `${index * 0.1}s` }}>
+      <div className="book-row-img">
+        <span className="book-row-num">{index + 1}</span>
+        {err ? (
+          <div className="ph">
+            {scene}
+            <br />
+            <span style={{ opacity: 0.6 }}>(그림 준비 중)</span>
+          </div>
+        ) : (
+          <img
+            src={imgUrl(`${pathKey}_panel${index + 1}.png`)}
+            alt={scene}
+            className={ok ? "loaded" : ""}
+            onLoad={() => setOk(true)}
+            onError={() => setErr(true)}
+          />
+        )}
+      </div>
+      <div className="book-row-text">
+        <span className="book-row-chapter">{index + 1}장</span>
+        <p className="book-row-scene">{scene}</p>
+      </div>
+    </div>
+  );
+}
+
+// ── 실제 역사 공부 — 한 페이지 (왼쪽 실제컷 + 오른쪽 본문) ───
+function StudyPageRow({
+  index,
+  src,
+  caption,
+  bubble,
+  section,
+}: {
+  index: number;
+  src: string;
+  caption: string;
+  bubble: string;
+  section: { title: string; paragraphs: string[] };
+}) {
+  const [err, setErr] = useState(false);
+  const [ok, setOk] = useState(false);
+  return (
+    <div className="study-row">
+      <div className="study-row-img">
+        <span className="book-row-num">{index + 1}</span>
+        {err ? (
+          <div className="ph">
+            {caption}
+            <br />
+            <span style={{ opacity: 0.6 }}>(그림 준비 중)</span>
+          </div>
+        ) : (
+          <img
+            src={src}
+            alt={`${caption} — ${bubble}`}
+            className={ok ? "loaded" : ""}
+            onLoad={() => setOk(true)}
+            onError={() => setErr(true)}
+          />
+        )}
+        <div className="cap">{caption}</div>
+      </div>
+      <div className="study-row-text">
+        <span className="study-badge">실제 역사</span>
+        <h3 className="study-history-title">{section.title}</h3>
+        {section.paragraphs.map((p, j) => (
+          <p key={j} className="study-history-p">
+            {p}
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 type Props = {
   onHome: () => void;
@@ -885,6 +970,7 @@ export default function MyeongnyangExperience({ onHome, speak, stop, speaking }:
   const [reportOpen, setReportOpen] = useState(false);
   const [reportInputs, setReportInputs] = useState<ReportInputs>({ schoolName: "", studentName: "" });
   const [lastEffect, setLastEffect] = useState<string | null>(null);
+  const [studyPage, setStudyPage] = useState(0);
 
   const data = DATA[grade];
 
@@ -935,7 +1021,14 @@ export default function MyeongnyangExperience({ onHome, speak, stop, speaking }:
     setActiveHeritage(null);
     setVisited(new Set());
     setLastEffect(null);
+    setStudyPage(0);
     setSub(toIntro ? "intro" : "play");
+  }
+
+  function startStudy() {
+    stop();
+    setStudyPage(0);
+    setSub("study");
   }
 
   function openHeritage(h: HeritagePoint) {
@@ -1192,240 +1285,9 @@ export default function MyeongnyangExperience({ onHome, speak, stop, speaking }:
   const ending = o3.ending ?? "";
 
 
-  return (
-    <div className="screen myn-screen" key="myn-comic">
-      <div className="panel-card myn-card">
-        <button className="back" onClick={() => resetFlow(true)}>← 처음으로</button>
-
-        {lastEffect && (
-          <div className="myn-effect-toast" role="status" key={`fx-comic`}>
-            <span className="myn-effect-icon" aria-hidden="true">⚡</span>
-            <span className="myn-effect-text">
-              <b>마지막 결정의 결과</b> · {lastEffect}
-            </span>
-            <button
-              type="button"
-              className="myn-effect-close"
-              onClick={() => setLastEffect(null)}
-              aria-label="알림 닫기"
-            >
-              ×
-            </button>
-          </div>
-        )}
-
-        {/* ── SECTION 1 · 상상 4컷 ── */}
-        <section className="story-section">
-          <div className="story-section-head imagine">
-            <span className="story-section-eyebrow">STEP 1 · 내가 만든 이야기</span>
-            <h2 className="story-section-title">상상 4컷 — 내가 그린 명량</h2>
-          </div>
-
-          <div className="comic-grid">
-            {scenes.map((s, i) => (
-              <CutImg key={i} pathKey={pathKey} index={i} scene={s} />
-            ))}
-          </div>
-
-          {ending && <div className="ending">{ending}</div>}
-
-          <button
-            className={"btn-speak" + (speaking ? " playing" : "")}
-            onClick={() => {
-              if (speaking) { stop(); return; }
-              speak([ending, ...scenes.map((s, i) => `${i + 1}번 그림, ${s}`)].filter(Boolean).join(" "));
-            }}
-          >
-            {speaking ? "멈추기" : "상상 4컷 읽어주기"}
-          </button>
-
-          <div className="watermark">
-            이 이야기는 실제 역사 위에 상상을 더한 &lsquo;역사적 상상력 창작물&rsquo;이에요 · 출처 {SOURCE}
-          </div>
-        </section>
-
-        {/* ── 섹션 디바이더: 상상 → 실제 ── */}
-        <div className="story-divider" role="separator" aria-label="실제 역사로 이동">
-          <span className="story-divider-eyebrow">진짜 역사</span>
-          <h3 className="story-divider-title">그런데, 진짜로는 어떻게 됐을까?</h3>
-          <p className="story-divider-sub">
-            실제 4컷 속에 숨어있는 <b>{heritageTotal}개의 유물</b>을 모두 찾으면 보고서가 완성돼요
-          </p>
-          <span className="story-divider-arrow" aria-hidden="true">▼</span>
-        </div>
-
-        {/* ── SECTION 2 · 실제 4컷 + 문화재 렌즈 ── */}
-        <section className="story-section">
-          <div className="story-section-head real">
-            <span className="story-section-eyebrow">STEP 2 · 진짜 역사 4컷</span>
-            <h2 className="story-section-title">실제 4컷 — 1597 명량</h2>
-          </div>
-
-          <div className="heritage-lens-bar">
-            <div className="heritage-lens-hint">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.3-4.3" />
-              </svg>
-              반짝이는 곳을 눌러 실제 유물을 확인해 봐요
-            </div>
-            <div className="heritage-lens-controls">
-              {coachShown && lensOn && (
-                <button
-                  type="button"
-                  className="heritage-coach"
-                  onClick={() => setCoachShown(false)}
-                  aria-label="안내 닫기"
-                >
-                  만화 속에 반짝이는 실제 유물들이 숨어 있어요. 터치해서 확인해 보세요.
-                </button>
-              )}
-              <button
-                type="button"
-                className={"heritage-lens-toggle" + (lensOn ? " on" : "")}
-                onClick={() => { setLensOn((v) => !v); setCoachShown(false); }}
-                aria-pressed={lensOn}
-                aria-label={lensOn ? "문화재 렌즈 끄기" : "문화재 렌즈 켜기"}
-              >
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M12 2.5l1.9 5.6L19.5 10l-5.6 1.9L12 17.5l-1.9-5.6L4.5 10l5.6-1.9z" />
-                </svg>
-                문화재 렌즈 {lensOn ? "On" : "Off"}
-              </button>
-            </div>
-          </div>
-
-          <div className="comic-grid comic-grid-real">
-            {REAL_PANELS.map((p, i) => (
-              <RealCutImg
-                key={i}
-                index={i}
-                src={p.src}
-                caption={p.caption}
-                bubble={p.bubble}
-                lensOn={lensOn}
-                heritage={HERITAGE_BY_PANEL[i]}
-                visited={!!(HERITAGE_BY_PANEL[i] && visited.has(HERITAGE_BY_PANEL[i]!.id))}
-                onOpenHeritage={openHeritage}
-              />
-            ))}
-          </div>
-
-          <div className="ending">{REAL_ENDING}</div>
-
-          {/* 사용자의 Q1 선택 vs 실제 이순신의 핵심 전술(거센 물살) 비교 */}
-          <div
-            className={"myn-vs-comment " + (picks[0] === 0 ? "match" : "diff")}
-            role="note"
-          >
-            {picks[0] === 0
-              ? "정답이야! 실제 이순신도 거센 물살을 핵심 전술로 삼았어. 너의 직관이 빛났어."
-              : `너는 '${o1.label}'을(를) 골랐지만, 실제 이순신은 거센 물살을 핵심 전술로 삼았어. 둘 다 멋진 작전이야.`}
-          </div>
-
-          <button
-            className={"btn-speak" + (speaking ? " playing" : "")}
-            onClick={() => {
-              if (speaking) { stop(); return; }
-              speak([
-                REAL_ENDING,
-                ...REAL_PANELS.map((p, i) => `${i + 1}번 그림, ${p.caption}. ${p.bubble}`),
-              ].join(" "));
-            }}
-          >
-            {speaking ? "멈추기" : "실제 4컷 읽어주기"}
-          </button>
-
-          <div className="watermark">
-            실제 역사 기록을 바탕으로 한 4컷이에요 · 출처 {SOURCE}
-          </div>
-        </section>
-
-        {/* ── SECTION 3 · 조선왕조실록 이야기 (기본 펼침) ── */}
-        <section className="story-section">
-          <div className="story-section-head sillok">
-            <span className="story-section-eyebrow">STEP 3 · 조선왕조실록</span>
-            <h2 className="story-section-title">진짜로는 어떻게 됐을까?</h2>
-          </div>
-
-          <div className="kidstory-section flat" id="myn-real-section">
-            <span className="badge fact">실제 역사</span>
-            {REAL_HISTORY_SECTIONS.map((s, i) => (
-              <div key={i} className="myn-real-section">
-                <h4 className="myn-real-title">{s.title}</h4>
-                {s.paragraphs.map((p, j) => (
-                  <p key={j} className="myn-real-p">{p}</p>
-                ))}
-              </div>
-            ))}
-            <div className="kidstory-source">
-              <a
-                href={SILLOK_URL}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="sillok-link"
-              >
-                실록 원문에서 직접 확인하기 →
-              </a>
-            </div>
-          </div>
-        </section>
-
-        {/* ── SECTION 4 · 보고서 내보내기 ── */}
-        <section className="story-section">
-          <div className="story-section-head report">
-            <span className="story-section-eyebrow">STEP 4 · 탐구를 마치며</span>
-            <h2 className="story-section-title">학교 숙제용 탐구 보고서 만들기</h2>
-          </div>
-
-          <button
-            type="button"
-            className={"btn btn-report" + (allExplored ? " complete" : "")}
-            onClick={() => setReportOpen(true)}
-            aria-label="역사 탐구 보고서 내보내기"
-          >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <path d="M14 2v6h6" />
-              <path d="M9 14l2 2 4-4" />
-            </svg>
-            역사 탐구 보고서 내보내기
-            <span className="btn-report-progress" aria-label={`유물 ${visitedCount} / ${heritageTotal} 탐색`}>
-              {allExplored ? "✓ 완성" : `${visitedCount} / ${heritageTotal} 탐색`}
-            </span>
-          </button>
-        </section>
-
-        {/* 진행도 sticky 바 — 스크롤 중엔 viewport 바닥에 핀, 페이지 끝에선 자연스럽게 row 위로 흘러감 */}
-        <div className="story-sticky-bar" role="status">
-          <div className="story-sticky-progress">
-            <span className="story-sticky-label">유물 탐색</span>
-            <div className="story-sticky-dots" aria-label={`${visitedCount} / ${heritageTotal} 탐색 완료`}>
-              {HERITAGE_POINTS.map((h) => (
-                <span
-                  key={h.id}
-                  className={"story-sticky-dot" + (visited.has(h.id) ? " on" : "")}
-                />
-              ))}
-            </div>
-            <span className={"story-sticky-count" + (allExplored ? " done" : "")}>
-              {visitedCount} / {heritageTotal}
-            </span>
-          </div>
-          <button
-            type="button"
-            className={"story-sticky-cta" + (allExplored ? " complete" : "")}
-            onClick={() => setReportOpen(true)}
-          >
-            보고서 {allExplored ? "완성" : "만들기"}
-          </button>
-        </div>
-
-        <div className="row">
-          <button className="btn btn-teal" onClick={() => resetFlow(false)}>다른 선택으로 다시 만들기</button>
-          <button className="btn btn-ghost" onClick={onHome}>다른 이야기 고르기</button>
-        </div>
-      </div>
+  // ── 공유 모달들 (heritage + 보고서) ──
+  const sharedModals = (
+    <>
       {activeHeritage && (
         <HeritageModal
           heritage={activeHeritage}
@@ -1458,16 +1320,6 @@ export default function MyeongnyangExperience({ onHome, speak, stop, speaking }:
             <h2 id="report-modal-heading" className="report-modal-heading print-hide">
               탐구 보고서 미리보기 — 이름을 적고 인쇄·PDF 저장을 눌러요
             </h2>
-            {!allExplored && (
-              <div className="report-explore-banner print-hide" role="status">
-                아직 <b>{heritageTotal - visitedCount}개</b>의 유물이 더 있어요! 만화로 돌아가 만화 속 반짝이를 모두 눌러야 도감이 완성됩니다.
-              </div>
-            )}
-            {allExplored && (
-              <div className="report-explore-banner complete print-hide" role="status">
-                4개의 유물을 모두 탐색했어요! 보고서가 완성되었습니다.
-              </div>
-            )}
             <div className="report-scroll">
               <ReportSheet
                 inputs={reportInputs}
@@ -1510,6 +1362,241 @@ export default function MyeongnyangExperience({ onHome, speak, stop, speaking }:
           </div>
         </div>
       )}
-    </div>
+    </>
   );
+
+  // ── 동화책 (상상 4컷) — 양옆 레이아웃 ──────────────────
+  if (sub === "comic") {
+    return (
+      <div className="screen myn-screen" key="myn-book">
+        <div className="panel-card myn-card myn-book">
+          <button className="back" onClick={() => resetFlow(true)}>← 처음으로</button>
+
+          {lastEffect && (
+            <div className="myn-effect-toast" role="status" key="fx-comic">
+              <span className="myn-effect-icon" aria-hidden="true">⚡</span>
+              <span className="myn-effect-text">
+                <b>마지막 결정의 결과</b> · {lastEffect}
+              </span>
+              <button
+                type="button"
+                className="myn-effect-close"
+                onClick={() => setLastEffect(null)}
+                aria-label="알림 닫기"
+              >
+                ×
+              </button>
+            </div>
+          )}
+
+          <div className="book-head">
+            <span className="myn-badge book-badge-imagine">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+              </svg>
+              내가 만든 상상 이야기
+            </span>
+            <h2 className="book-title">상상 4컷 — 내가 그린 명량</h2>
+            {ending && <p className="book-ending">{ending}</p>}
+            <button
+              className={"btn-speak book-speak" + (speaking ? " playing" : "")}
+              onClick={() => {
+                if (speaking) { stop(); return; }
+                speak([ending, ...scenes.map((s, i) => `${i + 1}번 그림, ${s}`)].filter(Boolean).join(" "));
+              }}
+            >
+              {speaking ? "멈추기" : "이야기 읽어주기"}
+            </button>
+          </div>
+
+          <div className="book-grid">
+            {scenes.map((s, i) => (
+              <BookRow key={i} index={i} pathKey={pathKey} scene={s} />
+            ))}
+          </div>
+
+          <div className="watermark book-watermark">
+            이 이야기는 실제 역사 위에 상상을 더한 &lsquo;역사적 상상력 창작물&rsquo;이에요 · 출처 {SOURCE}
+          </div>
+
+          <div className="book-actions">
+            <button
+              className="book-btn book-btn-ghost"
+              onClick={() => resetFlow(true)}
+            >
+              ← 다른 이야기 고르기
+            </button>
+            <button
+              className="book-btn book-btn-primary"
+              onClick={startStudy}
+              aria-label="실제 역사 공부하러 가기"
+            >
+              실제 역사 공부하기 →
+            </button>
+          </div>
+        </div>
+        {sharedModals}
+      </div>
+    );
+  }
+
+  // ── 실제 역사 공부하기 — 페이지 흐름 ────────────────────
+  if (sub === "study") {
+    const isPanelPage = studyPage < 4;
+    const isHeritagePage = studyPage === 4;
+    const isEndingPage = studyPage === 5;
+    const studyTitle = isHeritagePage
+      ? "명량해전의 진짜 유물"
+      : isEndingPage
+        ? "이야기를 마치며"
+        : `실제 역사 · ${studyPage + 1}장`;
+
+    return (
+      <div className="screen myn-screen" key={`myn-study-${studyPage}`}>
+        <div className="panel-card myn-card myn-study">
+          <button className="back" onClick={() => setSub("comic")}>← 상상 이야기로 돌아가기</button>
+
+          <div className="study-progress" aria-label={`${STUDY_PAGE_COUNT}장 중 ${studyPage + 1}번째`}>
+            <span className="study-progress-eyebrow">실제 역사 공부하기</span>
+            <div className="study-progress-dots">
+              {Array.from({ length: STUDY_PAGE_COUNT }).map((_, i) => (
+                <span
+                  key={i}
+                  className={"study-dot" + (i < studyPage ? " on" : i === studyPage ? " now" : "")}
+                />
+              ))}
+            </div>
+            <span className="study-progress-count">{studyPage + 1} / {STUDY_PAGE_COUNT}</span>
+          </div>
+
+          <h2 className="study-page-title">{studyTitle}</h2>
+
+          {isPanelPage && (
+            <StudyPageRow
+              index={studyPage}
+              src={REAL_PANELS[studyPage].src}
+              caption={REAL_PANELS[studyPage].caption}
+              bubble={REAL_PANELS[studyPage].bubble}
+              section={REAL_HISTORY_SECTIONS[studyPage]}
+            />
+          )}
+
+          {isHeritagePage && (
+            <div className="study-heritage">
+              <p className="study-heritage-lead">
+                박물관 깊은 곳에 잠들어 있던 진짜 유물들이에요. 카드를 눌러 더 자세히 살펴봐요.
+              </p>
+              <div className="study-heritage-grid">
+                {HERITAGE_POINTS.map((h) => {
+                  const isVisited = visited.has(h.id);
+                  return (
+                    <button
+                      key={h.id}
+                      type="button"
+                      className={"study-heritage-card" + (isVisited ? " visited" : "")}
+                      onClick={() => openHeritage(h)}
+                      aria-label={`${h.title} 자세히 보기`}
+                    >
+                      <div className="study-heritage-thumb">
+                        <img src={h.imageSrc} alt={h.imageAlt} />
+                      </div>
+                      <div className="study-heritage-meta">
+                        <div className="study-heritage-name">{h.title}</div>
+                        <p className="study-heritage-desc">{h.description}</p>
+                        <div className="study-heritage-src">출처 · {h.source}</div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {isEndingPage && (
+            <div className="study-ending">
+              <span className="myn-badge book-badge-real">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                  <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                </svg>
+                실제 역사
+              </span>
+              <h3 className="study-ending-title">{REAL_ENDING}</h3>
+              <div
+                className={"myn-vs-comment " + (picks[0] === 0 ? "match" : "diff")}
+                role="note"
+              >
+                {picks[0] === 0
+                  ? "정답이야! 실제 이순신도 거센 물살을 핵심 전술로 삼았어. 너의 직관이 빛났어."
+                  : `너는 '${o1.label}'을(를) 골랐지만, 실제 이순신은 거센 물살을 핵심 전술로 삼았어. 둘 다 멋진 작전이야.`}
+              </div>
+              <div className="study-ending-source">
+                <a
+                  href={SILLOK_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="sillok-link"
+                >
+                  실록 원문에서 직접 확인하기 →
+                </a>
+                <span className="study-ending-src-txt">출처 · {SOURCE}</span>
+              </div>
+              <div className="study-ending-actions">
+                <button
+                  type="button"
+                  className={"btn btn-report" + (allExplored ? " complete" : "")}
+                  onClick={() => setReportOpen(true)}
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <path d="M14 2v6h6" />
+                    <path d="M9 14l2 2 4-4" />
+                  </svg>
+                  탐구 보고서 만들기
+                  <span className="btn-report-progress">
+                    {allExplored ? "✓ 완성" : `유물 ${visitedCount} / ${heritageTotal}`}
+                  </span>
+                </button>
+                <div className="row">
+                  <button className="btn btn-teal" onClick={() => resetFlow(false)}>
+                    다른 선택으로 다시 만들기
+                  </button>
+                  <button className="btn btn-ghost" onClick={onHome}>
+                    다른 이야기 고르기
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="study-nav">
+            <button
+              type="button"
+              className="study-nav-btn"
+              disabled={studyPage === 0}
+              onClick={() => setStudyPage((p) => Math.max(0, p - 1))}
+              aria-label="이전 장"
+            >
+              ← 이전 장
+            </button>
+            <span className="study-nav-counter">
+              {studyPage + 1} / {STUDY_PAGE_COUNT}
+            </span>
+            <button
+              type="button"
+              className="study-nav-btn primary"
+              disabled={studyPage === STUDY_PAGE_COUNT - 1}
+              onClick={() => setStudyPage((p) => Math.min(STUDY_PAGE_COUNT - 1, p + 1))}
+              aria-label="다음 장"
+            >
+              다음 장 →
+            </button>
+          </div>
+        </div>
+        {sharedModals}
+      </div>
+    );
+  }
+
+  return null;
 }

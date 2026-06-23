@@ -17,6 +17,7 @@ import {
   type GradeKey,
   type Opt,
   REAL_ENDING,
+  REAL_HISTORY_SECTIONS,
   REAL_PANELS,
   SOURCE,
   STEP_LABELS,
@@ -77,12 +78,16 @@ type Phase = "closed" | "opening" | "open";
 // 스프레드 인덱스
 //   0 = 인트로(리드)
 //   1·2·3 = Q1·Q2·Q3
-//   4 = 내가 만든 4컷
-//   5 = 실제 4컷
-//   6 = 실제 유물 도감 4선
-//   7 = 닫는 말
-type SpreadKey = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
-const LAST_SPREAD: SpreadKey = 7;
+//   4 = 내가 만든 4컷 (→ 다른 이야기 고르기 / 실제 역사 공부하기)
+//   5·6·7·8 = 실제 역사 1·2·3·4장 (왼쪽 실제 컷 + 오른쪽 실록 본문)
+//   9 = 실제 유물 도감 4선
+//   10 = 닫는 말
+type SpreadKey = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+const LAST_SPREAD: SpreadKey = 10;
+// 실제 역사 페이지 (5-8) 첫·끝
+const REAL_FIRST: SpreadKey = 5;
+const REAL_LAST: SpreadKey = 8;
+const HERITAGE_SPREAD: SpreadKey = 9;
 
 // ── 실제 유물 4선 ─ 하드코딩(공모전용) ────────────────
 // 출처: 국가유산청 · 현충사관리소 / 국립해양문화재연구소 공공누리 자료를 기반으로 어린이 눈높이로 재구성.
@@ -240,16 +245,20 @@ function LeftPage({ spread, picks, data }: SharedProps & { spread: SpreadKey }) 
       </div>
     );
   }
-  if (spread === 5) {
+  // 스프레드 5-8: 실제 역사 한 컷씩 — 왼쪽에 컷
+  if (spread >= REAL_FIRST && spread <= REAL_LAST) {
+    const idx = spread - REAL_FIRST;
+    const panel = REAL_PANELS[idx];
     return (
-      <div className="mbook-side mbook-side-comic mbook-side-comic-real">
-        <span className="mbook-eyebrow">실제 역사 · ①②</span>
-        <ComicPanel src={REAL_PANELS[0].src} alt={REAL_PANELS[0].caption} idx={0} scene={REAL_PANELS[0].caption} />
-        <ComicPanel src={REAL_PANELS[1].src} alt={REAL_PANELS[1].caption} idx={1} scene={REAL_PANELS[1].caption} />
+      <div className="mbook-side mbook-side-real-cut">
+        <span className="mbook-eyebrow">실제 역사 · {idx + 1}장</span>
+        <ComicPanel src={panel.src} alt={panel.caption} idx={idx} scene={panel.caption} />
+        <p className="mbook-real-bubble">&ldquo;{panel.bubble}&rdquo;</p>
       </div>
     );
   }
-  if (spread === 6) {
+  // 스프레드 9: 유물 도감 ①②
+  if (spread === HERITAGE_SPREAD) {
     return (
       <div className="mbook-side mbook-side-heritage">
         <span className="mbook-eyebrow mbook-eyebrow-heritage">실제 유물 도감 · ①②</span>
@@ -258,7 +267,7 @@ function LeftPage({ spread, picks, data }: SharedProps & { spread: SpreadKey }) 
       </div>
     );
   }
-  // spread 7 — 닫는 말
+  // 스프레드 10 — 닫는 말
   const o3 = data.questions[2].options[picks[2]];
   const ending = o3?.ending ?? data.climax;
   return (
@@ -337,16 +346,25 @@ function RightPage(props: RightInteractiveProps) {
       </div>
     );
   }
-  if (spread === 5) {
+  // 스프레드 5-8: 실제 역사 한 컷씩 — 오른쪽에 실록 본문
+  if (spread >= REAL_FIRST && spread <= REAL_LAST) {
+    const idx = spread - REAL_FIRST;
+    const section = REAL_HISTORY_SECTIONS[idx];
     return (
-      <div className="mbook-side mbook-side-comic mbook-side-comic-real">
-        <span className="mbook-eyebrow">실제 역사 · ③④</span>
-        <ComicPanel src={REAL_PANELS[2].src} alt={REAL_PANELS[2].caption} idx={2} scene={REAL_PANELS[2].caption} />
-        <ComicPanel src={REAL_PANELS[3].src} alt={REAL_PANELS[3].caption} idx={3} scene={REAL_PANELS[3].caption} />
+      <div className="mbook-side mbook-side-real-text">
+        <span className="mbook-eyebrow mbook-eyebrow-real">실록 이야기</span>
+        <h2 className="mbook-h2 mbook-real-title">{section.title}</h2>
+        {section.paragraphs.map((p, j) => (
+          <p key={j} className="mbook-narr mbook-real-p">{p}</p>
+        ))}
+        <div className="mbook-real-meta">
+          <div className="mbook-real-source">출처 · {SOURCE}</div>
+        </div>
       </div>
     );
   }
-  if (spread === 6) {
+  // 스프레드 9: 유물 도감 ③④
+  if (spread === HERITAGE_SPREAD) {
     return (
       <div className="mbook-side mbook-side-heritage">
         <span className="mbook-eyebrow mbook-eyebrow-heritage">실제 유물 도감 · ③④</span>
@@ -359,7 +377,7 @@ function RightPage(props: RightInteractiveProps) {
       </div>
     );
   }
-  // spread 7 — CTA
+  // 스프레드 10 — CTA
   return (
     <div className="mbook-side mbook-side-cta">
       <span className="mbook-eyebrow">책을 덮으며</span>
@@ -526,13 +544,15 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
     if (phase !== "open") return;
     const onKey = (e: KeyboardEvent) => {
       if (flip) return;
-      // 질문 단계는 선택이 곧 진행 → 좌측만 허용
-      const canNext = spread === 0 || spread === 4 || spread === 5 || spread === 6;
+      // 질문 단계(1-3)는 선택이 진행 / 스프레드 4는 커스텀 버튼만 사용 → 키보드 nav 비활성
+      const canNext =
+        spread === 0 ||
+        (spread >= REAL_FIRST && spread <= HERITAGE_SPREAD);
       if (e.key === "ArrowRight" && canNext) {
         e.preventDefault();
         goSpread((spread + 1) as SpreadKey, "next");
       }
-      if (e.key === "ArrowLeft" && spread > 0) {
+      if (e.key === "ArrowLeft" && spread > 0 && spread !== 4) {
         e.preventDefault();
         goSpread((spread - 1) as SpreadKey, "prev");
       }
@@ -576,8 +596,14 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
         <svg className="mbook-defs" aria-hidden="true">
           <defs>
             <filter id="mbook-paper-noise" x="0" y="0" width="100%" height="100%">
-              <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" seed="11" />
-              <feColorMatrix type="matrix" values="0 0 0 0 0.27  0 0 0 0 0.21  0 0 0 0 0.16  0 0 0 0.08 0" />
+              {/* 거친 결 — 한지 섬유 느낌 */}
+              <feTurbulence type="fractalNoise" baseFrequency="0.62" numOctaves="3" seed="11" />
+              <feColorMatrix type="matrix" values="0 0 0 0 0.24  0 0 0 0 0.17  0 0 0 0 0.10  0 0 0 0.16 0" />
+            </filter>
+            <filter id="mbook-paper-fiber" x="0" y="0" width="100%" height="100%">
+              {/* 세로 섬유 강조 — 한지 결 */}
+              <feTurbulence type="turbulence" baseFrequency="0.04 1.2" numOctaves="2" seed="7" />
+              <feColorMatrix type="matrix" values="0 0 0 0 0.30  0 0 0 0 0.22  0 0 0 0 0.12  0 0 0 0.09 0" />
             </filter>
           </defs>
         </svg>
@@ -725,27 +751,69 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
         )}
       </div>
 
-      {/* 컨트롤 바 — 인트로 / 결과 / 결말에서 표시 */}
-      {phase === "open" && (spread === 0 || spread === 4 || spread === 5 || spread === 6 || spread === 7) && !flip && (
+      {/* 인트로(0) — 다음 장 */}
+      {phase === "open" && spread === 0 && !flip && (
+        <div className="mbook-controls">
+          <button className="mbook-ctrl" disabled>
+            ← 이전 장
+          </button>
+          <button
+            className="mbook-ctrl primary"
+            onClick={() => goSpread(1 as SpreadKey, "next")}
+          >
+            다음 장 →
+          </button>
+        </div>
+      )}
+
+      {/* 스프레드 4 — 내가 만든 4컷: 커스텀 두 버튼만 */}
+      {phase === "open" && spread === 4 && !flip && (
+        <div className="mbook-controls mbook-controls-spread4">
+          <button
+            className="mbook-ctrl"
+            onClick={onHome}
+            aria-label="다른 이야기 고르기 — 홈으로"
+          >
+            ← 다른 이야기 고르기
+          </button>
+          <button
+            className="mbook-ctrl primary"
+            onClick={() => goSpread(REAL_FIRST, "next")}
+            aria-label="실제 역사 공부하러 가기"
+          >
+            실제 역사 공부하기 →
+          </button>
+        </div>
+      )}
+
+      {/* 실제 역사 / 유물 (5-9) — 표준 prev/next */}
+      {phase === "open" && spread >= REAL_FIRST && spread <= HERITAGE_SPREAD && !flip && (
         <div className="mbook-controls">
           <button
             className="mbook-ctrl"
             onClick={() => goSpread((spread - 1) as SpreadKey, "prev")}
-            disabled={spread === 0}
           >
             ← 이전 장
           </button>
-          {spread < LAST_SPREAD && (
-            <button
-              className="mbook-ctrl primary"
-              onClick={() => goSpread((spread + 1) as SpreadKey, "next")}
-            >
-              다음 장 →
-            </button>
-          )}
-          {spread === LAST_SPREAD && (
-            <button className="mbook-ctrl primary" onClick={restart}>다시 펼치기 ↺</button>
-          )}
+          <button
+            className="mbook-ctrl primary"
+            onClick={() => goSpread((spread + 1) as SpreadKey, "next")}
+          >
+            다음 장 →
+          </button>
+        </div>
+      )}
+
+      {/* 마지막(10) — 다시 펼치기 */}
+      {phase === "open" && spread === LAST_SPREAD && !flip && (
+        <div className="mbook-controls">
+          <button
+            className="mbook-ctrl"
+            onClick={() => goSpread((spread - 1) as SpreadKey, "prev")}
+          >
+            ← 이전 장
+          </button>
+          <button className="mbook-ctrl primary" onClick={restart}>다시 펼치기 ↺</button>
         </div>
       )}
 

@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx next *)",
+      "Bash(npx eslint *)",
+      "Bash(grep -q \"Ready in\\\\|Error\" \"C:\\\\\\\\Users\\\\\\\\byeon\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\C--dev-historo-web\\\\\\\\c263a62f-5714-4567-a345-532ad8e5ea40\\\\\\\\tasks\\\\\\\\brsm10ybi.output\")",
+      "Bash(cat \"C:\\\\\\\\Users\\\\\\\\byeon\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\C--dev-historo-web\\\\\\\\c263a62f-5714-4567-a345-532ad8e5ea40\\\\\\\\tasks\\\\\\\\brsm10ybi.output\")",
+      "Bash(curl *)",
+      "Bash(grep -q \"Ready in\\\\|Error\" \"C:\\\\\\\\Users\\\\\\\\byeon\\\\\\\\AppData\\\\\\\\Local\\\\\\\\Temp\\\\\\\\claude\\\\\\\\C--dev-historo-web\\\\\\\\c263a62f-5714-4567-a345-532ad8e5ea40\\\\\\\\tasks\\\\\\\\bncqpvkmw.output\")",
+      "Bash(node *)"
+    ]
+  }
+}
