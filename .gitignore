@@ -26,6 +26,11 @@ pipeline/data/
 *.tsbuildinfo
 next-env.d.ts
 
+# backend (Spring Boot / Gradle)
+backend/build/
+backend/.gradle/
+backend/gradle/wrapper/gradle-wrapper.jar
+
 # misc / os / editor
 .DS_Store
 *.pem
