@@ -1717,7 +1717,6 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
 }
 .myn-grade-btn:hover { border-color: var(--red); color: var(--ink); }
 .myn-grade-btn:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
-.myn-grade-emoji { font-size: 14px; }
 .myn-grade-caret { font-size: 10px; color: var(--ink-faint); margin-left: 2px; }
 
 .myn-grade-menu {
@@ -4530,19 +4529,7 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   flex: 1;
   min-height: 0;
 }
-.mbook-heritage-num {
-  position: absolute;
-  top: -8px; left: -8px;
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  background: #C9882A;
-  color: #FFFBE8;
-  font-family: 'Jua', sans-serif;
-  font-size: 13px;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 6px rgba(140,90,30,.35);
-  z-index: 2;
-}
+.mbook-heritage-card-loading { opacity: .6; }
 .mbook-heritage-thumb {
   position: relative;
   width: 130px; height: 130px;
@@ -4568,7 +4555,10 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   padding: 8px;
   box-sizing: border-box;
   display: block;
+  opacity: 0;
+  transition: opacity .35s ease;
 }
+.mbook-heritage-thumb img.loaded { opacity: 1; }
 .mbook-heritage-thumb-ph {
   font-size: 11px;
   color: var(--mbook-ink-soft);
@@ -4577,7 +4567,7 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
 }
 .mbook-heritage-body {
   display: flex; flex-direction: column;
-  gap: 4px;
+  gap: 6px;
   min-width: 0;
 }
 .mbook-heritage-name {
@@ -4586,22 +4576,26 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   color: var(--mbook-ink);
   line-height: 1.3;
 }
-.mbook-heritage-source {
-  font-size: 11px;
-  letter-spacing: .3px;
-  color: #8A6529;
-  background: rgba(201, 136, 42, .12);
-  border: 1px solid rgba(201, 136, 42, .35);
-  border-radius: 999px;
-  padding: 2px 8px;
-  align-self: flex-start;
-}
 .mbook-heritage-docent {
-  margin: 2px 0 0;
+  margin: 0;
   font-size: 12.5px;
   line-height: 1.7;
   color: var(--mbook-ink-soft);
 }
+.mbook-heritage-source {
+  margin-top: auto;
+  padding-top: 6px;
+  align-self: flex-start;
+  font-family: 'Jua', sans-serif;
+  font-size: 11.5px;
+  letter-spacing: .2px;
+  color: #8A6529;
+  text-decoration: none;
+  border-top: 1px dashed rgba(201, 136, 42, .35);
+  transition: color .15s ease;
+}
+.mbook-heritage-source:hover { color: #5C4115; text-decoration: underline; }
+.mbook-heritage-source:focus-visible { outline: 2px solid #C9882A; outline-offset: 2px; border-radius: 2px; }
 .mbook-heritage-foot {
   margin-top: auto;
   padding-top: 8px;
@@ -6850,4 +6844,375 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   .tl-mini { display: none; }
   .sillok-pillars-sub { display: none; }
   .sillok-pillar-desc { display: none; }
+}
+
+/* ════════════════════════════════════════
+   어린이 사전 — 실록 본문 노란 밑줄 + 탭 모달
+   ════════════════════════════════════════ */
+.gloss-term {
+  display: inline;
+  font: inherit;
+  color: inherit;
+  margin: 0;
+  padding: 0 1px;
+  border: 0;
+  background: linear-gradient(180deg, transparent 62%, #FFE57A 62%, #FFE57A 92%, transparent 92%);
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background .12s ease, color .12s ease;
+}
+.gloss-term:hover {
+  background: linear-gradient(180deg, transparent 0%, #FFD23E 0%);
+  color: #4A2E0A;
+}
+.gloss-term:focus-visible {
+  outline: 2px solid #C9882A;
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+.gloss-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(20, 14, 8, .5);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  animation: heritageBackdropIn .18s ease both;
+}
+.gloss-modal {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  background: linear-gradient(180deg, #FFFCF3 0%, #FFF7E1 100%);
+  border: 1px solid #EAD9C9;
+  border-radius: 18px;
+  box-shadow: 0 14px 36px rgba(0,0,0,.28);
+  padding: 22px 22px 20px;
+  animation: meokChatIn .22s cubic-bezier(.16,.8,.3,1) both;
+}
+.gloss-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.85);
+  border: 1px solid var(--border);
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .14s ease, color .14s ease;
+}
+.gloss-modal-close:hover { background: #fff; color: var(--ink); }
+.gloss-modal-close:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+.gloss-modal-tag {
+  display: inline-block;
+  font-family: 'Jua', sans-serif;
+  font-size: 11.5px;
+  color: #8A6529;
+  background: linear-gradient(135deg, #FFF0B8 0%, #FFE07A 100%);
+  border: 1px solid #E8C77A;
+  padding: 3px 11px;
+  border-radius: 999px;
+  margin-bottom: 12px;
+}
+.gloss-modal-term {
+  margin: 0 0 10px;
+  font-family: 'Jua', sans-serif;
+  font-size: 22px;
+  color: var(--ink);
+  line-height: 1.25;
+}
+.gloss-modal-def {
+  margin: 0;
+  font-family: 'Gowun Dodum', sans-serif;
+  font-size: 14.5px;
+  line-height: 1.75;
+  color: var(--ink-soft);
+}
+
+@media (max-width: 540px) {
+  .gloss-modal { padding: 18px 18px 16px; border-radius: 16px; }
+  .gloss-modal-term { font-size: 19px; }
+  .gloss-modal-def { font-size: 13.5px; }
+}
+
+/* ════════════════════════════════════════
+   먹돌이 채팅 런처 — 이야기 생성 화면용 떠 있는 챗봇 버튼
+   ════════════════════════════════════════ */
+.meokdol-fab-wrap {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  pointer-events: none;
+}
+.meokdol-fab-hint {
+  pointer-events: none;
+  font-family: 'Jua', sans-serif;
+  font-size: 13.5px;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid #EAD9C9;
+  padding: 8px 12px;
+  border-radius: 14px 14px 4px 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.10);
+  white-space: nowrap;
+  animation: meokFabHint .35s ease both;
+}
+@keyframes meokFabHint {
+  from { opacity: 0; transform: translateX(8px) scale(.96); }
+  to   { opacity: 1; transform: translateX(0)   scale(1);   }
+}
+.meokdol-fab {
+  pointer-events: auto;
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 32% 28%, #F2786B 0%, #C8453B 60%, #7E2218 100%);
+  box-shadow:
+    0 10px 24px rgba(160,53,44,.42),
+    0 2px 6px rgba(0,0,0,.18),
+    inset 0 2px 4px rgba(255,255,255,.20);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: transform .15s ease, box-shadow .15s ease;
+  animation: meokFabBob 3.4s ease-in-out infinite;
+}
+.meokdol-fab:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow:
+    0 14px 30px rgba(160,53,44,.5),
+    0 3px 8px rgba(0,0,0,.22),
+    inset 0 2px 4px rgba(255,255,255,.25);
+}
+.meokdol-fab:active { transform: translateY(0) scale(.98); }
+.meokdol-fab:focus-visible { outline: 3px solid #FBC15A; outline-offset: 3px; }
+.meokdol-fab.on { animation: none; transform: scale(.94); }
+.meokdol-fab-mascot {
+  display: block;
+  width: 52px;
+  height: 52px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+.meokdol-fab-mascot .meokdol-svg {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  display: block;
+}
+.meokdol-fab-pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 2px solid rgba(200,69,59,.5);
+  animation: meokFabPulse 2.2s ease-out infinite;
+  pointer-events: none;
+}
+@keyframes meokFabBob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+@keyframes meokFabPulse {
+  0%   { transform: scale(.85); opacity: .7; }
+  80%  { transform: scale(1.25); opacity: 0; }
+  100% { transform: scale(1.25); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .meokdol-fab, .meokdol-fab-pulse, .meokdol-fab-hint { animation: none; }
+}
+
+/* 백드롭 + 모달 */
+.meokdol-chat-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  background: rgba(20, 14, 8, .55);
+  backdrop-filter: blur(3px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 24px;
+  animation: heritageBackdropIn .2s ease both;
+}
+.meokdol-chat-modal {
+  width: 100%;
+  max-width: 380px;
+  max-height: min(560px, calc(100vh - 48px));
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(180deg, #FCF7F1 0%, #FBF4EC 100%);
+  border: 1px solid #EAD9C9;
+  border-radius: 22px;
+  box-shadow: 0 16px 44px rgba(0,0,0,.32);
+  overflow: hidden;
+  animation: meokChatIn .26s cubic-bezier(.16,.8,.3,1) both;
+}
+@keyframes meokChatIn {
+  from { opacity: 0; transform: translateY(16px) scale(.96); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);   }
+}
+.meokdol-chat-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #FFE9D6 0%, #FCD8C5 100%);
+  border-bottom: 1px solid #F0D4CE;
+}
+.meokdol-chat-avatar {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid #fff;
+  box-shadow: 0 3px 8px rgba(160,53,44,.22);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.meokdol-chat-avatar .meokdol-svg {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  display: block;
+}
+.meokdol-chat-headtext { flex: 1; min-width: 0; }
+.meokdol-chat-title {
+  margin: 0;
+  font-family: 'Jua', sans-serif;
+  font-size: 17px;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.meokdol-chat-subtitle {
+  margin: 2px 0 0;
+  font-family: 'Gowun Dodum', sans-serif;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  line-height: 1.3;
+}
+.meokdol-chat-close {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.85);
+  border: 1px solid var(--border);
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background .14s ease, color .14s ease;
+}
+.meokdol-chat-close:hover { background: #fff; color: var(--ink); }
+.meokdol-chat-close:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+.meokdol-chat-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: #FBF4EC;
+}
+.meokdol-chat-bubble {
+  align-self: flex-start;
+  max-width: 86%;
+  font-family: 'Gowun Dodum', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+  background: #fff;
+  border: 1px solid #EAD9C9;
+  padding: 10px 13px;
+  border-radius: 14px 14px 14px 4px;
+}
+.meokdol-chat-bubble b { color: var(--red-deep); }
+.meokdol-chat-bubble i { font-style: normal; color: var(--ink-soft); }
+.meokdol-chat-coming {
+  align-self: center;
+  margin-top: 6px;
+  font-family: 'Jua', sans-serif;
+  font-size: 11.5px;
+  color: var(--ink-faint);
+  background: rgba(255,255,255,.7);
+  border: 1px dashed #E0CFBE;
+  padding: 5px 11px;
+  border-radius: 999px;
+}
+
+.meokdol-chat-foot {
+  padding: 12px 14px 14px;
+  border-top: 1px solid #F0D4CE;
+  background: #fff;
+}
+.meokdol-chat-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #F7EFE6;
+  border: 1px solid #E5D2BE;
+  border-radius: 999px;
+  padding: 4px 4px 4px 14px;
+  opacity: .7;
+}
+.meokdol-chat-input input {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  font-family: 'Gowun Dodum', sans-serif;
+  font-size: 13.5px;
+  color: var(--ink);
+  outline: none;
+  padding: 8px 0;
+  min-width: 0;
+}
+.meokdol-chat-input input::placeholder { color: var(--ink-faint); }
+.meokdol-chat-input button {
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--red);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: not-allowed;
+  flex-shrink: 0;
+}
+
+@media (max-width: 540px) {
+  .meokdol-fab-wrap { right: 14px; bottom: 14px; }
+  .meokdol-fab { width: 56px; height: 56px; }
+  .meokdol-fab-mascot { width: 46px; height: 46px; }
+  .meokdol-fab-hint { font-size: 12.5px; padding: 7px 10px; }
+  .meokdol-chat-backdrop { padding: 0; align-items: flex-end; }
+  .meokdol-chat-modal {
+    max-width: 100%;
+    max-height: 78vh;
+    border-radius: 22px 22px 0 0;
+  }
 }

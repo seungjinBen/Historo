@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { useState } from "react";
+import { GlossText } from "@/components/common/Glossary";
 import { HeritageIcon } from "@/components/common/HeritageIcon";
 import { HISTORY_CONTENT, NODE_PREVIEW_PATH } from "@/lib/home-content";
 import { imgUrl } from "@/lib/images";
@@ -293,7 +294,7 @@ export function Timeline({
                                 <section key={si} className="peek-history-section">
                                   <h3 className="peek-history-title">{sec.title}</h3>
                                   {sec.paragraphs.map((p, pi) => (
-                                    <p key={pi} className="peek-history-p">{p}</p>
+                                    <p key={pi} className="peek-history-p"><GlossText text={p} /></p>
                                   ))}
                                 </section>
                               ))}

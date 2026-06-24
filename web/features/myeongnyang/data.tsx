@@ -173,9 +173,9 @@ export type QSet = { prompt: string; options: [Opt, Opt, Opt] };
 export type GradeData = { lead: string; climax: string; questions: [QSet, QSet, QSet] };
 
 export const GRADES = [
-  { key: "1-2", label: "1~2학년", emoji: "🐣" },
-  { key: "3-4", label: "3~4학년", emoji: "🌱" },
-  { key: "5-6", label: "5~6학년", emoji: "📚" },
+  { key: "1-2", label: "1~2학년 · 한눈에" },
+  { key: "3-4", label: "3~4학년 · 자세히" },
+  { key: "5-6", label: "5~6학년 · 깊이 있게" },
 ] as const;
 export type GradeKey = (typeof GRADES)[number]["key"];
 

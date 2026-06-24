@@ -35,7 +35,14 @@
       "PowerShell(Out-File *)",
       "Bash(echo \"EXIT:$?\")",
       "Bash(echo \"TSC:$?\")",
-      "Read(//c/Users/byeon/AppData/Local/Temp/claude/C--dev-historo/75702c1e-b9c6-4860-bf19-c1a068f8fdde/tasks/**)"
+      "Read(//c/Users/byeon/AppData/Local/Temp/claude/C--dev-historo/75702c1e-b9c6-4860-bf19-c1a068f8fdde/tasks/**)",
+      "Bash(powershell -Command \"Select-String -Path 'components/home/Timeline.tsx','components/home/EventGrid.tsx','components/home/HeroSection.tsx' -Pattern 'heritage|문화재|유물|국보|보물' | Select-Object Filename,LineNumber,Line | Format-Table -AutoSize\")",
+      "Bash(powershell -Command \"Select-String -Path 'app/page.tsx' -Pattern 'heritage|문화재' | Select-Object LineNumber,Line | Format-Table -AutoSize -Wrap\")",
+      "Bash(powershell -Command \"Select-String -Path 'app/page.tsx' -Pattern 'BookExperience|MyeongnyangBookExperience|ChatExperience|MyeongnyangChat' | Format-Table LineNumber,Line -AutoSize -Wrap\")",
+      "Bash(powershell -Command \"Select-String -Path 'features/myeongnyang/BookExperience.tsx' -Pattern 'function LeftPage|function RightPage|<LeftPage|<RightPage|SharedProps' | Format-Table LineNumber,Line -AutoSize -Wrap\")",
+      "Bash(powershell -Command \"Select-String -Path 'components/home/*.tsx','features/myeongnyang/*.tsx','lib/*.ts' -Pattern 'HISTORY_CONTENT|REAL_HISTORY_SECTIONS' | Format-Table Path,LineNumber,Line -AutoSize -Wrap\")",
+      "Bash(powershell -Command \"Select-String -Path 'features/myeongnyang/ChatExperience.tsx' -Pattern 'StudyPageRow|section.paragraphs|REAL_HISTORY' | Format-Table LineNumber,Line -AutoSize -Wrap\")",
+      "Bash(powershell -Command '\\(Get-Content lib/home-content.ts -Raw\\) + \\(Get-Content features/myeongnyang/data.tsx -Raw\\) | Select-String -Pattern '\\\\''필|간신|관직|관청|음률|편경|모사'\\\\'' -AllMatches | ForEach-Object { $_.Matches } | ForEach-Object { $_.Value } | Group-Object | Format-Table Count,Name -AutoSize')"
     ]
   }
 }

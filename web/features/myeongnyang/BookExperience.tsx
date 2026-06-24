@@ -8,6 +8,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { GlossText } from "@/components/common/Glossary";
+import { MeokdolChatLauncher } from "@/components/mascots/MeokdolChatLauncher";
+import type { HeritageEvent, HeritageItem } from "@/lib/types";
+
 import {
   Icon,
   DATA,
@@ -89,54 +93,8 @@ const REAL_FIRST: SpreadKey = 5;
 const REAL_LAST: SpreadKey = 8;
 const HERITAGE_SPREAD: SpreadKey = 9;
 
-// ── 실제 유물 4선 ─ 하드코딩(공모전용) ────────────────
-// 출처: 국가유산청 · 현충사관리소 / 국립해양문화재연구소 공공누리 자료를 기반으로 어린이 눈높이로 재구성.
-type HeritageItem = {
-  id: "portrait" | "panokseon" | "cannonball" | "diary";
-  num: 1 | 2 | 3 | 4;
-  name: string;
-  source: string;
-  docent: string;
-  imageSrc: string;
-};
-const HERITAGE_ITEMS: HeritageItem[] = [
-  {
-    id: "portrait",
-    num: 1,
-    name: "이순신 장군 표준영정",
-    source: "현충사관리소",
-    docent:
-      "나라에서 공식 지정한 장군님의 얼굴이야. 큰 눈과 굳게 다문 입술에서 바다를 지키려는 위엄이 느껴지지?",
-    imageSrc: "/images/heritage/portrait.jpg",
-  },
-  {
-    id: "panokseon",
-    num: 2,
-    name: "전통군선 판옥선 3D 도면",
-    source: "국립해양문화재연구소",
-    docent:
-      "2층 구조로 만들어져 위에서는 공격하고 아래선 안전하게 노를 젓는, 명량해전을 승리로 이끈 조선의 핵심 무기야.",
-    imageSrc: "/images/heritage/panokseon.jpg",
-  },
-  {
-    id: "cannonball",
-    num: 3,
-    name: "명량대첩 해역 출토 조란환",
-    source: "국립해양문화재연구소",
-    docent:
-      "실제 명량해전이 벌어졌던 울돌목 바다 밑에서 발굴된 돌과 철로 만든 진짜 대포알들의 흔적이란다.",
-    imageSrc: "/images/heritage/cannonball.jpg",
-  },
-  {
-    id: "diary",
-    num: 4,
-    name: "국보 난중일기 및 장도",
-    source: "현충사관리소",
-    docent:
-      "장군님이 전쟁 중에 매일 쓰신 일기장과, 늘 곁에 두고 마음을 다잡았던 2미터가 넘는 거대한 큰 칼이야.",
-    imageSrc: "/images/heritage/diary.jpg",
-  },
-];
+// ── 실제 유물 4선 — /public/heritage.json 에서 명량해전(evt02) 데이터 로드 ────────────────
+const HERITAGE_EVENT_ID = "evt02"; // 이순신 명량해전
 
 // ──────────────────────────────────────────────
 // 페이지 콘텐츠 — LEFT / RIGHT 각 면
@@ -144,6 +102,7 @@ const HERITAGE_ITEMS: HeritageItem[] = [
 type SharedProps = {
   picks: number[];
   data: ReturnType<typeof getData>;
+  heritageItems: HeritageItem[] | null;
 };
 
 function getData(grade: GradeKey) {
@@ -152,20 +111,46 @@ function getData(grade: GradeKey) {
 
 function HeritageCard({ item }: { item: HeritageItem }) {
   const [err, setErr] = useState(false);
+  const [ok, setOk] = useState(false);
   return (
     <article className="mbook-heritage-card">
-      <div className="mbook-heritage-num">{item.num}</div>
       <div className="mbook-heritage-thumb">
         {err ? (
           <div className="mbook-heritage-thumb-ph">사진 준비 중</div>
         ) : (
-          <img src={item.imageSrc} alt={item.name} onError={() => setErr(true)} />
+          <img
+            src={item.imagePath}
+            alt={item.name}
+            className={ok ? "loaded" : ""}
+            onLoad={() => setOk(true)}
+            onError={() => setErr(true)}
+          />
         )}
       </div>
       <div className="mbook-heritage-body">
         <div className="mbook-heritage-name">{item.name}</div>
-        <div className="mbook-heritage-source">{item.source}</div>
-        <p className="mbook-heritage-docent">{item.docent}</p>
+        <p className="mbook-heritage-docent">{item.docentText}</p>
+        <a
+          className="mbook-heritage-source"
+          href={item.sourceUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          출처 · {item.source} →
+        </a>
+      </div>
+    </article>
+  );
+}
+
+function HeritageCardPlaceholder() {
+  return (
+    <article className="mbook-heritage-card mbook-heritage-card-loading">
+      <div className="mbook-heritage-thumb">
+        <div className="mbook-heritage-thumb-ph">불러오는 중…</div>
+      </div>
+      <div className="mbook-heritage-body">
+        <div className="mbook-heritage-name">유물 자료를 가져오고 있어요</div>
       </div>
     </article>
   );
@@ -186,7 +171,7 @@ function ComicPanel({ src, alt, idx, scene }: { src: string; alt: string; idx: n
   );
 }
 
-function LeftPage({ spread, picks, data }: SharedProps & { spread: SpreadKey }) {
+function LeftPage({ spread, picks, data, heritageItems }: SharedProps & { spread: SpreadKey }) {
   if (spread === 0) {
     return (
       <div className="mbook-side mbook-side-lead">
@@ -262,8 +247,13 @@ function LeftPage({ spread, picks, data }: SharedProps & { spread: SpreadKey }) 
     return (
       <div className="mbook-side mbook-side-heritage">
         <span className="mbook-eyebrow mbook-eyebrow-heritage">실제 유물 도감 · ①②</span>
-        <HeritageCard item={HERITAGE_ITEMS[0]} />
-        <HeritageCard item={HERITAGE_ITEMS[1]} />
+        {heritageItems
+          ? [0, 1].map((i) =>
+              heritageItems[i] ? (
+                <HeritageCard key={heritageItems[i].id} item={heritageItems[i]} />
+              ) : null,
+            )
+          : [0, 1].map((i) => <HeritageCardPlaceholder key={`ph-${i}`} />)}
       </div>
     );
   }
@@ -285,6 +275,7 @@ type RightInteractiveProps = {
   spread: SpreadKey;
   picks: number[];
   data: ReturnType<typeof getData>;
+  heritageItems: HeritageItem[] | null;
   grade: GradeKey;
   gradeOpen: boolean;
   setGradeOpen: (b: boolean) => void;
@@ -298,7 +289,7 @@ type RightInteractiveProps = {
 };
 
 function RightPage(props: RightInteractiveProps) {
-  const { spread, picks, data, grade, gradeOpen, setGradeOpen, pickGrade,
+  const { spread, picks, data, heritageItems, grade, gradeOpen, setGradeOpen, pickGrade,
           speak, stop, speaking, onChoose, onRestart, onHome } = props;
 
   if (spread === 0) {
@@ -355,7 +346,7 @@ function RightPage(props: RightInteractiveProps) {
         <span className="mbook-eyebrow mbook-eyebrow-real">실록 이야기</span>
         <h2 className="mbook-h2 mbook-real-title">{section.title}</h2>
         {section.paragraphs.map((p, j) => (
-          <p key={j} className="mbook-narr mbook-real-p">{p}</p>
+          <p key={j} className="mbook-narr mbook-real-p"><GlossText text={p} /></p>
         ))}
         <div className="mbook-real-meta">
           <div className="mbook-real-source">출처 · {SOURCE}</div>
@@ -368,11 +359,15 @@ function RightPage(props: RightInteractiveProps) {
     return (
       <div className="mbook-side mbook-side-heritage">
         <span className="mbook-eyebrow mbook-eyebrow-heritage">실제 유물 도감 · ③④</span>
-        <HeritageCard item={HERITAGE_ITEMS[2]} />
-        <HeritageCard item={HERITAGE_ITEMS[3]} />
+        {heritageItems
+          ? [2, 3].map((i) =>
+              heritageItems[i] ? (
+                <HeritageCard key={heritageItems[i].id} item={heritageItems[i]} />
+              ) : null,
+            )
+          : [2, 3].map((i) => <HeritageCardPlaceholder key={`ph-${i}`} />)}
         <div className="mbook-heritage-foot">
-          본 자료는 국가유산청 · 현충사관리소 · 국립해양문화재연구소가 공개한
-          공공누리 자료를 어린이 눈높이로 재구성했어요.
+          유물 사진과 설명은 각 카드 하단의 출처 링크에서 확인할 수 있어요.
         </div>
       </div>
     );
@@ -425,7 +420,7 @@ function GradeMenu({
         aria-haspopup="listbox"
         aria-expanded={gradeOpen}
       >
-        <span>{gradeMeta.emoji}</span> {gradeMeta.label}
+        {gradeMeta.label}
         <span className="mbook-grade-caret">{gradeOpen ? "▴" : "▾"}</span>
       </button>
       {gradeOpen && (
@@ -436,7 +431,7 @@ function GradeMenu({
                 className={"mbook-grade-item" + (g.key === grade ? " on" : "")}
                 onClick={() => pickGrade(g.key)}
               >
-                <span>{g.emoji}</span> {g.label}
+                {g.label}
               </button>
             </li>
           ))}
@@ -478,8 +473,22 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
   const [spread, setSpread] = useState<SpreadKey>(0);
   const [picks, setPicks] = useState<number[]>([]);
   const [flip, setFlip] = useState<{ from: SpreadKey; to: SpreadKey; dir: "next" | "prev" } | null>(null);
+  const [heritageItems, setHeritageItems] = useState<HeritageItem[] | null>(null);
 
   const data = getData(grade);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch("/heritage.json")
+      .then((r) => r.json())
+      .then((d: { events: HeritageEvent[] }) => {
+        if (cancelled) return;
+        const target = d.events.find((e) => e.id === HERITAGE_EVENT_ID);
+        if (target) setHeritageItems(target.heritageItems);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
 
   const openBook = useCallback(() => {
     if (phase !== "closed") return;
@@ -616,7 +625,7 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
           <div className="mbook-spread mbook-base mbook-base-source">
             <div className="mbook-half mbook-half-left">
               <div className="mbook-paper">
-                <LeftPage spread={sourceSpread} picks={picks} data={data} />
+                <LeftPage spread={sourceSpread} picks={picks} data={data} heritageItems={heritageItems} />
                 <div className="mbook-noise" aria-hidden="true" />
                 <div className="mbook-spine-shadow right" aria-hidden="true" />
               </div>
@@ -626,6 +635,7 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
                 <RightPage
                   spread={sourceSpread}
                   picks={picks} data={data}
+                  heritageItems={heritageItems}
                   grade={grade}
                   gradeOpen={gradeOpen}
                   setGradeOpen={setGradeOpen}
@@ -646,7 +656,7 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
             <div className="mbook-spread mbook-base mbook-base-target">
               <div className="mbook-half mbook-half-left">
                 <div className="mbook-paper">
-                  <LeftPage spread={targetSpread} picks={picks} data={data} />
+                  <LeftPage spread={targetSpread} picks={picks} data={data} heritageItems={heritageItems} />
                   <div className="mbook-noise" aria-hidden="true" />
                   <div className="mbook-spine-shadow right" aria-hidden="true" />
                 </div>
@@ -656,6 +666,7 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
                   <RightPage
                     spread={targetSpread}
                     picks={picks} data={data}
+                    heritageItems={heritageItems}
                     grade={grade}
                     gradeOpen={false}
                     setGradeOpen={noop}
@@ -680,6 +691,7 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
                   <RightPage
                     spread={leafFrontSpread as SpreadKey}
                     picks={picks} data={data}
+                    heritageItems={heritageItems}
                     grade={grade}
                     gradeOpen={false}
                     setGradeOpen={noop}
@@ -695,7 +707,7 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
               </div>
               <div className="mbook-leaf-face mbook-leaf-back">
                 <div className="mbook-paper">
-                  <LeftPage spread={leafBackSpread as SpreadKey} picks={picks} data={data} />
+                  <LeftPage spread={leafBackSpread as SpreadKey} picks={picks} data={data} heritageItems={heritageItems} />
                   <div className="mbook-noise" aria-hidden="true" />
                   <div className="mbook-spine-shadow right" aria-hidden="true" />
                 </div>
@@ -829,6 +841,8 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
           <span className="mbook-ctrl-note">선택하면 다음 장으로 넘어가요</span>
         </div>
       )}
+
+      <MeokdolChatLauncher />
     </div>
   );
 }
