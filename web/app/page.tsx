@@ -1,11 +1,9 @@
 "use client";
 
-// MVP 뷰어: public/ 의 정적 JSON·이미지를 직접 읽는다.
-// 나중에 Spring Boot로 옮길 때는 아래 fetch 경로만 백엔드 주소로 바꾸면 된다.
-
 import { useEffect, useState } from "react";
 
 import { AboutScreen } from "@/components/about/AboutScreen";
+import { BookshelfScreen } from "@/components/BookshelfScreen";
 import MeokdolChat from "@/components/MeokdolChat";
 import { GlossaryProvider } from "@/components/common/Glossary";
 import { SiteFooter } from "@/components/common/SiteFooter";
@@ -20,8 +18,9 @@ import { ComicScreen } from "@/components/story/ComicScreen";
 import { IntroScreen } from "@/components/story/IntroScreen";
 import { PlayScreen } from "@/components/story/PlayScreen";
 import BookExperience from "@/features/myeongnyang/BookExperience";
+import { getToken, getUsername, clearToken, EVENT_TO_EPISODE } from "@/lib/api";
 import { useTTS } from "@/lib/use-tts";
-import { treeDepth } from "@/lib/tree";
+import { treeDepth, pathToStorylineId } from "@/lib/tree";
 import type {
   EventMeta,
   HeritageEvent,
@@ -30,27 +29,34 @@ import type {
   Tree,
 } from "@/lib/types";
 
-
 export default function Page() {
   const [screen, setScreen] = useState<Screen>("home");
   const [events, setEvents] = useState<EventMeta[] | null>(null);
-  const [event, setEvent] = useState<EventMeta | null>(null);
-  const [tree, setTree] = useState<Tree | null>(null);
-  const [node, setNode] = useState<StoryNode | null>(null);
-  const [path, setPath] = useState<number[]>([]);
-  const [error, setError] = useState<string | null>(null);
+  const [event, setEvent]   = useState<EventMeta | null>(null);
+  const [tree, setTree]     = useState<Tree | null>(null);
+  const [node, setNode]     = useState<StoryNode | null>(null);
+  const [path, setPath]     = useState<number[]>([]);
+  const [error, setError]   = useState<string | null>(null);
 
   const { speak, stop, speaking } = useTTS();
 
-  const [previewEventId, setPreviewEventId] = useState<string | null>(null);
+  const [previewEventId, setPreviewEventId]                 = useState<string | null>(null);
   const [heritagePreviewEventId, setHeritagePreviewEventId] = useState<string | null>(null);
   const [heritage, setHeritage] = useState<Record<string, HeritageEvent> | null>(null);
+
+  const [token, setTokenState]       = useState<string | null>(null);
+  const [username, setUsernameState] = useState<string | null>(null);
+
+  useEffect(() => {
+    setTokenState(getToken());
+    setUsernameState(getUsername());
+  }, []);
 
   useEffect(() => {
     fetch("/data/events.json")
       .then((r) => r.json())
       .then((d) => setEvents(d.events))
-      .catch(() => setError("data/events.json 을 불러오지 못했어요. public/data/ 에 복사했는지 확인해 주세요."));
+      .catch(() => setError("data/events.json 을 불러오지 못했어요."));
   }, []);
 
   useEffect(() => {
@@ -64,7 +70,6 @@ export default function Page() {
       .catch(() => {});
   }, []);
 
-  // ESC 키로 연표 펼침 패널(역사/유물) 닫기
   useEffect(() => {
     if (!previewEventId && !heritagePreviewEventId) return;
     const handleEsc = (e: KeyboardEvent) => {
@@ -76,33 +81,28 @@ export default function Page() {
     return () => window.removeEventListener("keydown", handleEsc);
   }, [previewEventId, heritagePreviewEventId]);
 
-  // 화면 전환 시 이전 발화 중단
-  useEffect(() => {
-    return () => { stop(); };
-  }, [screen, stop]);
+  useEffect(() => { return () => { stop(); }; }, [screen, stop]);
+
+  function handleLogout() {
+    clearToken();
+    setTokenState(null);
+    setUsernameState(null);
+  }
 
   async function openEvent(ev: EventMeta) {
-    // 명량해전은 동화책 모드(전용 체험)로 바로 진입
     if (ev.id === "yi-myeongnyang-1597") {
-      setEvent(ev);
-      setScreen("myeongnyang");
-      return;
+      setEvent(ev); setScreen("myeongnyang"); return;
     }
     try {
       const t: Tree = await fetch(`/trees/${ev.id}.json`).then((r) => r.json());
-      setEvent(ev);
-      setTree(t);
-      setNode(t.root);
-      setPath([]);
-      setScreen("intro");
+      setEvent(ev); setTree(t); setNode(t.root); setPath([]); setScreen("intro");
     } catch {
       setError(`트리를 불러오지 못했어요: /trees/${ev.id}.json`);
     }
   }
 
   function scrollToTarget(id: string) {
-    const el = document.getElementById(id);
-    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   function choose(i: number) {
@@ -115,24 +115,21 @@ export default function Page() {
 
   const replay = () => {
     if (!tree) return;
-    setNode(tree.root);
-    setPath([]);
-    setScreen("play");
-  };
-  const home = () => {
-    setScreen("home");
-    setEvent(null);
-    setTree(null);
-    setNode(null);
-    setPath([]);
-    setPreviewEventId(null);
-    setHeritagePreviewEventId(null);
+    setNode(tree.root); setPath([]); setScreen("play");
   };
 
-  if (error) return <div className="wrap"><div className="panel-card center">{error}</div></div>;
+  const home = () => {
+    setScreen("home"); setEvent(null); setTree(null); setNode(null); setPath([]);
+    setPreviewEventId(null); setHeritagePreviewEventId(null);
+  };
+
+  if (error)   return <div className="wrap"><div className="panel-card center">{error}</div></div>;
   if (!events) return <div className="wrap"><div className="center">불러오는 중…</div></div>;
 
-  const totalSteps = tree ? treeDepth(tree.root) : 0;
+  const totalSteps  = tree ? treeDepth(tree.root) : 0;
+  const episodeKr   = event ? (EVENT_TO_EPISODE[event.id] ?? event.title) : "";
+  const storylineId = path.length === 3 ? pathToStorylineId(path) : "";
+  const pathText    = path.join(" → ");
 
   return (
     <GlossaryProvider>
@@ -140,6 +137,10 @@ export default function Page() {
       <TopBar
         onHome={home}
         onAbout={() => setScreen("about")}
+        onBookshelf={() => setScreen("bookshelf")}
+        token={token}
+        username={username}
+        onLogout={handleLogout}
       />
 
       {screen === "home" && (
@@ -163,42 +164,24 @@ export default function Page() {
       )}
 
       {screen === "myeongnyang" && (
-        <BookExperience
-          key="myeongnyang"
-          onHome={home}
-          speak={speak}
-          stop={stop}
-          speaking={speaking}
-        />
+        <BookExperience key="myeongnyang" onHome={home} speak={speak} stop={stop} speaking={speaking} />
       )}
 
-{screen === "about" && <AboutScreen onBack={home} />}
-
-      {screen === "chat" && (
-        <MeokdolChat key="chat" onBack={home} />
-      )}
+      {screen === "about"     && <AboutScreen onBack={home} />}
+      {screen === "chat"      && <MeokdolChat key="chat" onBack={home} />}
+      {screen === "bookshelf" && <BookshelfScreen onBack={home} />}
 
       {screen === "intro" && event && (
         <IntroScreen
-          event={event}
-          onBack={home}
-          onStart={() => setScreen("play")}
-          speak={speak}
-          stop={stop}
-          speaking={speaking}
+          event={event} onBack={home} onStart={() => setScreen("play")}
+          speak={speak} stop={stop} speaking={speaking}
         />
       )}
 
       {screen === "play" && node?.choices && (
         <PlayScreen
-          node={node}
-          path={path}
-          totalSteps={totalSteps}
-          onBack={home}
-          onChoose={choose}
-          speak={speak}
-          stop={stop}
-          speaking={speaking}
+          node={node} path={path} totalSteps={totalSteps} onBack={home} onChoose={choose}
+          speak={speak} stop={stop} speaking={speaking}
         />
       )}
 
@@ -207,8 +190,12 @@ export default function Page() {
           event={event}
           node={node}
           path={path}
+          episodeKr={episodeKr}
+          storylineId={storylineId}
+          pathText={pathText}
           onBack={home}
           onReplay={replay}
+          onBookshelfSaved={() => {}}
           speak={speak}
           stop={stop}
           speaking={speaking}
