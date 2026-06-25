@@ -1,5 +1,4 @@
 #!/bin/bash
-# Spring Boot REST API → Lambda 재배포 스크립트
 set -euo pipefail
 cd "$(dirname "$0")/backend/spring"
 
@@ -34,5 +33,5 @@ aws lambda update-function-code \
   --query "LastUpdateStatus" --output text
 
 echo ""
-echo "✅ 배포 완료"
+echo "✅ 백엔드 배포 완료"
 echo "   API: https://ti5h7b2bs2.execute-api.ap-northeast-2.amazonaws.com/prod"
