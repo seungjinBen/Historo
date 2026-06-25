@@ -1,0 +1,1038 @@
+{
+  "id": "허준",
+  "title": "허준 동의보감 — 역병과 의술",
+  "source_file": "허준_신사임당_광해군_박연_이성계_스토리라인.docx",
+  "questions": {
+    "Q1": "혜민서에 역병 환자가 넘쳐나고 약재가 바닥났다. 첫 번째 대응은?",
+    "Q2": "치료법을 두고 의관들과 조정 대신들의 거센 반발이 일어났다. 어떻게 돌파할 것인가?",
+    "Q3": "마침내 역병이 종식 단계에 접어들었다. 의원으로서의 최종 행보는?"
+  },
+  "storylines": [
+    {
+      "id": "A-1-α",
+      "q1": "A",
+      "q2": "1",
+      "q3": "α",
+      "path_text": "궁중 처방 ➔ 임상 시험 ➔ 민중 보급",
+      "image_folder": "허준/A/1/α",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/A/1/α/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 대궐 앞에 엎드려 상소를 올린 끝에, 마침내 임금의 허락을 받아 내의원의 귀한 약재 창고를 열어 백성들에게 풀기 시작한다.",
+          "image_path": "허준/A/1/α/컷2.png",
+          "unique_image_path": "허준/컷2_A.png"
+        },
+        {
+          "number": 3,
+          "camera": "클로즈업",
+          "description": "궁중 약재로 만든 새로운 탕약의 안전성을 의심하는 신하들 앞에서, 허준이 스스로 가득 찬 탕약 사발을 단숨에 들이켜며 효험을 몸소 증명한다.",
+          "image_path": "허준/A/1/α/컷3.png",
+          "unique_image_path": "허준/컷3_A1.png"
+        },
+        {
+          "number": 4,
+          "camera": "와이드",
+          "description": "역병이 가라앉자, 허준은 궁중 약재를 활용한 이 치료법을 백성들이 쉽게 읽을 수 있도록 쉬운 한글로 번역해 전국의 장터에 방으로 붙여 널리 알린다.",
+          "image_path": "허준/A/1/α/컷4.png",
+          "unique_image_path": "허준/컷4_A1a.png"
+        }
+      ]
+    },
+    {
+      "id": "A-1-β",
+      "q1": "A",
+      "q2": "1",
+      "q3": "β",
+      "path_text": "궁중 처방 ➔ 임상 시험 ➔ 어의 복귀",
+      "image_folder": "허준/A/1/β",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/A/1/β/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 대궐 앞에 엎드려 상소를 올린 끝에, 마침내 임금의 허락을 받아 내의원의 귀한 약재 창고를 열어 백성들에게 풀기 시작한다.",
+          "image_path": "허준/A/1/β/컷2.png",
+          "unique_image_path": "허준/컷2_A.png"
+        },
+        {
+          "number": 3,
+          "camera": "클로즈업",
+          "description": "궁중 약재로 만든 새로운 탕약의 안전성을 의심하는 신하들 앞에서, 허준이 스스로 가득 찬 탕약 사발을 단숨에 들이켜며 효험을 몸소 증명한다.",
+          "image_path": "허준/A/1/β/컷3.png",
+          "unique_image_path": "허준/컷3_A1.png"
+        },
+        {
+          "number": 4,
+          "camera": "로우앵글 미디엄",
+          "description": "백성을 구하고 실력까지 완벽히 증명한 허준이 임금의 전폭적인 신임을 받으며 어의의 관복을 입고 화려하게 궁궐 내의원으로 복귀한다.",
+          "image_path": "허준/A/1/β/컷4.png",
+          "unique_image_path": "허준/컷4_A1b.png"
+        }
+      ]
+    },
+    {
+      "id": "A-1-γ",
+      "q1": "A",
+      "q2": "1",
+      "q3": "γ",
+      "path_text": "궁중 처방 ➔ 임상 시험 ➔ 후학 양성",
+      "image_folder": "허준/A/1/γ",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/A/1/γ/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 대궐 앞에 엎드려 상소를 올린 끝에, 마침내 임금의 허락을 받아 내의원의 귀한 약재 창고를 열어 백성들에게 풀기 시작한다.",
+          "image_path": "허준/A/1/γ/컷2.png",
+          "unique_image_path": "허준/컷2_A.png"
+        },
+        {
+          "number": 3,
+          "camera": "클로즈업",
+          "description": "궁중 약재로 만든 새로운 탕약의 안전성을 의심하는 신하들 앞에서, 허준이 스스로 가득 찬 탕약 사발을 단숨에 들이켜며 효험을 몸소 증명한다.",
+          "image_path": "허준/A/1/γ/컷3.png",
+          "unique_image_path": "허준/컷3_A1.png"
+        },
+        {
+          "number": 4,
+          "camera": "롱샷",
+          "description": "역병은 가라앉았으나 지독한 정치 싸움에 환멸을 느낀 허준이 관직을 내려놓고 시골로 내려가, 수십 명의 어린 제자들에게 침 다루는 법을 가르친다.",
+          "image_path": "허준/A/1/γ/컷4.png",
+          "unique_image_path": "허준/컷4_A1g.png"
+        }
+      ]
+    },
+    {
+      "id": "A-2-α",
+      "q1": "A",
+      "q2": "2",
+      "q3": "α",
+      "path_text": "궁중 처방 ➔ 의서 저술 ➔ 민중 보급",
+      "image_folder": "허준/A/2/α",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/A/2/α/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 대궐 앞에 엎드려 상소를 올린 끝에, 마침내 임금의 허락을 받아 내의원의 귀한 약재 창고를 열어 백성들에게 풀기 시작한다.",
+          "image_path": "허준/A/2/α/컷2.png",
+          "unique_image_path": "허준/컷2_A.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄",
+          "description": "\"왕실의 약재를 함부로 썼다\"며 탄핵하려는 대신들의 반발에 맞서, 허준이 밤새워 중국과 조선의 수많은 고문헌을 인용한 체계적인 보고서를 작성해 제출한다.",
+          "image_path": "허준/A/2/α/컷3.png",
+          "unique_image_path": "허준/컷3_A2.png"
+        },
+        {
+          "number": 4,
+          "camera": "와이드",
+          "description": "보고서의 정당성을 인정받아 처벌을 면한 허준은, 궁중 약재의 효능을 정리한 의서를 한글로 인쇄하여 전국의 지방 관가에 대량으로 보급한다.",
+          "image_path": "허준/A/2/α/컷4.png",
+          "unique_image_path": "허준/컷4_A2a.png"
+        }
+      ]
+    },
+    {
+      "id": "A-2-β",
+      "q1": "A",
+      "q2": "2",
+      "q3": "β",
+      "path_text": "궁중 처방 ➔ 의서 저술 ➔ 어의 복귀",
+      "image_folder": "허준/A/2/β",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/A/2/β/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 대궐 앞에 엎드려 상소를 올린 끝에, 마침내 임금의 허락을 받아 내의원의 귀한 약재 창고를 열어 백성들에게 풀기 시작한다.",
+          "image_path": "허준/A/2/β/컷2.png",
+          "unique_image_path": "허준/컷2_A.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄",
+          "description": "\"왕실의 약재를 함부로 썼다\"며 탄핵하려는 대신들의 반발에 맞서, 허준이 밤새워 중국과 조선의 수많은 고문헌을 인용한 체계적인 보고서를 작성해 제출한다.",
+          "image_path": "허준/A/2/β/컷3.png",
+          "unique_image_path": "허준/컷3_A2.png"
+        },
+        {
+          "number": 4,
+          "camera": "로우앵글 미디엄",
+          "description": "학문적 깊이에 감탄한 임금이 허준을 조선 최고의 의학자로 공인하고, 그를 다시 어의의 자리에 앉혀 왕실의 건강을 전담하게 한다.",
+          "image_path": "허준/A/2/β/컷4.png",
+          "unique_image_path": "허준/컷4_A2b.png"
+        }
+      ]
+    },
+    {
+      "id": "A-2-γ",
+      "q1": "A",
+      "q2": "2",
+      "q3": "γ",
+      "path_text": "궁중 처방 ➔ 의서 저술 ➔ 후학 양성",
+      "image_folder": "허준/A/2/γ",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/A/2/γ/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 대궐 앞에 엎드려 상소를 올린 끝에, 마침내 임금의 허락을 받아 내의원의 귀한 약재 창고를 열어 백성들에게 풀기 시작한다.",
+          "image_path": "허준/A/2/γ/컷2.png",
+          "unique_image_path": "허준/컷2_A.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄",
+          "description": "\"왕실의 약재를 함부로 썼다\"며 탄핵하려는 대신들의 반발에 맞서, 허준이 밤새워 중국과 조선의 수많은 고문헌을 인용한 체계적인 보고서를 작성해 제출한다.",
+          "image_path": "허준/A/2/γ/컷3.png",
+          "unique_image_path": "허준/컷3_A2.png"
+        },
+        {
+          "number": 4,
+          "camera": "롱샷",
+          "description": "서책의 가치를 알아본 젊은 의원들이 허준의 서당으로 구름처럼 몰려들고, 허준은 그들에게 저술한 책을 펼쳐 보이며 참된 의원의 자질을 논한다.",
+          "image_path": "허준/A/2/γ/컷4.png",
+          "unique_image_path": "허준/컷4_A2g.png"
+        }
+      ]
+    },
+    {
+      "id": "A-3-α",
+      "q1": "A",
+      "q2": "3",
+      "q3": "α",
+      "path_text": "궁중 처방 ➔ 왕명 요구 ➔ 민중 보급",
+      "image_folder": "허준/A/3/α",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/A/3/α/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 대궐 앞에 엎드려 상소를 올린 끝에, 마침내 임금의 허락을 받아 내의원의 귀한 약재 창고를 열어 백성들에게 풀기 시작한다.",
+          "image_path": "허준/A/3/α/컷2.png",
+          "unique_image_path": "허준/컷2_A.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄 구도",
+          "description": "다른 의관들이 시기하여 허준을 모함하자, 허준은 임금을 독대해 \"제게 전권을 주셔야 역병을 잡습니다\"라며 왕의 절대적인 밀지를 받아낸다.",
+          "image_path": "허준/A/3/α/컷3.png",
+          "unique_image_path": "허준/컷3_A3.png"
+        },
+        {
+          "number": 4,
+          "camera": "와이드",
+          "description": "왕의 밀지를 앞세워 반대파를 침묵시킨 허준은, 궁중 비방이 담긴 치료법을 백성들이 알기 쉽게 한글로 써서 대량으로 인쇄해 전국에 뿌린다.",
+          "image_path": "허준/A/3/α/컷4.png",
+          "unique_image_path": "허준/컷4_A3a.png"
+        }
+      ]
+    },
+    {
+      "id": "A-3-β",
+      "q1": "A",
+      "q2": "3",
+      "q3": "β",
+      "path_text": "궁중 처방 ➔ 왕명 요구 ➔ 어의 복귀",
+      "image_folder": "허준/A/3/β",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/A/3/β/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 대궐 앞에 엎드려 상소를 올린 끝에, 마침내 임금의 허락을 받아 내의원의 귀한 약재 창고를 열어 백성들에게 풀기 시작한다.",
+          "image_path": "허준/A/3/β/컷2.png",
+          "unique_image_path": "허준/컷2_A.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄 구도",
+          "description": "다른 의관들이 시기하여 허준을 모함하자, 허준은 임금을 독대해 \"제게 전권을 주셔야 역병을 잡습니다\"라며 왕의 절대적인 밀지를 받아낸다.",
+          "image_path": "허준/A/3/β/컷3.png",
+          "unique_image_path": "허준/컷3_A3.png"
+        },
+        {
+          "number": 4,
+          "camera": "로우앵글 미디엄",
+          "description": "임금과 허준의 강력한 군신 관계가 증명되면서, 허준은 그 누구도 건드릴 수 없는 독보적인 권위의 수석 어의로 복귀하여 명성을 떨친다.",
+          "image_path": "허준/A/3/β/컷4.png",
+          "unique_image_path": "허준/컷4_A3b.png"
+        }
+      ]
+    },
+    {
+      "id": "A-3-γ",
+      "q1": "A",
+      "q2": "3",
+      "q3": "γ",
+      "path_text": "궁중 처방 ➔ 왕명 요구 ➔ 후학 양성",
+      "image_folder": "허준/A/3/γ",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/A/3/γ/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 대궐 앞에 엎드려 상소를 올린 끝에, 마침내 임금의 허락을 받아 내의원의 귀한 약재 창고를 열어 백성들에게 풀기 시작한다.",
+          "image_path": "허준/A/3/γ/컷2.png",
+          "unique_image_path": "허준/컷2_A.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄 구도",
+          "description": "다른 의관들이 시기하여 허준을 모함하자, 허준은 임금을 독대해 \"제게 전권을 주셔야 역병을 잡습니다\"라며 왕의 절대적인 밀지를 받아낸다.",
+          "image_path": "허준/A/3/γ/컷3.png",
+          "unique_image_path": "허준/컷3_A3.png"
+        },
+        {
+          "number": 4,
+          "camera": "롱샷",
+          "description": "권력의 무상함을 느낀 허준은 왕의 은밀한 재가와 재정적 지원을 바탕으로 지방에 거대한 의학 전문 서당을 세워 수백 명의 제자를 길러낸다.",
+          "image_path": "허준/A/3/γ/컷4.png",
+          "unique_image_path": "허준/컷4_A3g.png"
+        }
+      ]
+    },
+    {
+      "id": "B-1-α",
+      "q1": "B",
+      "q2": "1",
+      "q3": "α",
+      "path_text": "향약 개발 ➔ 임상 시험 ➔ 민중 보급",
+      "image_folder": "허준/B/1/α",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/B/1/α/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄",
+          "description": "허준이 궁중 약재 대신 조선의 산천을 헤매며 흔한 잡풀과 약초(향약)들을 채집해 냄새를 맡고 이로 씹어보며 새로운 처방을 연구한다.",
+          "image_path": "허준/B/1/α/컷2.png",
+          "unique_image_path": "허준/컷2_B.png"
+        },
+        {
+          "number": 3,
+          "camera": "클로즈업",
+          "description": "새로운 향약의 독성을 의심하며 환자에게 쓰기를 거부하는 제자들 앞에서, 허준이 직접 탕약을 들이키고 며칠간 앓아누우며 안전성을 증명한다.",
+          "image_path": "허준/B/1/α/컷3.png",
+          "unique_image_path": "허준/컷3_B1.png"
+        },
+        {
+          "number": 4,
+          "camera": "와이드",
+          "description": "주위에서 흔히 구할 수 있는 약초들로 역병을 완벽히 퇴치한 후, 그 처방들을 담은 '동의보감'을 백성들이 읽기 편한 한글로 편찬해 전국에 보급한다.",
+          "image_path": "허준/B/1/α/컷4.png",
+          "unique_image_path": "허준/컷4_B1a.png"
+        }
+      ]
+    },
+    {
+      "id": "B-1-β",
+      "q1": "B",
+      "q2": "1",
+      "q3": "β",
+      "path_text": "향약 개발 ➔ 임상 시험 ➔ 어의 복귀",
+      "image_folder": "허준/B/1/β",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/B/1/β/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄",
+          "description": "허준이 궁중 약재 대신 조선의 산천을 헤매며 흔한 잡풀과 약초(향약)들을 채집해 냄새를 맡고 이로 씹어보며 새로운 처방을 연구한다.",
+          "image_path": "허준/B/1/β/컷2.png",
+          "unique_image_path": "허준/컷2_B.png"
+        },
+        {
+          "number": 3,
+          "camera": "클로즈업",
+          "description": "새로운 향약의 독성을 의심하며 환자에게 쓰기를 거부하는 제자들 앞에서, 허준이 직접 탕약을 들이키고 며칠간 앓아누우며 안전성을 증명한다.",
+          "image_path": "허준/B/1/β/컷3.png",
+          "unique_image_path": "허준/컷3_B1.png"
+        },
+        {
+          "number": 4,
+          "camera": "로우앵글 미디엄",
+          "description": "조선만의 독자적인 의술 체계를 세운 공을 인정받아, 허준은 한양의 모든 의관들의 존경을 받으며 최고 어의의 자리에 당당히 오른다.",
+          "image_path": "허준/B/1/β/컷4.png",
+          "unique_image_path": "허준/컷4_B1b.png"
+        }
+      ]
+    },
+    {
+      "id": "B-1-γ",
+      "q1": "B",
+      "q2": "1",
+      "q3": "γ",
+      "path_text": "향약 개발 ➔ 임상 시험 ➔ 후학 양성",
+      "image_folder": "허준/B/1/γ",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/B/1/γ/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄",
+          "description": "허준이 궁중 약재 대신 조선의 산천을 헤매며 흔한 잡풀과 약초(향약)들을 채집해 냄새를 맡고 이로 씹어보며 새로운 처방을 연구한다.",
+          "image_path": "허준/B/1/γ/컷2.png",
+          "unique_image_path": "허준/컷2_B.png"
+        },
+        {
+          "number": 3,
+          "camera": "클로즈업",
+          "description": "새로운 향약의 독성을 의심하며 환자에게 쓰기를 거부하는 제자들 앞에서, 허준이 직접 탕약을 들이키고 며칠간 앓아누우며 안전성을 증명한다.",
+          "image_path": "허준/B/1/γ/컷3.png",
+          "unique_image_path": "허준/컷3_B1.png"
+        },
+        {
+          "number": 4,
+          "camera": "롱샷",
+          "description": "허준은 벼슬길을 마다하고 전국의 산과 들을 제자들과 함께 누비며, 직접 약초를 판별하고 채취하는 실전 위주의 살아있는 의술을 후학들에게 전수한다.",
+          "image_path": "허준/B/1/γ/컷4.png",
+          "unique_image_path": "허준/컷4_B1g.png"
+        }
+      ]
+    },
+    {
+      "id": "B-2-α",
+      "q1": "B",
+      "q2": "2",
+      "q3": "α",
+      "path_text": "향약 개발 ➔ 의서 저술 ➔ 민중 보급",
+      "image_folder": "허준/B/2/α",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/B/2/α/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄",
+          "description": "허준이 궁중 약재 대신 조선의 산천을 헤매며 흔한 잡풀과 약초(향약)들을 채집해 냄새를 맡고 이로 씹어보며 새로운 처방을 연구한다.",
+          "image_path": "허준/B/2/α/컷2.png",
+          "unique_image_path": "허준/컷2_B.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄",
+          "description": "허준이 촛불 아래에서 밤을 지새우며 수 수백 가지 토종 약초의 효능과 처방을 체계적으로 정리한 방대한 분량의 의서 '동의보감'을 저술한다.",
+          "image_path": "허준/B/2/α/컷3.png",
+          "unique_image_path": "허준/컷3_B2.png"
+        },
+        {
+          "number": 4,
+          "camera": "와이드",
+          "description": "완성된 의서를 바탕으로 역병이 종식되자, 가난한 백성들도 쉽게 치료법을 알 수 있도록 책을 한글로 인쇄하여 전국의 시골 마을까지 널리 퍼뜨린다.",
+          "image_path": "허준/B/2/α/컷4.png",
+          "unique_image_path": "허준/컷4_B2a.png"
+        }
+      ]
+    },
+    {
+      "id": "B-2-β",
+      "q1": "B",
+      "q2": "2",
+      "q3": "β",
+      "path_text": "향약 개발 ➔ 의서 저술 ➔ 어의 복귀",
+      "image_folder": "허준/B/2/β",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/B/2/β/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄",
+          "description": "허준이 궁중 약재 대신 조선의 산천을 헤매며 흔한 잡풀과 약초(향약)들을 채집해 냄새를 맡고 이로 씹어보며 새로운 처방을 연구한다.",
+          "image_path": "허준/B/2/β/컷2.png",
+          "unique_image_path": "허준/컷2_B.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄",
+          "description": "허준이 촛불 아래에서 밤을 지새우며 수 수백 가지 토종 약초의 효능과 처방을 체계적으로 정리한 방대한 분량의 의서 '동의보감'을 저술한다.",
+          "image_path": "허준/B/2/β/컷3.png",
+          "unique_image_path": "허준/컷3_B2.png"
+        },
+        {
+          "number": 4,
+          "camera": "로우앵글 미디엄",
+          "description": "허준이 완성한 '동의보감'을 선물 받은 임금이 크게 기뻐하며, 그를 다시 궁으로 불러들여 정1품에 준하는 최고의 어의로 파격 임명한다.",
+          "image_path": "허준/B/2/β/컷4.png",
+          "unique_image_path": "허준/컷4_B2b.png"
+        }
+      ]
+    },
+    {
+      "id": "B-2-γ",
+      "q1": "B",
+      "q2": "2",
+      "q3": "γ",
+      "path_text": "향약 개발 ➔ 의서 저술 ➔ 후학 양성",
+      "image_folder": "허준/B/2/γ",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/B/2/γ/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄",
+          "description": "허준이 궁중 약재 대신 조선의 산천을 헤매며 흔한 잡풀과 약초(향약)들을 채집해 냄새를 맡고 이로 씹어보며 새로운 처방을 연구한다.",
+          "image_path": "허준/B/2/γ/컷2.png",
+          "unique_image_path": "허준/컷2_B.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄",
+          "description": "허준이 촛불 아래에서 밤을 지새우며 수 수백 가지 토종 약초의 효능과 처방을 체계적으로 정리한 방대한 분량의 의서 '동의보감'을 저술한다.",
+          "image_path": "허준/B/2/γ/컷3.png",
+          "unique_image_path": "허준/컷3_B2.png"
+        },
+        {
+          "number": 4,
+          "camera": "롱샷",
+          "description": "책이 완성되자 허준은 시골에 정착하여, 찾아오는 젊은 의원들에게 '동의보감'의 내용을 한 장씩 넘겨가며 조선 의학의 정수를 아낌없이 가르친다.",
+          "image_path": "허준/B/2/γ/컷4.png",
+          "unique_image_path": "허준/컷4_B2g.png"
+        }
+      ]
+    },
+    {
+      "id": "B-3-α",
+      "q1": "B",
+      "q2": "3",
+      "q3": "α",
+      "path_text": "향약 개발 ➔ 왕명 요구 ➔ 민중 보급",
+      "image_folder": "허준/B/3/α",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/B/3/α/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄",
+          "description": "허준이 궁중 약재 대신 조선의 산천을 헤매며 흔한 잡풀과 약초(향약)들을 채집해 냄새를 맡고 이로 씹어보며 새로운 처방을 연구한다.",
+          "image_path": "허준/B/3/α/컷2.png",
+          "unique_image_path": "허준/컷2_B.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄 구도",
+          "description": "보수적인 내의원 의관들이 \"잡풀로 사람을 죽이려 한다\"며 허준을 방해하자, 허준이 직접 왕에게 나아가 향약 연구를 전폭 지원하라는 어명을 받아낸다.",
+          "image_path": "허준/B/3/α/컷3.png",
+          "unique_image_path": "허준/컷3_B3.png"
+        },
+        {
+          "number": 4,
+          "camera": "와이드",
+          "description": "왕령의 지원을 받아 향약 처방을 대량 생산하는 데 성공하고, 이 쉬운 치료법들을 한글 언해본으로 인쇄해 전국의 모든 민간 약방에 보급한다.",
+          "image_path": "허준/B/3/α/컷4.png",
+          "unique_image_path": "허준/컷4_B3a.png"
+        }
+      ]
+    },
+    {
+      "id": "B-3-β",
+      "q1": "B",
+      "q2": "3",
+      "q3": "β",
+      "path_text": "향약 개발 ➔ 왕명 요구 ➔ 어의 복귀",
+      "image_folder": "허준/B/3/β",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/B/3/β/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄",
+          "description": "허준이 궁중 약재 대신 조선의 산천을 헤매며 흔한 잡풀과 약초(향약)들을 채집해 냄새를 맡고 이로 씹어보며 새로운 처방을 연구한다.",
+          "image_path": "허준/B/3/β/컷2.png",
+          "unique_image_path": "허준/컷2_B.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄 구도",
+          "description": "보수적인 내의원 의관들이 \"잡풀로 사람을 죽이려 한다\"며 허준을 방해하자, 허준이 직접 왕에게 나아가 향약 연구를 전폭 지원하라는 어명을 받아낸다.",
+          "image_path": "허준/B/3/β/컷3.png",
+          "unique_image_path": "허준/컷3_B3.png"
+        },
+        {
+          "number": 4,
+          "camera": "로우앵글 미디엄",
+          "description": "왕명으로 날개를 단 향약 연구가 대성공을 거두자, 허준은 조선 의학의 최고 권위자로서 화려하게 어의의 자리에 복귀해 왕실의 신임을 한 몸에 받는다.",
+          "image_path": "허준/B/3/β/컷4.png",
+          "unique_image_path": "허준/컷4_B3b.png"
+        }
+      ]
+    },
+    {
+      "id": "B-3-γ",
+      "q1": "B",
+      "q2": "3",
+      "q3": "γ",
+      "path_text": "향약 개발 ➔ 왕명 요구 ➔ 후학 양성",
+      "image_folder": "허준/B/3/γ",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/B/3/γ/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄",
+          "description": "허준이 궁중 약재 대신 조선의 산천을 헤매며 흔한 잡풀과 약초(향약)들을 채집해 냄새를 맡고 이로 씹어보며 새로운 처방을 연구한다.",
+          "image_path": "허준/B/3/γ/컷2.png",
+          "unique_image_path": "허준/컷2_B.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄 구도",
+          "description": "보수적인 내의원 의관들이 \"잡풀로 사람을 죽이려 한다\"며 허준을 방해하자, 허준이 직접 왕에게 나아가 향약 연구를 전폭 지원하라는 어명을 받아낸다.",
+          "image_path": "허준/B/3/γ/컷3.png",
+          "unique_image_path": "허준/컷3_B3.png"
+        },
+        {
+          "number": 4,
+          "camera": "롱샷",
+          "description": "나라의 전폭적인 지원 속에서 역병을 잡은 허준은 왕에게 청하여 최초의 국립 지방 의학 교육 기관을 설립하고, 전국에서 모인 인재들을 참된 의원으로 키운다.",
+          "image_path": "허준/B/3/γ/컷4.png",
+          "unique_image_path": "허준/컷4_B3g.png"
+        }
+      ]
+    },
+    {
+      "id": "C-1-α",
+      "q1": "C",
+      "q2": "1",
+      "q3": "α",
+      "path_text": "격리 우선 ➔ 임상 시험 ➔ 민중 보급",
+      "image_folder": "허준/C/1/α",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/C/1/α/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 결단력 있는 표정으로 혜민서의 정문을 굳게 닫아걸고 군사들을 배치하여, 전염을 막기 위한 철저한 강제 격리 조치를 시행한다.",
+          "image_path": "허준/C/1/α/컷2.png",
+          "unique_image_path": "허준/컷2_C.png"
+        },
+        {
+          "number": 3,
+          "camera": "클로즈업",
+          "description": "격리 수용소 내부에서 환자들의 원망과 폭동이 일어나려 하자, 허준이 직접 격리 구역 안으로 들어가 새로 짠 처방 약을 본인이 먼저 마시며 환자들을 안심시킨다.",
+          "image_path": "허준/C/1/α/컷3.png",
+          "unique_image_path": "허준/컷3_C1.png"
+        },
+        {
+          "number": 4,
+          "camera": "와이드",
+          "description": "전염 확산을 막고 내부 치료에 성공한 허준은, 역병 발생 시의 올바른 격리 수칙과 초기 위생 관리법을 한글로 작성해 전국의 모든 고을에 방으로 붙인다.",
+          "image_path": "허준/C/1/α/컷4.png",
+          "unique_image_path": "허준/컷4_C1a.png"
+        }
+      ]
+    },
+    {
+      "id": "C-1-β",
+      "q1": "C",
+      "q2": "1",
+      "q3": "β",
+      "path_text": "격리 우선 ➔ 임상 시험 ➔ 어의 복귀",
+      "image_folder": "허준/C/1/β",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/C/1/β/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 결단력 있는 표정으로 혜민서의 정문을 굳게 닫아걸고 군사들을 배치하여, 전염을 막기 위한 철저한 강제 격리 조치를 시행한다.",
+          "image_path": "허준/C/1/β/컷2.png",
+          "unique_image_path": "허준/컷2_C.png"
+        },
+        {
+          "number": 3,
+          "camera": "클로즈업",
+          "description": "격리 수용소 내부에서 환자들의 원망과 폭동이 일어나려 하자, 허준이 직접 격리 구역 안으로 들어가 새로 짠 처방 약을 본인이 먼저 마시며 환자들을 안심시킨다.",
+          "image_path": "허준/C/1/β/컷3.png",
+          "unique_image_path": "허준/컷3_C1.png"
+        },
+        {
+          "number": 4,
+          "camera": "로우앵글 미디엄",
+          "description": "과단성 있는 방역 대책으로 도성의 멸망을 막아낸 공을 인정받아, 허준은 대신들의 찬사를 받으며 내의원 최고 수장인 어의로 복귀한다.",
+          "image_path": "허준/C/1/β/컷4.png",
+          "unique_image_path": "허준/컷4_C1b.png"
+        }
+      ]
+    },
+    {
+      "id": "C-1-γ",
+      "q1": "C",
+      "q2": "1",
+      "q3": "γ",
+      "path_text": "격리 우선 ➔ 임상 시험 ➔ 후학 양성",
+      "image_folder": "허준/C/1/γ",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/C/1/γ/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 결단력 있는 표정으로 혜민서의 정문을 굳게 닫아걸고 군사들을 배치하여, 전염을 막기 위한 철저한 강제 격리 조치를 시행한다.",
+          "image_path": "허준/C/1/γ/컷2.png",
+          "unique_image_path": "허준/컷2_C.png"
+        },
+        {
+          "number": 3,
+          "camera": "클로즈업",
+          "description": "격리 수용소 내부에서 환자들의 원망과 폭동이 일어나려 하자, 허준이 직접 격리 구역 안으로 들어가 새로 짠 처방 약을 본인이 먼저 마시며 환자들을 안심시킨다.",
+          "image_path": "허준/C/1/γ/컷3.png",
+          "unique_image_path": "허준/컷3_C1.png"
+        },
+        {
+          "number": 4,
+          "camera": "롱샷",
+          "description": "격리 과정에서 많은 이들의 죽음을 목도하고 마음의 짐을 얻은 허준이 낙향하여, 제자들에게 의술뿐만 아니라 환자의 마음을 달래는 인술(仁術)의 중요성을 눈물로 가르친다.",
+          "image_path": "허준/C/1/γ/컷4.png",
+          "unique_image_path": "허준/컷4_C1g.png"
+        }
+      ]
+    },
+    {
+      "id": "C-2-α",
+      "q1": "C",
+      "q2": "2",
+      "q3": "α",
+      "path_text": "격리 우선 ➔ 의서 저술 ➔ 민중 보급",
+      "image_folder": "허준/C/2/α",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/C/2/α/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 결단력 있는 표정으로 혜민서의 정문을 굳게 닫아걸고 군사들을 배치하여, 전염을 막기 위한 철저한 강제 격리 조치를 시행한다.",
+          "image_path": "허준/C/2/α/컷2.png",
+          "unique_image_path": "허준/컷2_C.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄",
+          "description": "허준이 격리된 막사 한구석에서 환자들의 증상 변화와 전염 경로를 날짜별로 꼼꼼히 기록하며, 조선 최초의 체계적인 전염병 방역 의서를 저술한다.",
+          "image_path": "허준/C/2/α/컷3.png",
+          "unique_image_path": "허준/컷3_C2.png"
+        },
+        {
+          "number": 4,
+          "camera": "와이드",
+          "description": "역병이 완전히 물러간 뒤, 허준이 저술한 방역 의서를 바탕으로 전국의 고을마다 전염병 예방수칙을 담은 한글 책자가 인쇄되어 가가호호 보급된다.",
+          "image_path": "허준/C/2/α/컷4.png",
+          "unique_image_path": "허준/컷4_C2a.png"
+        }
+      ]
+    },
+    {
+      "id": "C-2-β",
+      "q1": "C",
+      "q2": "2",
+      "q3": "β",
+      "path_text": "격리 우선 ➔ 의서 저술 ➔ 어의 복귀",
+      "image_folder": "허준/C/2/β",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/C/2/β/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 결단력 있는 표정으로 혜민서의 정문을 굳게 닫아걸고 군사들을 배치하여, 전염을 막기 위한 철저한 강제 격리 조치를 시행한다.",
+          "image_path": "허준/C/2/β/컷2.png",
+          "unique_image_path": "허준/컷2_C.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄",
+          "description": "허준이 격리된 막사 한구석에서 환자들의 증상 변화와 전염 경로를 날짜별로 꼼꼼히 기록하며, 조선 최초의 체계적인 전염병 방역 의서를 저술한다.",
+          "image_path": "허준/C/2/β/컷3.png",
+          "unique_image_path": "허준/컷3_C2.png"
+        },
+        {
+          "number": 4,
+          "camera": "로우앵글 미디엄",
+          "description": "허준이 올린 과학적이고 체계적인 방역 지침서를 본 임금이 깊이 감탄하며, 허준을 즉시 대궐로 불러들여 어의 명패를 하사하고 치하한다.",
+          "image_path": "허준/C/2/β/컷4.png",
+          "unique_image_path": "허준/컷4_C2b.png"
+        }
+      ]
+    },
+    {
+      "id": "C-2-γ",
+      "q1": "C",
+      "q2": "2",
+      "q3": "γ",
+      "path_text": "격리 우선 ➔ 의서 저술 ➔ 후학 양성",
+      "image_folder": "허준/C/2/γ",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/C/2/γ/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 결단력 있는 표정으로 혜민서의 정문을 굳게 닫아걸고 군사들을 배치하여, 전염을 막기 위한 철저한 강제 격리 조치를 시행한다.",
+          "image_path": "허준/C/2/γ/컷2.png",
+          "unique_image_path": "허준/컷2_C.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄",
+          "description": "허준이 격리된 막사 한구석에서 환자들의 증상 변화와 전염 경로를 날짜별로 꼼꼼히 기록하며, 조선 최초의 체계적인 전염병 방역 의서를 저술한다.",
+          "image_path": "허준/C/2/γ/컷3.png",
+          "unique_image_path": "허준/컷3_C2.png"
+        },
+        {
+          "number": 4,
+          "camera": "롱샷",
+          "description": "완성된 전염병 의서를 교재로 삼아, 허준이 시골 서당에서 전국의 젊은 의원들을 모아놓고 대규모 전염병이 발생했을 때의 대처법을 엄격하게 전수한다.",
+          "image_path": "허준/C/2/γ/컷4.png",
+          "unique_image_path": "허준/컷4_C2g.png"
+        }
+      ]
+    },
+    {
+      "id": "C-3-α",
+      "q1": "C",
+      "q2": "3",
+      "q3": "α",
+      "path_text": "격리 우선 ➔ 왕명 요구 ➔ 민중 보급",
+      "image_folder": "허준/C/3/α",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/C/3/α/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 결단력 있는 표정으로 혜민서의 정문을 굳게 닫아걸고 군사들을 배치하여, 전염을 막기 위한 철저한 강제 격리 조치를 시행한다.",
+          "image_path": "허준/C/3/α/컷2.png",
+          "unique_image_path": "허준/컷2_C.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄 구도",
+          "description": "대신들이 \"백성을 가두어 굶겨 죽이려 한다\"며 비난하자, 허준이 왕을 설득해 격리 구역에 군량미와 구호품을 최우선으로 지급하라는 강력한 왕명을 받아낸다.",
+          "image_path": "허준/C/3/α/컷3.png",
+          "unique_image_path": "허준/컷3_C3.png"
+        },
+        {
+          "number": 4,
+          "camera": "와이드",
+          "description": "왕의 지원 아래 안정적으로 전염병을 격리 차단하고 치료해 낸 뒤, 향후 역병 발생 시 백성들이 스스로 대처할 수 있는 위생 지침을 쉬운 한글로 널리 보급한다.",
+          "image_path": "허준/C/3/α/컷4.png",
+          "unique_image_path": "허준/컷4_C3a.png"
+        }
+      ]
+    },
+    {
+      "id": "C-3-β",
+      "q1": "C",
+      "q2": "3",
+      "q3": "β",
+      "path_text": "격리 우선 ➔ 왕명 요구 ➔ 어의 복귀",
+      "image_folder": "허준/C/3/β",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/C/3/β/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 결단력 있는 표정으로 혜민서의 정문을 굳게 닫아걸고 군사들을 배치하여, 전염을 막기 위한 철저한 강제 격리 조치를 시행한다.",
+          "image_path": "허준/C/3/β/컷2.png",
+          "unique_image_path": "허준/컷2_C.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄 구도",
+          "description": "대신들이 \"백성을 가두어 굶겨 죽이려 한다\"며 비난하자, 허준이 왕을 설득해 격리 구역에 군량미와 구호품을 최우선으로 지급하라는 강력한 왕명을 받아낸다.",
+          "image_path": "허준/C/3/β/컷3.png",
+          "unique_image_path": "허준/컷3_C3.png"
+        },
+        {
+          "number": 4,
+          "camera": "로우앵글 미디엄",
+          "description": "왕명과 연계한 완벽한 방역 행정으로 도성을 지켜낸 허준은, 왕실과 조정의 절대적인 신임을 얻으며 마침내 수석 어의의 자리에 다시 오른다.",
+          "image_path": "허준/C/3/β/컷4.png",
+          "unique_image_path": "허준/컷4_C3b.png"
+        }
+      ]
+    },
+    {
+      "id": "C-3-γ",
+      "q1": "C",
+      "q2": "3",
+      "q3": "γ",
+      "path_text": "격리 우선 ➔ 왕명 요구 ➔ 후학 양성",
+      "image_folder": "허준/C/3/γ",
+      "cuts": [
+        {
+          "number": 1,
+          "camera": "로우앵글 미디엄",
+          "description": "혜민서 마당이 역병 환자들로 가득 차 아비규환이다. 허준이 땀에 젖은 채 이리저리 뛰어나니며 환자들을 돌보고 있다. 약재는 턱없이 부족하다.",
+          "image_path": "허준/C/3/γ/컷1.png",
+          "unique_image_path": "허준/컷1.png"
+        },
+        {
+          "number": 2,
+          "camera": "미디엄 와이드",
+          "description": "허준이 결단력 있는 표정으로 혜민서의 정문을 굳게 닫아걸고 군사들을 배치하여, 전염을 막기 위한 철저한 강제 격리 조치를 시행한다.",
+          "image_path": "허준/C/3/γ/컷2.png",
+          "unique_image_path": "허준/컷2_C.png"
+        },
+        {
+          "number": 3,
+          "camera": "미디엄 구도",
+          "description": "대신들이 \"백성을 가두어 굶겨 죽이려 한다\"며 비난하자, 허준이 왕을 설득해 격리 구역에 군량미와 구호품을 최우선으로 지급하라는 강력한 왕명을 받아낸다.",
+          "image_path": "허준/C/3/γ/컷3.png",
+          "unique_image_path": "허준/컷3_C3.png"
+        },
+        {
+          "number": 4,
+          "camera": "롱샷",
+          "description": "성공적인 방역 후 허준은 관직을 양보하는 대신 왕에게 청하여 국가 공인 의학 연구소를 설립하고, 다음 세대를 책임질 엘리트 의원들을 양성하는 데 여생을 바친다.",
+          "image_path": "허준/C/3/γ/컷4.png",
+          "unique_image_path": "허준/컷4_C3g.png"
+        }
+      ]
+    }
+  ]
+}

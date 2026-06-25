@@ -1,0 +1,256 @@
+{
+  "eventId": "yi-myeongnyang-1597",
+  "root": {
+    "narration": "1597년 9월, 이순신 장군은 큰 걱정에 빠졌어요. 칠천량 해전에서 조선 수군이 크게 져서 배가 단 13척밖에 남지 않았거든요. 일본군의 배는 무려 133척이나 됐어요. 이순신 장군은 포기하지 않고 명량의 빠른 물살을 이용하기로 결심했어요.",
+    "choices": [
+      {
+        "label": "만약 이순신 장군이 좁은 물목 대신 넓은 바다에서 싸웠다면?",
+        "node": {
+          "narration": "넓은 바다에서는 일본 배들이 사방으로 펼쳐져 조선 배를 둘러쌀 수 있었어요. 이순신 장군의 배 한 척 한 척이 더 큰 위험에 놓이게 됐지요. 그래도 장군은 용감하게 앞장서서 싸웠어요.",
+          "choices": [
+            {
+              "label": "만약 장군이 스스로 맨 앞에 나서서 싸웠다면?",
+              "node": {
+                "narration": "이순신 장군이 직접 배의 맨 앞에 서자, 병사들의 눈이 반짝였어요. 장군의 용기를 본 병사들도 두려움을 떨치고 힘껏 노를 저었어요. 하지만 일본 배들이 사방에서 밀려왔어요.",
+                "choices": [
+                  {
+                    "label": "만약 병사들이 서로 힘을 합쳐 한 방향으로 집중 공격했다면?",
+                    "node": {
+                      "narration": "병사들은 장군의 신호에 따라 한 방향으로 모든 힘을 모았어요. 조선 배들이 하나가 되어 일본 배들을 밀어붙였지요. 비록 배는 적었지만, 마음을 모은 힘은 훨씬 강했어요.",
+                      "ending": "조선 수군은 힘을 하나로 합쳐 일본 배 여러 척을 물리쳤어요. 넓은 바다에서도 함께하는 용기가 얼마나 큰 힘을 발휘하는지 보여 준 싸움이었지요. 이순신 장군과 병사들의 단결은 오늘날까지도 우리 마음속에 빛나고 있어요.",
+                      "panels": [
+                        {
+                          "scene": "이순신 장군이 배 맨 앞에 서서 병사들을 이끌고 있어요.",
+                          "sceneEn": "Admiral Yi Sun-sin stands bravely at the bow of a Korean turtle ship, leading his sailors on the open sea, determined expression, bright daylight"
+                        },
+                        {
+                          "scene": "조선 배들이 일렬로 줄을 서서 일본 배를 향해 돌진해요.",
+                          "sceneEn": "A small fleet of Korean warships charging together in formation toward a large Japanese fleet on the open ocean, dynamic waves"
+                        },
+                        {
+                          "scene": "병사들이 힘을 합쳐 한 방향으로 대포를 겨냥하고 있어요.",
+                          "sceneEn": "Korean soldiers working together on a warship deck, aiming cannons in the same direction, teamwork and determination, sea battle scene"
+                        },
+                        {
+                          "scene": "일본 배들이 물러나고 조선 병사들이 기뻐하고 있어요.",
+                          "sceneEn": "Japanese ships retreating in the background while Korean sailors cheer on their ship deck, sunset sky, victorious atmosphere"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "label": "만약 병사들이 큰 소리로 함성을 질러 적을 놀라게 했다면?",
+                    "node": {
+                      "narration": "병사들은 있는 힘껏 목청을 높여 함성을 질렀어요. 갑작스러운 큰 소리에 일본군 배들이 잠시 멈칫했지요. 그 짧은 순간이 조선 수군에게 소중한 기회가 됐어요.",
+                      "ending": "함성 소리에 놀란 일본 배들 사이에 혼란이 생겼고, 조선 수군은 그 틈을 타 용감하게 싸웠어요. 목소리 하나도 훌륭한 무기가 될 수 있다는 걸 보여 준 싸움이었어요. 이순신 장군은 어떤 상황에서도 지혜를 잃지 않았답니다.",
+                      "panels": [
+                        {
+                          "scene": "이순신 장군이 배 위에서 병사들에게 함성을 지르라고 신호해요.",
+                          "sceneEn": "Admiral Yi Sun-sin gesturing to his sailors on a warship deck, signaling them to shout, open sea background, bold and calm expression"
+                        },
+                        {
+                          "scene": "조선 병사들이 모두 입을 크게 벌리고 힘차게 함성을 질러요.",
+                          "sceneEn": "Korean sailors on ship deck shouting loudly together, mouths wide open, fists raised, energetic and courageous atmosphere, ocean waves"
+                        },
+                        {
+                          "scene": "갑작스런 함성에 일본 배들이 잠시 흔들리며 멈칫해요.",
+                          "sceneEn": "Japanese warships pausing and showing disarray on the sea, surprised reaction, Korean ships visible in the foreground"
+                        },
+                        {
+                          "scene": "조선 수군이 기회를 잡아 앞으로 힘차게 나아가요.",
+                          "sceneEn": "Korean warships surging forward on the ocean, sailors rowing vigorously, hopeful and victorious mood, bright sky"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "label": "만약 장군이 병사들에게 먼저 용기를 주는 말을 했다면?",
+              "node": {
+                "narration": "이순신 장군은 싸움 전에 병사들을 불러 모았어요. '살고자 하면 죽을 것이요, 죽고자 하면 살 것이다!'라는 힘찬 말로 병사들의 마음에 불을 지폈지요. 병사들의 눈빛이 달라졌어요.",
+                "choices": [
+                  {
+                    "label": "만약 병사들이 장군의 말을 듣고 두려움을 떨쳐 버렸다면?",
+                    "node": {
+                      "narration": "장군의 말 한마디가 병사들의 마음속 두려움을 녹여 버렸어요. 병사들은 서로의 어깨를 두드리며 용기를 나눴지요. 그 용기가 넓은 바다 위에서도 빛을 발했어요.",
+                      "ending": "용기를 얻은 조선 병사들은 최선을 다해 싸웠고, 일본 함대에 맞서 훌륭히 버텨 냈어요. 한 사람의 따뜻한 말이 많은 사람에게 힘이 될 수 있다는 걸 보여 준 싸움이에요. 이순신 장군의 말은 지금도 우리에게 용기를 준답니다.",
+                      "panels": [
+                        {
+                          "scene": "이순신 장군이 병사들 앞에서 힘차게 연설하고 있어요.",
+                          "sceneEn": "Admiral Yi Sun-sin standing on a ship deck, giving a passionate speech to gathered Korean sailors, inspiring and warm atmosphere, open sea"
+                        },
+                        {
+                          "scene": "병사들이 장군의 말을 들으며 눈빛이 빛나고 있어요.",
+                          "sceneEn": "Korean sailors listening intently to their admiral, eyes wide and shining with determination, ship deck, daytime"
+                        },
+                        {
+                          "scene": "병사들이 서로 어깨를 두드리며 용기를 나누고 있어요.",
+                          "sceneEn": "Korean sailors patting each other on the shoulders, smiling and encouraging one another on the warship deck, uplifting scene"
+                        },
+                        {
+                          "scene": "조선 수군이 힘차게 노를 저으며 바다로 나아가요.",
+                          "sceneEn": "Korean warships moving forward on the open sea, sailors rowing with great energy and confidence, blue ocean, hopeful atmosphere"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "label": "만약 병사들이 장군 곁에 더 가까이 모여 함께 싸웠다면?",
+                    "node": {
+                      "narration": "병사들은 장군의 배 주위로 촘촘히 모여들었어요. 서로 가까이 있으니 신호를 주고받기도 쉬웠고, 마음도 든든했지요. 일본 배들이 끼어들 틈이 줄어들었어요.",
+                      "ending": "조선 수군은 가까이 뭉쳐 서로를 지키며 일본 함대와 맞섰어요. 함께 있을 때 더 강해진다는 것을 온몸으로 보여 준 싸움이었지요. 이순신 장군과 병사들의 우정과 신뢰는 오늘날에도 아름답게 전해져요.",
+                      "panels": [
+                        {
+                          "scene": "이순신 장군의 배 주위로 조선 배들이 가까이 모여들어요.",
+                          "sceneEn": "Korean warships gathering closely around Admiral Yi's flagship on the open sea, formation scene, warm camaraderie"
+                        },
+                        {
+                          "scene": "병사들이 손짓으로 서로 신호를 주고받으며 움직여요.",
+                          "sceneEn": "Korean sailors signaling each other with hand gestures between ships, coordinated teamwork on the sea, focused expressions"
+                        },
+                        {
+                          "scene": "조선 배들이 촘촘히 뭉쳐 일본 배의 접근을 막아요.",
+                          "sceneEn": "A tight cluster of Korean warships blocking approaching Japanese vessels, defensive formation on the sea, determined sailors"
+                        },
+                        {
+                          "scene": "조선 병사들이 서로 웃으며 승리의 기쁨을 나눠요.",
+                          "sceneEn": "Korean sailors smiling and cheering together on a warship deck after battle, joyful and warm atmosphere, calm sea in background"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "label": "만약 이순신 장군이 명량의 빠른 물살을 더 적극적으로 이용했다면?",
+        "node": {
+          "narration": "명량의 울돌목은 물살이 매우 빠르고 좁아서 배를 다루기가 어려운 곳이에요. 이순신 장군은 이 특별한 지형을 더 깊이 활용하기로 했어요. 물살의 방향이 바뀌는 시간까지 꼼꼼히 계산했지요.",
+          "choices": [
+            {
+              "label": "만약 장군이 물살이 바뀌는 딱 그 순간을 기다렸다면?",
+              "node": {
+                "narration": "이순신 장군은 조급해하지 않고 물살이 바뀌는 순간을 차분히 기다렸어요. 드디어 물살의 방향이 바뀌자 장군은 '지금이다!' 하고 외쳤지요. 일본 배들은 갑자기 바뀐 물살에 우왕좌왕했어요.",
+                "choices": [
+                  {
+                    "label": "만약 조선 배들이 물살을 타고 빠르게 앞으로 돌진했다면?",
+                    "node": {
+                      "narration": "조선 배들은 물살을 등에 업고 화살처럼 앞으로 나아갔어요. 빠른 속도에 일본 배들이 미처 피하지 못했지요. 지형과 자연을 잘 이용하는 것이 얼마나 중요한지 보여 줬어요.",
+                      "ending": "물살을 탄 조선 수군은 빠르게 일본 함대를 흩트려 놓았어요. 자연의 힘을 지혜롭게 이용한 이순신 장군의 전략 덕분에 적은 배로도 큰 승리를 거뒀지요. 이 싸움은 용기와 지혜가 함께할 때 얼마나 놀라운 일이 일어나는지 알려 줘요.",
+                      "panels": [
+                        {
+                          "scene": "이순신 장군이 물살의 방향을 살피며 조용히 기다려요.",
+                          "sceneEn": "Admiral Yi Sun-sin standing calmly at the helm of his warship, observing the swirling currents of the Myeongnyang strait, focused and wise expression"
+                        },
+                        {
+                          "scene": "물살이 바뀌는 순간 장군이 힘차게 출격 신호를 보내요.",
+                          "sceneEn": "Admiral Yi raising his hand as a signal to advance, strong current visible in the narrow strait, Korean warships ready to move, dramatic moment"
+                        },
+                        {
+                          "scene": "조선 배들이 물살을 타고 빠르게 일본 배를 향해 돌진해요.",
+                          "sceneEn": "Korean warships surging forward on fast-moving currents through a narrow strait, charging toward Japanese ships, dynamic and powerful scene"
+                        },
+                        {
+                          "scene": "물살에 휩쓸린 일본 배들이 흩어지고 조선 수군이 승리해요.",
+                          "sceneEn": "Japanese warships scattered and struggling in the strong currents, Korean sailors cheering on their ships, bright sky, victorious scene"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "label": "만약 조선 배들이 좁은 목에서 적이 들어오는 것을 막았다면?",
+                    "node": {
+                      "narration": "조선 배들은 좁은 물목 입구를 꼼꼼히 막았어요. 일본 배들은 한꺼번에 들어올 수 없어서 한 척씩 상대해야 했지요. 좁은 공간이 오히려 조선 수군에게 유리해졌어요.",
+                      "ending": "조선 수군은 좁은 명량을 방패처럼 이용해 일본 함대의 수적 우위를 무너뜨렸어요. 숫자가 많다고 항상 이기는 게 아니라, 지혜로운 작전이 더 중요하다는 걸 보여 준 싸움이에요. 이순신 장군의 지혜는 오늘날 우리에게도 큰 가르침을 줘요.",
+                      "panels": [
+                        {
+                          "scene": "조선 배들이 나란히 줄을 서서 좁은 물목 입구를 막아요.",
+                          "sceneEn": "Korean warships lined up side by side, blocking the entrance of the narrow Myeongnyang strait, strategic formation, calm but tense atmosphere"
+                        },
+                        {
+                          "scene": "일본 배들이 좁은 입구에서 밀리며 서로 부딪혀요.",
+                          "sceneEn": "Japanese warships crowding and bumping into each other at the narrow strait entrance, unable to advance, chaotic scene on the water"
+                        },
+                        {
+                          "scene": "조선 수군이 한 척씩 오는 일본 배를 차례로 막아내요.",
+                          "sceneEn": "Korean sailors confidently defending against Japanese ships entering one at a time through the narrow strait, focused teamwork, sea battle"
+                        },
+                        {
+                          "scene": "이순신 장군이 흐뭇하게 미소 지으며 병사들을 바라봐요.",
+                          "sceneEn": "Admiral Yi Sun-sin smiling warmly as he watches his sailors successfully defend the strait, peaceful expression, sea in background, sunset light"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            },
+            {
+              "label": "만약 장군이 물살을 이용해 일본 배들이 서로 엉키게 했다면?",
+              "node": {
+                "narration": "이순신 장군은 일본 배들을 좁은 물목 안으로 유인했어요. 빠른 물살 때문에 일본 배들이 방향을 잡지 못하고 서로 엉켜 버렸지요. 장군의 계획이 딱 들어맞은 순간이었어요.",
+                "choices": [
+                  {
+                    "label": "만약 엉킨 일본 배들 사이로 조선 배가 빠르게 파고들었다면?",
+                    "node": {
+                      "narration": "조선 배들은 날쌔게 엉킨 일본 배들 사이를 헤집고 다녔어요. 혼란에 빠진 일본군은 제대로 싸울 수가 없었지요. 이순신 장군의 작전이 빛을 발하는 순간이었어요.",
+                      "ending": "혼란에 빠진 일본 함대는 스스로 무너지기 시작했어요. 이순신 장군은 적의 약점을 정확히 꿰뚫어 보는 놀라운 지혜를 보여 줬지요. 작은 힘으로도 지혜를 쓰면 큰 어려움을 이길 수 있다는 걸 명량 대첩이 가르쳐 줘요.",
+                      "panels": [
+                        {
+                          "scene": "이순신 장군이 손가락으로 일본 배들의 움직임을 가리키며 작전을 설명해요.",
+                          "sceneEn": "Admiral Yi Sun-sin pointing at the movement of Japanese ships from his warship deck, explaining his clever strategy to officers, calm sea, focused scene"
+                        },
+                        {
+                          "scene": "일본 배들이 좁은 물목에서 물살에 휩쓸려 서로 엉켜요.",
+                          "sceneEn": "Japanese warships tangled and spinning in strong currents inside a narrow strait, chaotic and disorganized, viewed from above"
+                        },
+                        {
+                          "scene": "조선 배들이 빠르게 엉킨 일본 배 사이를 날쌔게 지나가요.",
+                          "sceneEn": "Sleek Korean warships swiftly maneuvering between tangled Japanese ships in the strait, agile and confident movement, sea spray"
+                        },
+                        {
+                          "scene": "조선 수군이 환호하며 이순신 장군을 향해 절을 해요.",
+                          "sceneEn": "Korean sailors cheering and bowing respectfully toward Admiral Yi Sun-sin on the ship deck, joyful victory celebration, calm sea, warm sunset"
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "label": "만약 장군이 엉킨 틈에 거북선처럼 단단한 배를 앞세웠다면?",
+                    "node": {
+                      "narration": "이순신 장군은 가장 튼튼한 배를 앞에 세워 방패처럼 활용했어요. 단단한 배가 먼저 나아가자 일본군의 공격이 튕겨 나갔지요. 뒤따르는 조선 배들도 용기를 얻어 힘차게 나아갔어요.",
+                      "ending": "튼튼한 배를 방패 삼아 나아간 조선 수군은 일본 함대를 당당히 물리쳤어요. 가장 든든한 것을 앞에 세우는 이순신 장군의 지혜는 오늘날 '내가 먼저 나서겠다'는 용기의 상징이 됐어요. 명량 대첩은 지혜와 용기가 만들어 낸 기적이에요.",
+                      "panels": [
+                        {
+                          "scene": "가장 튼튼한 조선 배가 앞장서서 일본 배들을 향해 나아가요.",
+                          "sceneEn": "The sturdiest Korean warship leading the charge toward tangled Japanese ships in the strait, bold and powerful scene, strong waves"
+                        },
+                        {
+                          "scene": "일본군의 공격이 튼튼한 배에 튕겨 나가요.",
+                          "sceneEn": "Projectiles bouncing off the reinforced hull of the lead Korean warship, Japanese soldiers looking surprised, dramatic sea battle scene"
+                        },
+                        {
+                          "scene": "뒤따르던 조선 병사들이 용기를 얻어 함께 앞으로 나아가요.",
+                          "sceneEn": "Korean sailors on following warships gaining courage, rowing forward together with determination, inspired by their lead ship, ocean background"
+                        },
+                        {
+                          "scene": "이순신 장군과 병사들이 함께 하늘을 바라보며 감사해요.",
+                          "sceneEn": "Admiral Yi Sun-sin and his sailors looking up at the sky together on the ship deck after victory, grateful and peaceful expressions, golden sunset over the sea"
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

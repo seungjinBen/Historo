@@ -1,0 +1,36 @@
+databases:
+  - name: historo-db
+    plan: free
+    databaseName: historo
+    user: historo
+
+services:
+  - type: web
+    name: historo-backend
+    runtime: docker
+    plan: free
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DB_HOST
+        fromDatabase:
+          name: historo-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: historo-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: historo-db
+          property: database
+      - key: DB_USERNAME
+        fromDatabase:
+          name: historo-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: historo-db
+          property: password
