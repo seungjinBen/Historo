@@ -312,21 +312,11 @@ function RightPage({ spread, picks, comic, event, speak, stop, speaking, onChoos
 
   // spread 4 — 컷 ③④
   if (spread === 4) {
-    const sl = picks.length === 3 && comic
-      ? comic.storylines.find(
-          (s) => s.q1 === Q1_KEYS[picks[0]] && s.q2 === Q2_KEYS[picks[1]] && s.q3 === Q3_KEYS[picks[2]]
-        ) ?? null
-      : null;
     return (
       <div className="mbook-side mbook-side-comic">
         <span className="mbook-eyebrow">내가 만든 4컷 · ③④</span>
         <CutPanel idx={2} scene={cuts?.[2]?.description ?? ""} cdnUrl={cuts?.[2]?.imageUrl} />
         <CutPanel idx={3} scene={cuts?.[3]?.description ?? ""} cdnUrl={cuts?.[3]?.imageUrl} />
-        {sl?.pathText && (
-          <p className="gbook-ending-text">
-            선택한 길: <strong>{sl.pathText}</strong>
-          </p>
-        )}
       </div>
     );
   }
