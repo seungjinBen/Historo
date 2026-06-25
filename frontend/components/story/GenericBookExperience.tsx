@@ -94,8 +94,10 @@ const COVER_ICON: Record<string, string> = {
 const STEP_LABELS = ["제 1 장 · 첫 번째 선택", "제 2 장 · 두 번째 선택", "제 3 장 · 세 번째 선택"];
 
 type Phase = "closed" | "opening" | "open";
-type SpreadKey = 0 | 1 | 2 | 3 | 4 | 5 | 6;
-const LAST_SPREAD: SpreadKey = 6;
+type SpreadKey = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+const REAL_FIRST = 5 as SpreadKey;
+const REAL_LAST  = 8 as SpreadKey;
+const LAST_SPREAD: SpreadKey = 9;
 
 // ── 컷 패널 (이순신 mbook-panel과 동일 구조) ───
 // shimmer 배경으로 로딩 표시, 이미지 로드 완료 시 figcaption 아래 표시
@@ -222,27 +224,27 @@ function LeftPage({ spread, picks, comic, event }: {
     );
   }
 
-  // spread 5 — 실제 역사로 (왼쪽: 선택 경로 + 아이콘)
-  if (spread === 5) {
-    const sl = picks.length === 3 && comic
+  // spread 5-8 — 실제 역사 컷 1장씩 (이순신 구조 동일)
+  if (spread >= REAL_FIRST && spread <= REAL_LAST) {
+    const idx = (spread - REAL_FIRST) as number;
+    const cuts = picks.length === 3 && comic
       ? comic.storylines.find(
           (s) => s.q1 === Q1_KEYS[picks[0]] && s.q2 === Q2_KEYS[picks[1]] && s.q3 === Q3_KEYS[picks[2]]
-        ) ?? null
+        )?.cuts ?? null
       : null;
     return (
       <div className="mbook-side mbook-side-real-cut">
-        <span className="mbook-eyebrow mbook-eyebrow-real">실제 역사로</span>
-        <div className="gbook-end-icon">{icon}</div>
-        <p className="mbook-end-quote">{event.title}</p>
-        <div className="mbook-end-divider" aria-hidden="true">✦  ◆  ✦</div>
-        {sl?.pathText && (
-          <p className="gbook-real-path">내가 선택한 길<br /><strong>{sl.pathText}</strong></p>
-        )}
+        <span className="mbook-eyebrow mbook-eyebrow-real">실제 역사 · {idx + 1}장</span>
+        <CutPanel
+          idx={idx}
+          scene={cuts?.[idx]?.description ?? ""}
+          cdnUrl={cuts?.[idx]?.imageUrl}
+        />
       </div>
     );
   }
 
-  // spread 6 — CTA 왼쪽
+  // spread 9 — CTA 왼쪽
   return (
     <div className="mbook-side mbook-side-ending">
       <span className="mbook-eyebrow">책을 덮으며</span>
@@ -329,13 +331,33 @@ function RightPage({ spread, picks, comic, event, speak, stop, speaking, onChoos
     );
   }
 
-  // spread 5 — 실제 역사로 (오른쪽: factCard + 실록 출처)
-  if (spread === 5) {
+  // spread 5-8 — 실제 역사 오른쪽 (컷5=factCard, 컷6-8=장면 설명)
+  if (spread >= REAL_FIRST && spread <= REAL_LAST) {
+    const idx = (spread - REAL_FIRST) as number;
+    const cuts = picks.length === 3 && comic
+      ? comic.storylines.find(
+          (s) => s.q1 === Q1_KEYS[picks[0]] && s.q2 === Q2_KEYS[picks[1]] && s.q3 === Q3_KEYS[picks[2]]
+        )?.cuts ?? null
+      : null;
+    if (idx === 0) {
+      return (
+        <div className="mbook-side mbook-side-real-text">
+          <span className="mbook-eyebrow mbook-eyebrow-real">실록 이야기</span>
+          <h2 className="mbook-h2 mbook-real-title">{event.title}</h2>
+          <p className="gbook-real-fact">{event.factCard}</p>
+          <div className="gbook-real-source">출처 · {event.source}</div>
+          {event.sillokUrl && (
+            <a href={event.sillokUrl} target="_blank" rel="noopener noreferrer" className="gbook-real-sillok">
+              조선왕조실록 원문 보기 →
+            </a>
+          )}
+        </div>
+      );
+    }
     return (
       <div className="mbook-side mbook-side-real-text">
-        <span className="mbook-eyebrow mbook-eyebrow-real">실록 이야기</span>
-        <h2 className="mbook-h2 mbook-real-title">{event.title}</h2>
-        <p className="gbook-real-fact">{event.factCard}</p>
+        <span className="mbook-eyebrow mbook-eyebrow-real">실록 이야기 · {idx + 1}장</span>
+        <h2 className="mbook-h2 mbook-real-title">{cuts?.[idx]?.description ?? ""}</h2>
         <div className="gbook-real-source">출처 · {event.source}</div>
         {event.sillokUrl && (
           <a href={event.sillokUrl} target="_blank" rel="noopener noreferrer" className="gbook-real-sillok">
@@ -346,7 +368,7 @@ function RightPage({ spread, picks, comic, event, speak, stop, speaking, onChoos
     );
   }
 
-  // spread 6 — CTA
+  // spread 9 — CTA
   return (
     <div className="mbook-side mbook-side-cta">
       <span className="mbook-eyebrow">책을 덮으며</span>
@@ -577,15 +599,19 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
           <button className="mbook-ctrl primary" onClick={() => goSpread(5, "next")}>실제 역사 공부하기 →</button>
         </div>
       )}
-      {phase === "open" && spread === 5 && !flip && (
+      {/* 실제 역사 스프레드 5-8: 이전/다음 */}
+      {phase === "open" && spread >= REAL_FIRST && spread <= REAL_LAST && !flip && (
         <div className="mbook-controls">
-          <button className="mbook-ctrl" onClick={() => goSpread(4, "prev")}>← 이전 장</button>
-          <button className="mbook-ctrl primary" onClick={() => goSpread(6, "next")}>마무리 →</button>
+          <button className="mbook-ctrl" onClick={() => goSpread((spread - 1) as SpreadKey, "prev")}>← 이전 장</button>
+          {spread < REAL_LAST
+            ? <button className="mbook-ctrl primary" onClick={() => goSpread((spread + 1) as SpreadKey, "next")}>다음 장 →</button>
+            : <button className="mbook-ctrl primary" onClick={() => goSpread(9, "next")}>마무리 →</button>
+          }
         </div>
       )}
-      {phase === "open" && spread === 6 && !flip && (
+      {phase === "open" && spread === 9 && !flip && (
         <div className="mbook-controls">
-          <button className="mbook-ctrl" onClick={() => goSpread(5, "prev")}>← 이전 장</button>
+          <button className="mbook-ctrl" onClick={() => goSpread(8, "prev")}>← 이전 장</button>
           <button className="mbook-ctrl primary" onClick={restart}>다시 펼치기 ↺</button>
         </div>
       )}
