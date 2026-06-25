@@ -1,8 +1,6 @@
-// 브라우저에서 직접 외부 백엔드를 호출하면 CORS 차단됨.
-// NEXT_PUBLIC_API_BASE가 없으면 Next.js 서버사이드 프록시(/api/proxy/*)를 사용.
+// 백엔드 직접 호출 (CORS는 백엔드 WebConfig에서 허용)
 const BASE =
-  process.env.NEXT_PUBLIC_API_BASE ??
-  (typeof window !== "undefined" ? "/api/proxy" : "https://historo-backend.onrender.com");
+  process.env.NEXT_PUBLIC_API_BASE ?? "https://historo-backend.onrender.com";
 
 // 백엔드 S3 URL(NFD 인코딩) → glory CloudFront URL(NFC 인코딩)로 교체
 const OLD_S3 = "https://historo-images.s3.ap-northeast-2.amazonaws.com";
