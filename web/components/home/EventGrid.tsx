@@ -9,6 +9,8 @@ import type { EventMeta, HeritageEvent } from "@/lib/types";
 function EventBoxThumb({ ev, heritage }: { ev: EventMeta; heritage: HeritageEvent | null }) {
   const [ok, setOk] = useState(false);
   const [err, setErr] = useState(false);
+  const [anchorErr, setAnchorErr] = useState(false);
+
   if (ev.status === "coming") {
     return (
       <div className="event-thumb event-thumb-locked" aria-hidden="true">
@@ -19,9 +21,11 @@ function EventBoxThumb({ ev, heritage }: { ev: EventMeta; heritage: HeritageEven
       </div>
     );
   }
-  const src = ev.status === "ready"
-    ? `/images/${ev.id}/_anchor.png`
-    : (heritage?.heritageItems?.[0]?.imagePath ?? null);
+
+  const anchorSrc = `/images/${ev.id}/_anchor.png`;
+  const heritageSrc = heritage?.heritageItems?.[0]?.imagePath ?? null;
+  const src = !anchorErr ? anchorSrc : heritageSrc;
+
   if (!src || err) {
     return (
       <div className="event-thumb">
@@ -36,7 +40,10 @@ function EventBoxThumb({ ev, heritage }: { ev: EventMeta; heritage: HeritageEven
         alt=""
         className={ok ? "loaded" : ""}
         onLoad={() => setOk(true)}
-        onError={() => setErr(true)}
+        onError={() => {
+          if (!anchorErr) { setAnchorErr(true); setOk(false); }
+          else setErr(true);
+        }}
       />
     </div>
   );
