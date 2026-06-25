@@ -256,6 +256,8 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
 /* ════════════════════════════════════════
    intro / play 텍스트
 ════════════════════════════════════════ */
+.intro-hero { width: 100%; max-height: 320px; overflow: hidden; border-radius: 12px; margin-bottom: 20px; background: var(--bg-muted); }
+.intro-hero img { width: 100%; height: 320px; object-fit: cover; object-position: top; display: block; border-radius: 12px; }
 .fact-text { font-size: 21px; line-height: 1.75; color: var(--ink); }
 .narr      { font-size: 20px; line-height: 1.8; margin: 4px 0 24px; animation: floatIn .5s ease both; }
 
@@ -5294,12 +5296,22 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   transition: transform .25s ease, box-shadow .25s ease;
   overflow: hidden;
 }
+.gallery-cover-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  display: block;
+}
 .gallery-book-cover::before {
   content: '';
   position: absolute;
   inset: 12px;
   border: 1px solid rgba(251, 229, 164, 0.45);
   border-radius: 4px;
+  z-index: 1;
   pointer-events: none;
 }
 .gallery-book-eyebrow {
