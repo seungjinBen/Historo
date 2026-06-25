@@ -2,29 +2,35 @@
 
 /* eslint-disable @next/next/no-img-element */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { GlossText } from "@/components/common/Glossary";
 import { HeritageIcon } from "@/components/common/HeritageIcon";
 import { HISTORY_CONTENT, NODE_PREVIEW_PATH } from "@/lib/home-content";
+import { api, EVENT_TO_EPISODE } from "@/lib/api";
 import { imgUrl } from "@/lib/images";
 import type { EventMeta, HeritageEvent, HeritageItem } from "@/lib/types";
 
-function MiniPanel({ eventId, pathKey, n }: { eventId: string; pathKey: string; n: number }) {
-  const [err, setErr] = useState(false);
+function MiniPanel({ localSrc, s3Src, n }: { localSrc: string; s3Src?: string; n: number }) {
+  const [localErr, setLocalErr] = useState(false);
+  const [s3Err, setS3Err] = useState(false);
   const [ok, setOk] = useState(false);
+
+  const src = localErr ? (s3Src && !s3Err ? s3Src : null) : localSrc;
+
+  if (!src) return <div className="mini-panel"><div className="mini-ph">{n}</div></div>;
+
   return (
     <div className="mini-panel">
-      {err ? (
-        <div className="mini-ph">{n}</div>
-      ) : (
-        <img
-          src={imgUrl(eventId, `${pathKey}_panel${n}.png`)}
-          alt={`${n}번 컷`}
-          className={ok ? "loaded" : ""}
-          onLoad={() => setOk(true)}
-          onError={() => setErr(true)}
-        />
-      )}
+      <img
+        src={src}
+        alt={`${n}번 컷`}
+        className={ok ? "loaded" : ""}
+        onLoad={() => setOk(true)}
+        onError={() => {
+          if (!localErr) { setLocalErr(true); setOk(false); }
+          else setS3Err(true);
+        }}
+      />
     </div>
   );
 }
@@ -104,6 +110,28 @@ export function Timeline({
   onOpenEvent,
 }: Props) {
   const [expanded, setExpanded] = useState(false);
+
+  // 에피소드별 S3 프리뷰 이미지 (A-1-α 첫 번째 스토리라인 4컷)
+  const [s3Cuts, setS3Cuts] = useState<Record<string, string[]>>({});
+  useEffect(() => {
+    events
+      .filter((ev) => ev.status === "ready")
+      .forEach((ev) => {
+        const kr = EVENT_TO_EPISODE[ev.id];
+        if (!kr) return;
+        api.getComic(kr)
+          .then((comic) => {
+            const sl = comic.storylines.find((s) => s.id === "A-1-α");
+            if (!sl) return;
+            const urls = sl.cuts
+              .sort((a, b) => a.number - b.number)
+              .map((c) => c.imageUrl);
+            setS3Cuts((prev) => ({ ...prev, [ev.id]: urls }));
+          })
+          .catch(() => {});
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const ERAS = ["조선 초기", "조선 중기", "조선 후기"] as const;
   const flatIndex = new Map<string, number>();
   const eraMinIndex: Record<string, number> = {};
@@ -234,8 +262,8 @@ export function Timeline({
                                 {[1, 2, 3, 4].map((n) => (
                                   <MiniPanel
                                     key={n}
-                                    eventId={ev.id}
-                                    pathKey={NODE_PREVIEW_PATH[ev.id] ?? "0-0-0"}
+                                    localSrc={imgUrl(ev.id, `${NODE_PREVIEW_PATH[ev.id] ?? "0-0-0"}_panel${n}.png`)}
+                                    s3Src={s3Cuts[ev.id]?.[n - 1]}
                                     n={n}
                                   />
                                 ))}
