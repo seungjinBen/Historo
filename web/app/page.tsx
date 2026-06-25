@@ -6,6 +6,7 @@
 import { useEffect, useState } from "react";
 
 import { AboutScreen } from "@/components/about/AboutScreen";
+import MeokdolChat from "@/components/MeokdolChat";
 import { GlossaryProvider } from "@/components/common/Glossary";
 import { SiteFooter } from "@/components/common/SiteFooter";
 import { EventGrid } from "@/components/home/EventGrid";
@@ -28,6 +29,7 @@ import type {
   StoryNode,
   Tree,
 } from "@/lib/types";
+
 
 export default function Page() {
   const [screen, setScreen] = useState<Screen>("home");
@@ -170,7 +172,11 @@ export default function Page() {
         />
       )}
 
-      {screen === "about" && <AboutScreen onBack={home} />}
+{screen === "about" && <AboutScreen onBack={home} />}
+
+      {screen === "chat" && (
+        <MeokdolChat key="chat" onBack={home} />
+      )}
 
       {screen === "intro" && event && (
         <IntroScreen
