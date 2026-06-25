@@ -7208,95 +7208,104 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
 /* ════════════════════════════════════════
    먹돌이 채팅 런처 — 이야기 생성 화면용 떠 있는 챗봇 버튼
    ════════════════════════════════════════ */
+/* ── 먹돌이 FAB (pill 스타일, 책 테마) ── */
 .meokdol-fab-wrap {
   position: fixed;
-  right: 22px;
-  bottom: 22px;
+  right: 20px;
+  bottom: 20px;
   z-index: 60;
-  display: flex;
-  align-items: center;
-  gap: 10px;
   pointer-events: none;
-}
-.meokdol-fab-hint {
-  pointer-events: none;
-  font-family: 'Jua', sans-serif;
-  font-size: 13.5px;
-  color: var(--ink);
-  background: #fff;
-  border: 1px solid #EAD9C9;
-  padding: 8px 12px;
-  border-radius: 14px 14px 4px 14px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.10);
-  white-space: nowrap;
-  animation: meokFabHint .35s ease both;
-}
-@keyframes meokFabHint {
-  from { opacity: 0; transform: translateX(8px) scale(.96); }
-  to   { opacity: 1; transform: translateX(0)   scale(1);   }
 }
 .meokdol-fab {
   pointer-events: auto;
   position: relative;
-  width: 64px;
-  height: 64px;
-  border: 0;
-  border-radius: 50%;
-  background: radial-gradient(circle at 32% 28%, #F2786B 0%, #C8453B 60%, #7E2218 100%);
+  display: flex;
+  align-items: center;
+  gap: 0;
+  height: 52px;
+  padding: 0 16px 0 5px;
+  border-radius: 100px;
+  background: linear-gradient(135deg, #3D1A08 0%, #6B2E14 60%, #8B3E20 100%);
+  border: 1.5px solid rgba(251, 193, 90, 0.55);
   box-shadow:
-    0 10px 24px rgba(160,53,44,.42),
-    0 2px 6px rgba(0,0,0,.18),
-    inset 0 2px 4px rgba(255,255,255,.20);
+    0 6px 22px rgba(61, 26, 8, .55),
+    0 2px 8px rgba(0,0,0,.25),
+    inset 0 1px 2px rgba(255,255,255,.12);
   cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+  animation: meokFabBob 3.6s ease-in-out infinite;
+  white-space: nowrap;
+}
+.meokdol-fab:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 10px 28px rgba(61, 26, 8, .65),
+    0 3px 10px rgba(0,0,0,.3),
+    inset 0 1px 2px rgba(255,255,255,.15);
+}
+.meokdol-fab:active  { transform: translateY(0) scale(.97); }
+.meokdol-fab.on      { animation: none; transform: scale(.96); opacity: .85; }
+.meokdol-fab:focus-visible { outline: 3px solid #FBC15A; outline-offset: 3px; }
+
+/* 마스코트 원형 */
+.meokdol-fab-avatar {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: radial-gradient(circle at 32% 28%, #F2786B 0%, #C8453B 60%, #7E2218 100%);
+  border: 2px solid rgba(251, 193, 90, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0;
-  transition: transform .15s ease, box-shadow .15s ease;
-  animation: meokFabBob 3.4s ease-in-out infinite;
 }
-.meokdol-fab:hover {
-  transform: translateY(-2px) scale(1.04);
-  box-shadow:
-    0 14px 30px rgba(160,53,44,.5),
-    0 3px 8px rgba(0,0,0,.22),
-    inset 0 2px 4px rgba(255,255,255,.25);
-}
-.meokdol-fab:active { transform: translateY(0) scale(.98); }
-.meokdol-fab:focus-visible { outline: 3px solid #FBC15A; outline-offset: 3px; }
-.meokdol-fab.on { animation: none; transform: scale(.94); }
-.meokdol-fab-mascot {
-  display: block;
-  width: 52px;
-  height: 52px;
-  overflow: hidden;
-  border-radius: 50%;
-}
-.meokdol-fab-mascot .meokdol-svg {
+.meokdol-fab-avatar .meokdol-svg {
   width: 100%;
   height: 100%;
   max-width: none;
   display: block;
 }
+/* 텍스트 레이블 */
+.meokdol-fab-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding-left: 10px;
+  padding-right: 2px;
+  line-height: 1.25;
+}
+.meokdol-fab-name {
+  font-family: 'Jua', sans-serif;
+  font-size: 14.5px;
+  color: #FBEDC4;
+  letter-spacing: .02em;
+}
+.meokdol-fab-sub {
+  font-family: 'Gowun Dodum', sans-serif;
+  font-size: 11px;
+  color: rgba(251, 237, 196, 0.68);
+}
+/* 펄스 링 */
 .meokdol-fab-pulse {
   position: absolute;
-  inset: -6px;
-  border-radius: 50%;
-  border: 2px solid rgba(200,69,59,.5);
-  animation: meokFabPulse 2.2s ease-out infinite;
+  inset: -5px;
+  border-radius: 100px;
+  border: 2px solid rgba(251, 193, 90, .4);
+  animation: meokFabPulse 2.4s ease-out infinite;
   pointer-events: none;
 }
 @keyframes meokFabBob {
   0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-4px); }
+  50%      { transform: translateY(-5px); }
 }
 @keyframes meokFabPulse {
-  0%   { transform: scale(.85); opacity: .7; }
-  80%  { transform: scale(1.25); opacity: 0; }
-  100% { transform: scale(1.25); opacity: 0; }
+  0%   { transform: scale(.93); opacity: .8; }
+  80%  { transform: scale(1.08); opacity: 0; }
+  100% { transform: scale(1.08); opacity: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .meokdol-fab, .meokdol-fab-pulse, .meokdol-fab-hint { animation: none; }
+  .meokdol-fab, .meokdol-fab-pulse { animation: none; }
 }
 
 /* 백드롭 + 모달 */
@@ -7334,17 +7343,17 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   align-items: center;
   gap: 12px;
   padding: 14px 16px;
-  background: linear-gradient(135deg, #FFE9D6 0%, #FCD8C5 100%);
-  border-bottom: 1px solid #F0D4CE;
+  background: linear-gradient(135deg, #3D1A08 0%, #6B2E14 100%);
+  border-bottom: 1px solid rgba(251,193,90,.25);
 }
 .meokdol-chat-avatar {
   width: 44px;
   height: 44px;
   flex-shrink: 0;
   border-radius: 50%;
-  background: #fff;
-  border: 2px solid #fff;
-  box-shadow: 0 3px 8px rgba(160,53,44,.22);
+  background: radial-gradient(circle at 32% 28%, #F2786B 0%, #C8453B 60%, #7E2218 100%);
+  border: 2px solid rgba(251,193,90,.5);
+  box-shadow: 0 3px 10px rgba(0,0,0,.3);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7361,23 +7370,23 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   margin: 0;
   font-family: 'Jua', sans-serif;
   font-size: 17px;
-  color: var(--ink);
+  color: #FBEDC4;
   line-height: 1.2;
 }
 .meokdol-chat-subtitle {
   margin: 2px 0 0;
   font-family: 'Gowun Dodum', sans-serif;
   font-size: 12.5px;
-  color: var(--ink-soft);
+  color: rgba(251,237,196,.7);
   line-height: 1.3;
 }
 .meokdol-chat-close {
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background: rgba(255,255,255,.85);
-  border: 1px solid var(--border);
-  color: var(--ink-soft);
+  background: rgba(255,255,255,.12);
+  border: 1px solid rgba(255,255,255,.22);
+  color: rgba(251,237,196,.85);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -7385,8 +7394,8 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   flex-shrink: 0;
   transition: background .14s ease, color .14s ease;
 }
-.meokdol-chat-close:hover { background: #fff; color: var(--ink); }
-.meokdol-chat-close:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.meokdol-chat-close:hover { background: rgba(255,255,255,.22); color: #fff; }
+.meokdol-chat-close:focus-visible { outline: 2px solid #FBC15A; outline-offset: 2px; }
 
 .meokdol-chat-body {
   flex: 1;

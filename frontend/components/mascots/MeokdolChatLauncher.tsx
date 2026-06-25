@@ -25,22 +25,18 @@ export function MeokdolChatLauncher() {
   return (
     <>
       <div className="meokdol-fab-wrap">
-        {!hintSeen && !open && (
-          <span className="meokdol-fab-hint" aria-hidden="true">
-            궁금한 거 있어? 물어봐!
-          </span>
-        )}
         <button
           type="button"
           className={"meokdol-fab" + (open ? " on" : "")}
-          onClick={() => {
-            setOpen(true);
-            setHintSeen(true);
-          }}
+          onClick={() => { setOpen(true); setHintSeen(true); }}
           aria-label="먹돌이에게 물어보기"
         >
-          <span className="meokdol-fab-mascot" aria-hidden="true">
+          <span className="meokdol-fab-avatar" aria-hidden="true">
             <MeokdolMascot />
+          </span>
+          <span className="meokdol-fab-text" aria-hidden="true">
+            <span className="meokdol-fab-name">먹돌이</span>
+            <span className="meokdol-fab-sub">역사 궁금증 물어봐!</span>
           </span>
           <span className="meokdol-fab-pulse" aria-hidden="true" />
         </button>
