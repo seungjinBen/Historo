@@ -1,0 +1,124 @@
+{
+  "eventId": "heojun-donguibogam-1613",
+  "root": {
+    "narration": "1613년, 허준이 드디어 '동의보감'을 완성했습니다. 전쟁 중에도 붓을 놓지 않고 16년 동안 써 내려간 의학책이었지요. 이 책 한 권으로 많은 백성의 생명을 구할 수 있었습니다. 자, 만약의 이야기를 함께 떠나볼까요?",
+    "choices": [
+      {
+        "label": "만약 허준이 동의보감을 쓰는 중에 큰 병에 걸린 아이를 만났다면?",
+        "node": {
+          "narration": "허준이 밤늦게 책을 쓰다가 문을 두드리는 소리에 나가보니 한 어머니가 아이를 업고 서 있었습니다. 아이는 높은 열로 의식이 없었지요. 허준은 가방을 들고 뛰어나갔습니다.",
+          "choices": [
+            {
+              "label": "만약 허준이 산에서 직접 약초를 캐어 아이를 고쳤다면?",
+              "node": {
+                "narration": "허준은 횃불을 들고 밤산을 올랐습니다. 이슬을 맞으며 쑥과 도라지, 생강을 캐어 달여 먹이자 새벽녘에 아이의 열이 내렸지요. 해가 뜰 무렵 아이가 '배고파요'라고 말했습니다.",
+                "ending": "허준이 동의보감에 쓴 약초 지식이 그날 밤 아이의 생명을 구했습니다. 책은 단순한 글이 아니라 생명을 살리는 힘이었지요. 허준은 그 아이의 얼굴을 보며 더 열심히 책을 써야겠다고 다짐했습니다.",
+                "panels": [
+                  {
+                    "scene": "허준이 횃불을 들고 밤산을 오르며 약초를 찾는 장면.",
+                    "sceneEn": "Heo Jun climbs a mountain at night holding a torch, searching for medicinal herbs to save a sick child."
+                  },
+                  {
+                    "scene": "허준이 쑥과 도라지를 캐어 약을 달이는 장면.",
+                    "sceneEn": "Heo Jun gathers mugwort and bellflower roots and boils them into medicine by firelight."
+                  },
+                  {
+                    "scene": "아이가 약을 먹고 열이 내리며 눈을 뜨는 장면.",
+                    "sceneEn": "The sick child's fever breaks after taking the medicine, and the child slowly opens his eyes."
+                  },
+                  {
+                    "scene": "아이가 '배고파요'라고 말하고 허준과 어머니가 기뻐하는 장면.",
+                    "sceneEn": "The child says 'I'm hungry!' and Heo Jun and the mother joyfully celebrate the child's recovery."
+                  }
+                ]
+              }
+            },
+            {
+              "label": "만약 아이가 나은 후 허준의 제자가 되었다면?",
+              "node": {
+                "narration": "몇 년 후, 건강해진 그 아이 복이가 허준 앞에 나타났습니다. '선생님처럼 아픈 사람을 고치고 싶어요.' 허준은 복이의 손을 잡고 약초 이름을 하나씩 가르쳐 주었지요.",
+                "ending": "허준에게 생명을 구받은 복이는 훗날 훌륭한 의원이 되었습니다. 한 번의 치료가 새로운 의원을 만들었지요. 동의보감의 지식은 이렇게 사람에서 사람으로 전해졌습니다.",
+                "panels": [
+                  {
+                    "scene": "건강해진 복이가 허준 앞에 나타나 제자가 되겠다고 말하는 장면.",
+                    "sceneEn": "The now-healthy boy Boki appears before Heo Jun, asking to become his apprentice."
+                  },
+                  {
+                    "scene": "허준이 복이의 손을 잡고 약초 이름을 가르쳐 주는 장면.",
+                    "sceneEn": "Heo Jun holds Boki's hand and teaches him the names of medicinal herbs one by one."
+                  },
+                  {
+                    "scene": "복이가 열심히 약초를 공부하는 장면.",
+                    "sceneEn": "Boki studies medicinal herbs diligently, writing notes and memorizing plant names."
+                  },
+                  {
+                    "scene": "훗날 어른이 된 복이가 아픈 사람을 치료하는 의원이 된 장면.",
+                    "sceneEn": "Years later, the grown-up Boki works as a skilled physician treating sick patients."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "label": "만약 동의보감이 완성되던 날 허준이 백성들에게 책을 나누어 주었다면?",
+        "node": {
+          "narration": "동의보감이 완성된 날, 허준은 책을 들고 시장으로 나갔습니다. 비싼 의원을 부를 수 없었던 가난한 백성들을 위해 직접 책을 보여주며 설명했지요. 사람들이 빙 둘러섰습니다.",
+          "choices": [
+            {
+              "label": "만약 한 어머니가 동의보감을 보고 아이의 배앓이를 고쳤다면?",
+              "node": {
+                "narration": "아이가 배가 아파 울고 있다는 어머니의 말에 허준이 동의보감을 펼쳤습니다. 생강차를 끓여 먹이라는 내용을 읽어주자 어머니는 고개를 끄덕이며 집으로 달려갔지요. 다음 날 아이는 웃으며 뛰어다니고 있었습니다.",
+                "ending": "동의보감은 글을 아는 사람이라면 누구나 스스로 병을 고칠 수 있게 해주는 책이었습니다. 허준의 꿈이 이루어진 것이지요. 지식을 나누는 것이 가장 큰 치료였습니다.",
+                "panels": [
+                  {
+                    "scene": "허준이 시장에서 동의보감을 펼쳐 백성들에게 설명하는 장면.",
+                    "sceneEn": "Heo Jun opens the Dongui Bogam in the marketplace, explaining medical treatments to gathered citizens."
+                  },
+                  {
+                    "scene": "배 아픈 아이를 안은 어머니가 허준의 말을 경청하는 장면.",
+                    "sceneEn": "A mother holding her crying child listens attentively to Heo Jun's medical advice from the book."
+                  },
+                  {
+                    "scene": "어머니가 생강차를 끓여 아이에게 먹이는 장면.",
+                    "sceneEn": "The mother brews ginger tea and gives it to her sick child at home."
+                  },
+                  {
+                    "scene": "다음 날 아이가 웃으며 뛰어다니는 건강해진 장면.",
+                    "sceneEn": "The next day, the child runs and plays happily, completely recovered from stomach pain."
+                  }
+                ]
+              }
+            },
+            {
+              "label": "만약 동의보감이 중국에도 전해져 칭찬을 받았다면?",
+              "node": {
+                "narration": "명나라 의원이 동의보감을 손에 넣고 밤새 읽었습니다. '조선에 이런 의학책이 있다니!' 그는 감탄하며 중국어로 번역하기 시작했지요. 허준의 이름이 바다 건너까지 알려졌습니다.",
+                "ending": "허준의 동의보감은 조선을 넘어 동아시아 의학의 보물이 되었습니다. 백성을 위해 쓴 책 한 권이 나라의 이름을 드높인 것이지요. 지식을 나누면 그 빛은 더 멀리 퍼집니다.",
+                "panels": [
+                  {
+                    "scene": "명나라 의원이 동의보감을 받아 들고 놀라는 장면.",
+                    "sceneEn": "A Ming dynasty physician receives the Dongui Bogam and is astonished by its comprehensive contents."
+                  },
+                  {
+                    "scene": "명나라 의원이 밤새 동의보감을 읽으며 감탄하는 장면.",
+                    "sceneEn": "The Ming physician reads the Dongui Bogam through the night, filled with admiration."
+                  },
+                  {
+                    "scene": "동의보감이 중국어로 번역되는 장면.",
+                    "sceneEn": "Scholars work to translate the Dongui Bogam into Chinese."
+                  },
+                  {
+                    "scene": "허준의 이름이 중국에서도 유명해지는 장면.",
+                    "sceneEn": "Heo Jun's name becomes renowned across China as a great medical scholar."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

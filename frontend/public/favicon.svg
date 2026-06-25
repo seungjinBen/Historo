@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#12132A"/>
+      <stop offset="100%" stop-color="#0A0B1A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- 배경 -->
+  <rect width="64" height="64" rx="10" fill="url(#bg)"/>
+
+  <!-- 바깥 원형 테두리 (이중) -->
+  <circle cx="32" cy="32" r="28" fill="none" stroke="#C9A84C" stroke-width="1.4"/>
+  <circle cx="32" cy="32" r="25.5" fill="none" stroke="#C9A84C" stroke-width="0.4" stroke-dasharray="3 2"/>
+
+  <!-- 상단/하단 장식 마름모 -->
+  <polygon points="32,4 34,6 32,8 30,6" fill="#C9A84C"/>
+  <polygon points="32,56 34,58 32,60 30,58" fill="#C9A84C"/>
+  <polygon points="4,32 6,30 8,32 6,34" fill="#C9A84C"/>
+  <polygon points="56,32 58,30 60,32 58,34" fill="#C9A84C"/>
+
+  <!-- 역 문자 -->
+  <text
+    x="32" y="44"
+    font-family="Apple SD 산돌고딕 Neo, NanumSquare Neo OTF, sans-serif"
+    font-weight="800"
+    font-size="30"
+    fill="#C9A84C"
+    text-anchor="middle"
+  >역</text>
+</svg>

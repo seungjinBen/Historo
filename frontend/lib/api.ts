@@ -29,11 +29,13 @@ async function authFetch<T>(path: string, opts: RequestInit = {}): Promise<T> {
 // ─── 타입 ─────────────────────────────────────────────────────────────────────────
 
 export type ApiComicCut = { number: number; camera?: string; description: string; imageUrl: string };
+export type ApiComicQuestions = { Q1: string; Q2: string; Q3: string };
+
 export type ApiComicStoryline = {
   id: string; q1: string; q2: string; q3: string;
   pathText: string; cuts: ApiComicCut[];
 };
-export type ApiComic = { id: string; title: string; storylines: ApiComicStoryline[] };
+export type ApiComic = { id: string; title: string; questions?: ApiComicQuestions; storylines: ApiComicStoryline[] };
 
 export type ApiGalleryPanel = { number: number; description: string; imageUrl: string };
 export type ApiGalleryItem  = {
@@ -78,6 +80,7 @@ function parseComic(data: any): ApiComic {
   return {
     id:         data.id,
     title:      data.title,
+    questions:  data.questions,
     storylines: (data.storylines ?? []).map(parseStoryline),
   };
 }

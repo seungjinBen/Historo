@@ -1,47 +1,75 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 
-// 브라우저 SpeechSynthesis 래핑 — 한국어 음성 자동 선택, 발화/중단/말하는 중 상태.
+const EL_KEY    = process.env.NEXT_PUBLIC_ELEVENLABS_API_KEY ?? "";
+// Jessica — 젊고 친근한 톤, 아동 콘텐츠에 적합
+const VOICE_ID  = "cgSgspJ2msm6clMCkdW9";
+const MODEL_ID  = "eleven_multilingual_v2";
+const EL_URL    = `https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`;
+
 export function useTTS() {
   const [speaking, setSpeaking] = useState(false);
-  const koVoiceRef = useRef<SpeechSynthesisVoice | null>(null);
-
-  // 한국어 음성 로드: getVoices()는 비동기로 채워지므로 voiceschanged를 기다림
-  useEffect(() => {
-    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
-    const load = () => {
-      const vs = window.speechSynthesis.getVoices();
-      koVoiceRef.current =
-        vs.find((v) => v.lang === "ko-KR") ??
-        vs.find((v) => v.lang.startsWith("ko")) ??
-        null;
-    };
-    load();
-    window.speechSynthesis.addEventListener("voiceschanged", load);
-    return () => {
-      window.speechSynthesis.removeEventListener("voiceschanged", load);
-      window.speechSynthesis.cancel();
-    };
-  }, []);
-
-  const speak = useCallback((text: string) => {
-    if (!("speechSynthesis" in window)) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(text);
-    u.lang = "ko-KR";
-    u.rate = 0.95;
-    if (koVoiceRef.current) u.voice = koVoiceRef.current;
-    u.onstart = () => setSpeaking(true);
-    u.onend = () => setSpeaking(false);
-    u.onerror = () => setSpeaking(false);
-    window.speechSynthesis.speak(u);
-  }, []);
+  const audioRef  = useRef<HTMLAudioElement | null>(null);
+  const abortRef  = useRef<AbortController | null>(null);
 
   const stop = useCallback(() => {
-    if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+    abortRef.current?.abort();
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.src = "";
+      audioRef.current = null;
+    }
     setSpeaking(false);
   }, []);
+
+  const speak = useCallback(async (text: string) => {
+    stop();
+
+    // ElevenLabs 키 없으면 브라우저 TTS fallback
+    if (!EL_KEY) {
+      if (!("speechSynthesis" in window)) return;
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = "ko-KR"; u.rate = 0.95;
+      u.onstart = () => setSpeaking(true);
+      u.onend   = () => setSpeaking(false);
+      u.onerror = () => setSpeaking(false);
+      window.speechSynthesis.speak(u);
+      return;
+    }
+
+    const ctrl = new AbortController();
+    abortRef.current = ctrl;
+    setSpeaking(true);
+
+    try {
+      const res = await fetch(EL_URL, {
+        method: "POST",
+        signal: ctrl.signal,
+        headers: {
+          "Content-Type": "application/json",
+          "xi-api-key": EL_KEY,
+        },
+        body: JSON.stringify({
+          text,
+          model_id: MODEL_ID,
+          voice_settings: { stability: 0.5, similarity_boost: 0.75 },
+        }),
+      });
+      if (!res.ok) throw new Error(`ElevenLabs ${res.status}`);
+
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      audioRef.current = audio;
+      audio.onended = () => { setSpeaking(false); URL.revokeObjectURL(url); };
+      audio.onerror = () => { setSpeaking(false); URL.revokeObjectURL(url); };
+      await audio.play();
+    } catch (e: unknown) {
+      if (e instanceof Error && e.name === "AbortError") return;
+      setSpeaking(false);
+    }
+  }, [stop]);
 
   return { speak, stop, speaking };
 }

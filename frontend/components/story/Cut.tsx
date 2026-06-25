@@ -5,12 +5,14 @@
 import { useState } from "react";
 import { imgUrl } from "@/lib/images";
 
+const ICONS = ["🖼️", "📜", "🎨", "🏯"];
+
 type Props = {
   eventId: string;
   pathKey: string;
   index: number;
   scene: string;
-  imageUrl?: string; // S3 URL from API (우선 사용)
+  imageUrl?: string;
 };
 
 export function Cut({ eventId, pathKey, index, scene, imageUrl }: Props) {
@@ -22,10 +24,11 @@ export function Cut({ eventId, pathKey, index, scene, imageUrl }: Props) {
   return (
     <div className="cut" style={{ animationDelay: `${index * 0.13}s` }}>
       {err ? (
-        <div className="ph">
-          {scene}
-          <br />
-          <span style={{ opacity: 0.6 }}>(그림 준비 중)</span>
+        <div className="cut-ph-board">
+          <div className="cut-ph-num">{index + 1}</div>
+          <div className="cut-ph-icon">{ICONS[index]}</div>
+          <p className="cut-ph-scene">{scene}</p>
+          <span className="cut-ph-label">그림 생성 중</span>
         </div>
       ) : (
         <img

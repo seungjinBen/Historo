@@ -1,0 +1,124 @@
+{
+  "eventId": "taejo-foundation-1392",
+  "root": {
+    "narration": "1392년, 이성계는 마침내 고려를 끝내고 새 나라를 세우기로 했습니다. 오랜 전쟁으로 지친 백성들을 위해 새 시대를 열려는 것이었지요. 자, 만약의 이야기를 함께 떠나볼까요?",
+    "choices": [
+      {
+        "label": "만약 이성계가 새 나라 이름을 백성들에게 직접 물어보았다면?",
+        "node": {
+          "narration": "이성계는 시장 한가운데 서서 백성들에게 물었습니다. '새 나라의 이름을 무엇으로 할까요?' 사람들이 웅성거리며 저마다 의견을 내기 시작했지요.",
+          "choices": [
+            {
+              "label": "만약 한 농부가 '조선'이라는 이름을 외쳤다면?",
+              "node": {
+                "narration": "늙은 농부가 손을 번쩍 들고 말했습니다. '예로부터 이 땅은 조선이라 불렸습니다. 그 이름을 되살려 주십시오!' 이성계는 고개를 끄덕이며 활짝 웃었습니다.",
+                "ending": "백성의 목소리로 탄생한 '조선'은 온 나라에 울려 퍼졌습니다. 이름 하나에 담긴 백성의 마음이 새 나라의 뿌리가 되었지요. 오백 년 역사가 그렇게 시작되었습니다.",
+                "panels": [
+                  {
+                    "scene": "이성계가 시장 한가운데서 백성들에게 새 나라 이름을 묻고 있다.",
+                    "sceneEn": "Taejo Yi Seonggye in general armor stands in a Korean marketplace asking citizens for the new kingdom's name."
+                  },
+                  {
+                    "scene": "한 농부가 손을 들고 '조선'이라고 외치고 있다.",
+                    "sceneEn": "An elderly Korean farmer raises his hand and shouts 'Joseon!' in a crowded traditional marketplace."
+                  },
+                  {
+                    "scene": "이성계가 환하게 웃으며 '조선'이라고 선포한다.",
+                    "sceneEn": "Taejo Yi Seonggye smiles broadly and proclaims the name 'Joseon' to cheering crowds."
+                  },
+                  {
+                    "scene": "백성들이 기뻐하며 새 나라 조선의 탄생을 축하한다.",
+                    "sceneEn": "Korean citizens celebrate joyfully as the new kingdom of Joseon is declared, cheering and waving."
+                  }
+                ]
+              }
+            },
+            {
+              "label": "만약 아이들이 '조선'이라고 노래를 불렀다면?",
+              "node": {
+                "narration": "시장의 아이들이 손을 잡고 빙글빙글 돌며 '조선 조선 새 나라 조선'을 노래했습니다. 그 맑은 목소리가 이성계의 마음을 울렸지요. 그는 그 자리에서 나라 이름을 '조선'으로 정했습니다.",
+                "ending": "아이들의 노래에서 탄생한 '조선'이라는 이름은 오백 년 동안 이어졌습니다. 백성의 노래가 역사가 된 순간이었지요.",
+                "panels": [
+                  {
+                    "scene": "아이들이 손을 잡고 돌며 새 나라 이름을 노래하고 있다.",
+                    "sceneEn": "Korean children hold hands and dance in a circle, singing about the new kingdom in a traditional marketplace."
+                  },
+                  {
+                    "scene": "이성계가 아이들의 노래를 들으며 감동 받아 눈물을 글썽인다.",
+                    "sceneEn": "Taejo Yi Seonggye listens to children's song with tears in his eyes, deeply moved."
+                  },
+                  {
+                    "scene": "이성계가 '조선'이라고 선포하는 문서에 도장을 찍는다.",
+                    "sceneEn": "Taejo stamps an official document proclaiming the name Joseon for the new kingdom."
+                  },
+                  {
+                    "scene": "새 나라 조선의 깃발이 궁궐 위에 펄럭인다.",
+                    "sceneEn": "The flag of the new kingdom Joseon flies proudly over a traditional Korean palace."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "label": "만약 이성계가 도읍을 백성들이 살기 좋은 곳으로 옮겼다면?",
+        "node": {
+          "narration": "이성계는 새 나라의 도읍을 어디로 정할지 고민했습니다. 신하들이 지도를 펼쳐 놓고 열띤 토론을 벌였지요. 이성계는 백성들이 편히 살 수 있는 곳을 원했습니다.",
+          "choices": [
+            {
+              "label": "만약 한양이 가장 살기 좋은 땅이라는 것을 이성계가 직접 발로 걸어 확인했다면?",
+              "node": {
+                "narration": "이성계는 갑옷을 벗고 평민처럼 변장하여 한강 주변을 걸어다녔습니다. 물이 풍부하고 산이 둘러싸인 한양을 보며 '바로 이곳이다!'라고 외쳤지요. 신하들이 깜짝 놀랐습니다.",
+                "ending": "이성계가 직접 발로 확인한 한양은 오백 년 도읍이 되었습니다. 백성을 위해 직접 발로 뛴 왕의 선택이 역사를 바꾸었지요.",
+                "panels": [
+                  {
+                    "scene": "이성계가 평민 옷을 입고 한강 주변을 걸어 다니며 땅을 살피고 있다.",
+                    "sceneEn": "Taejo Yi Seonggye dressed as a commoner walks along the Hangang River, surveying the land."
+                  },
+                  {
+                    "scene": "산과 강으로 둘러싸인 한양의 아름다운 전경이 펼쳐진다.",
+                    "sceneEn": "A panoramic view of Hanyang surrounded by mountains and the Hangang River, showing its natural beauty."
+                  },
+                  {
+                    "scene": "이성계가 기뻐하며 '한양으로 정했다!'고 선언한다.",
+                    "sceneEn": "Taejo Yi Seonggye happily declares Hanyang as the new capital city."
+                  },
+                  {
+                    "scene": "한양에 새 궁궐이 세워지고 백성들이 이사를 오고 있다.",
+                    "sceneEn": "Workers build a new palace in Hanyang as citizens move into the new capital city."
+                  }
+                ]
+              }
+            },
+            {
+              "label": "만약 백성들의 투표로 도읍을 정했다면?",
+              "node": {
+                "narration": "이성계는 전국의 백성들에게 어디가 살기 좋은지 물었습니다. 가장 많은 사람이 '한양'을 외쳤지요. 이성계는 백성의 뜻을 따라 한양을 새 도읍으로 선택했습니다.",
+                "ending": "백성의 목소리로 선택된 한양은 조선의 심장이 되었습니다. 왕과 백성이 함께 만든 도읍이었기에 더욱 빛났지요.",
+                "panels": [
+                  {
+                    "scene": "전국 각지의 백성들이 모여 살기 좋은 곳을 이야기하고 있다.",
+                    "sceneEn": "Citizens from across the country gather to discuss and vote on the best location for the new capital."
+                  },
+                  {
+                    "scene": "사람들이 '한양!'을 외치며 손을 들고 있다.",
+                    "sceneEn": "Citizens raise their hands and shout 'Hanyang!' during the vote for the new capital."
+                  },
+                  {
+                    "scene": "이성계가 백성의 뜻을 받아들이며 한양 도읍을 선포한다.",
+                    "sceneEn": "Taejo Yi Seonggye accepts the people's vote and officially declares Hanyang as the capital."
+                  },
+                  {
+                    "scene": "한양에 새 궁궐 경복궁이 지어지기 시작한다.",
+                    "sceneEn": "Construction begins on Gyeongbokgung Palace in Hanyang, the new capital of Joseon."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

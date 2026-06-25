@@ -1,0 +1,124 @@
+{
+  "eventId": "shin-saimdang-art-1551",
+  "root": {
+    "narration": "16세기, 신사임당은 풀 한 포기, 벌레 한 마리도 따뜻하게 바라보며 그림을 그렸습니다. 남편과 아이들을 챙기면서도 붓을 놓지 않았지요. 자, 만약의 이야기를 함께 떠나볼까요?",
+    "choices": [
+      {
+        "label": "만약 신사임당이 딸에게 그림 그리는 법을 가르쳐주었다면?",
+        "node": {
+          "narration": "신사임당의 딸 매창이 어머니 옆에 쪼그려 앉아 그림 그리는 모습을 보다가 물었습니다. '어머니, 저도 배울 수 있어요?' 신사임당은 빙그레 웃으며 붓을 건네주었지요.",
+          "choices": [
+            {
+              "label": "만약 매창이 수박을 멋지게 그려 어머니를 놀라게 했다면?",
+              "node": {
+                "narration": "매창이 혼자 마당에 앉아 수박 한 덩이를 뚫어져라 바라보더니 붓을 움직였습니다. 통통한 줄무늬, 짧은 꼭지, 뒤에 숨은 작은 잎사귀까지 담아냈지요. 신사임당은 그 그림을 보고 눈이 동그래졌습니다.",
+                "ending": "어머니의 사랑 어린 가르침이 딸의 재능을 꽃피웠습니다. 신사임당은 딸의 그림을 벽에 소중히 붙여두었지요. 그림은 마음을 보는 눈을 키워주는 것임을 두 사람 모두 알게 되었습니다.",
+                "panels": [
+                  {
+                    "scene": "신사임당이 딸 매창에게 붓을 건네주는 장면.",
+                    "sceneEn": "Shin Saimdang smiles and hands a paintbrush to her daughter Maechang in their traditional Korean home."
+                  },
+                  {
+                    "scene": "매창이 마당에 앉아 수박을 뚫어져라 바라보는 장면.",
+                    "sceneEn": "Maechang sits in the courtyard, staring intently at a watermelon, preparing to paint it."
+                  },
+                  {
+                    "scene": "매창이 붓으로 수박을 세밀하게 그리는 장면.",
+                    "sceneEn": "Maechang carefully paints a detailed, accurate picture of the watermelon with her brush."
+                  },
+                  {
+                    "scene": "신사임당이 딸의 수박 그림을 보고 눈이 동그래지는 장면.",
+                    "sceneEn": "Shin Saimdang's eyes widen in amazement as she sees her daughter's beautifully detailed watermelon painting."
+                  }
+                ]
+              }
+            },
+            {
+              "label": "만약 신사임당이 딸과 함께 들로 나가 풀벌레를 관찰했다면?",
+              "node": {
+                "narration": "신사임당과 매창은 꽃바구니를 들고 들판으로 나갔습니다. 풀잎 위의 이슬, 꽃잎 위의 나비, 바위 아래 숨은 귀뚜라미를 함께 바라보았지요. 두 사람은 그 모습을 서로 다른 종이에 그리며 웃었습니다.",
+                "ending": "함께 자연을 바라본 그날이 두 사람 모두의 그림 인생에서 가장 소중한 날이었습니다. 신사임당의 그림이 특별한 이유는 이렇게 사랑으로 바라보는 눈에 있었지요.",
+                "panels": [
+                  {
+                    "scene": "신사임당과 딸 매창이 꽃바구니를 들고 들판으로 나가는 장면.",
+                    "sceneEn": "Shin Saimdang and her daughter Maechang walk into the fields carrying flower baskets."
+                  },
+                  {
+                    "scene": "두 사람이 풀잎 위의 이슬방울을 함께 들여다보는 장면.",
+                    "sceneEn": "Mother and daughter closely observe dewdrops on grass blades together, faces full of wonder."
+                  },
+                  {
+                    "scene": "신사임당과 매창이 나란히 앉아 풀벌레를 그리는 장면.",
+                    "sceneEn": "Shin Saimdang and Maechang sit side by side painting insects and plants they observed in the field."
+                  },
+                  {
+                    "scene": "두 사람이 서로의 그림을 보며 환하게 웃는 장면.",
+                    "sceneEn": "Mother and daughter smile brightly as they compare and admire each other's paintings."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "label": "만약 신사임당의 그림이 왕에게 선물로 전해졌다면?",
+        "node": {
+          "narration": "신사임당의 포도 그림 한 점이 어찌어찌 궁궐로 들어갔습니다. 임금은 그림을 보자마자 '누가 이 그림을 그렸느냐?'고 물었지요. 신하들이 조심스럽게 '한 여인입니다'라고 대답했습니다.",
+          "choices": [
+            {
+              "label": "만약 임금이 신사임당을 직접 궁궐로 초대했다면?",
+              "node": {
+                "narration": "생전 처음 궁궐에 들어선 신사임당은 떨리는 마음으로 임금 앞에 섰습니다. '포도 그림에서 비 내음이 났소. 참으로 훌륭하오.' 신사임당은 고개를 숙이며 속으로 미소 지었지요.",
+                "ending": "신사임당의 그림은 왕의 마음도 움직였습니다. 자연을 사랑하는 마음으로 그린 그림 한 장이 시대를 뛰어넘어 빛났지요. 진심이 담긴 예술은 누구의 마음에도 닿을 수 있습니다.",
+                "panels": [
+                  {
+                    "scene": "신사임당이 긴장한 표정으로 궁궐 문 앞에 서 있는 장면.",
+                    "sceneEn": "Shin Saimdang stands nervously at the palace gate, about to meet the king for the first time."
+                  },
+                  {
+                    "scene": "임금이 신사임당의 포도 그림을 감탄하며 바라보는 장면.",
+                    "sceneEn": "The king gazes admiringly at Shin Saimdang's grape painting, clearly moved by its beauty."
+                  },
+                  {
+                    "scene": "임금이 신사임당에게 칭찬의 말을 건네는 장면.",
+                    "sceneEn": "The king gives Shin Saimdang words of high praise for her remarkable artwork."
+                  },
+                  {
+                    "scene": "신사임당이 고개를 숙이며 속으로 미소 짓는 장면.",
+                    "sceneEn": "Shin Saimdang bows respectfully while smiling inwardly, proud of her recognized talent."
+                  }
+                ]
+              }
+            },
+            {
+              "label": "만약 신사임당의 그림이 다른 나라에까지 알려졌다면?",
+              "node": {
+                "narration": "명나라 사신이 신사임당의 초충도를 보더니 깜짝 놀랐습니다. '이 땅에도 이런 화가가 있었단 말이오!' 사신은 그림 한 점을 얻어 고국으로 돌아갔지요. 신사임당의 그림이 바다를 건넌 순간이었습니다.",
+                "ending": "신사임당의 그림은 국경을 넘었습니다. 자연을 사랑하는 마음으로 그린 작은 풀벌레 그림이 나라를 빛낸 것이지요. 진심은 언제나 국경을 넘습니다.",
+                "panels": [
+                  {
+                    "scene": "명나라 사신이 신사임당의 초충도를 보고 깜짝 놀라는 장면.",
+                    "sceneEn": "A Ming dynasty envoy is astonished upon seeing Shin Saimdang's Chochungdo painting of plants and insects."
+                  },
+                  {
+                    "scene": "사신이 그림을 받아들고 감탄하며 살펴보는 장면.",
+                    "sceneEn": "The envoy receives the painting and examines it closely with great admiration."
+                  },
+                  {
+                    "scene": "신사임당의 그림이 배에 실려 명나라로 떠나는 장면.",
+                    "sceneEn": "Shin Saimdang's painting is carefully loaded onto a ship bound for Ming China."
+                  },
+                  {
+                    "scene": "명나라에서 신사임당의 그림이 전시되고 사람들이 감탄하는 장면.",
+                    "sceneEn": "People in Ming China admire and marvel at Shin Saimdang's painting displayed in a gallery."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

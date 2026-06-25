@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { Fragment, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { GALLERY_BOOKS } from "@/lib/home-content";
 import { api, type ApiGalleryItem } from "@/lib/api";
 import type { EventMeta } from "@/lib/types";
@@ -15,23 +16,135 @@ type Props = {
 export function Gallery({ events, onOpenEvent }: Props) {
   const [galleryItems, setGalleryItems] = useState<ApiGalleryItem[]>([]);
   const [modal, setModal]               = useState<ApiGalleryItem | null>(null);
+  const [mounted, setMounted]           = useState(false);
 
   useEffect(() => {
-    api.getGallery().then(setGalleryItems).catch(() => {});
+    api.getGallery().then((items) => {
+      setGalleryItems(items);
+      // 카드 썸네일 + 첫 번째 컷 프리로드
+      items.forEach((item) => {
+        item.panels.forEach((p) => {
+          if (p.imageUrl) {
+            const img = new window.Image();
+            img.src = p.imageUrl;
+          }
+        });
+      });
+    }).catch(() => {});
+    setMounted(true);
   }, []);
+
+  // Esc 키로 닫기
+  useEffect(() => {
+    if (!modal) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === "Escape") setModal(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [modal]);
+
+  // eventId → 한글 인물명
+  const ID_TO_KR: Record<string, string> = {
+    "taejo-foundation-1392": "태조", "park-yeon-aak-1430": "박연",
+    "jangnyeongsil-jagyeokru-1434": "장영실", "sejong-hunmin-1446": "세종대왕",
+    "shin-saimdang-art-1551": "신사임당", "yi-myeongnyang-1597": "이순신",
+    "heojun-donguibogam-1613": "허준", "gwanghaegun-junglib-1619": "광해군",
+    "kim-hongdo-genre-1780": "김홍도", "jeong-yakyong-geojunggi-1792": "정약용",
+  };
 
   // episodeId(한글) → eventId(영문) 역매핑
   const episodeToEvent: Record<string, EventMeta> = {};
   events.forEach((ev) => {
-    const kr = {
-      "taejo-foundation-1392": "태조", "park-yeon-aak-1430": "박연",
-      "jangnyeongsil-jagyeokru-1434": "장영실", "sejong-hunmin-1446": "세종대왕",
-      "shin-saimdang-art-1551": "신사임당", "yi-myeongnyang-1597": "이순신",
-      "heojun-donguibogam-1613": "허준", "gwanghaegun-junglib-1619": "광해군",
-      "kim-hongdo-genre-1780": "김홍도", "jeong-yakyong-geojunggi-1792": "정약용",
-    }[ev.id];
+    const kr = ID_TO_KR[ev.id];
     if (kr) episodeToEvent[kr] = ev;
   });
+
+  const [cutIdx, setCutIdx] = useState(0);
+
+  // 모달 열릴 때 첫 컷으로 초기화 + 전체 패널 이미지 프리로드
+  useEffect(() => {
+    setCutIdx(0);
+    if (!modal) return;
+    modal.panels.forEach((p) => {
+      if (p.imageUrl) {
+        const img = new window.Image();
+        img.src = p.imageUrl;
+      }
+    });
+  }, [modal]);
+
+  const modalEl = modal && mounted ? createPortal(
+    <div
+      className="gallery-modal-overlay"
+      onClick={() => setModal(null)}
+      role="dialog"
+      aria-modal="true"
+      aria-label="4컷 이야기 보기"
+    >
+      <div className="gallery-modal" onClick={(e) => e.stopPropagation()}>
+        {/* 헤더 */}
+        <div className="gallery-modal-header">
+          <span className="badge imagine">{ID_TO_KR[modal.episodeId] ?? modal.episodeId}</span>
+          <p className="gallery-modal-path">{modal.pathText}</p>
+          <button className="gallery-modal-close" onClick={() => setModal(null)} aria-label="닫기">✕</button>
+        </div>
+
+        {/* 슬라이드 이미지 — 전체 패널을 DOM에 유지, CSS로 show/hide → 재로딩 없음 */}
+        <div className="gallery-modal-slide">
+          {modal.panels.map((panel, i) => (
+            panel.imageUrl ? (
+              <img
+                key={panel.imageUrl}
+                src={panel.imageUrl}
+                alt={panel.description}
+                className="gallery-modal-img"
+                style={{ display: i === cutIdx ? "block" : "none" }}
+              />
+            ) : null
+          ))}
+        </div>
+
+        {/* 설명 */}
+        <p className="gallery-modal-desc">{modal.panels[cutIdx]?.description}</p>
+
+        {/* 컷 탐색 */}
+        <div className="gallery-modal-nav">
+          <button
+            className="gallery-modal-arrow"
+            onClick={() => setCutIdx((i) => Math.max(0, i - 1))}
+            disabled={cutIdx === 0}
+            aria-label="이전 컷"
+          >←</button>
+          <div className="gallery-modal-dots">
+            {modal.panels.map((_, i) => (
+              <button
+                key={i}
+                className={"gallery-modal-dot" + (i === cutIdx ? " active" : "")}
+                onClick={() => setCutIdx(i)}
+                aria-label={`${i + 1}컷`}
+              />
+            ))}
+          </div>
+          <button
+            className="gallery-modal-arrow"
+            onClick={() => setCutIdx((i) => Math.min(modal.panels.length - 1, i + 1))}
+            disabled={cutIdx === modal.panels.length - 1}
+            aria-label="다음 컷"
+          >→</button>
+        </div>
+
+        {/* 이야기 만들기 버튼 */}
+        {episodeToEvent[modal.episodeId] && (
+          <button
+            className="btn btn-teal gallery-modal-cta"
+            onClick={() => { setModal(null); onOpenEvent(episodeToEvent[modal.episodeId]); }}
+          >
+            이 이야기 직접 만들어보기 →
+          </button>
+        )}
+      </div>
+    </div>,
+    document.body
+  ) : null;
 
   return (
     <>
@@ -44,9 +157,8 @@ export function Gallery({ events, onOpenEvent }: Props) {
           </p>
         </div>
 
-        {/* API에서 받은 실제 스토리라인 갤러리 — 에피소드별 1개씩 */}
         {galleryItems.length > 0 ? (
-          <div className="gallery-grid">
+          <div className="gallery-card-grid">
             {(() => {
               const seen = new Set<string>();
               return galleryItems.filter(item => {
@@ -54,38 +166,40 @@ export function Gallery({ events, onOpenEvent }: Props) {
                 seen.add(item.episodeId);
                 return true;
               }).slice(0, 12);
-            })().map((item, i) => (
-              <button
-                key={`${item.episodeId}-${item.storylineId}`}
-                className="gallery-book clickable"
-                style={{ animationDelay: `${i * 0.06}s` }}
-                onClick={() => setModal(item)}
-                aria-label={`${item.title} — ${item.pathText} 이야기 보기`}
-              >
-                <div className="gallery-book-cover" aria-hidden="true">
-                  {item.panels[0]?.imageUrl ? (
-                    <img
-                      src={item.panels[0].imageUrl}
-                      alt="표지"
-                      className="gallery-cover-img"
-                    />
-                  ) : (
-                    <>
-                      <span className="gallery-book-eyebrow">{item.episodeId}</span>
-                      <h3 className="gallery-book-title">{item.title.split("—")[0]?.trim()}</h3>
-                      <p className="gallery-book-sub">{item.pathText}</p>
-                      <span className="gallery-book-orn">✦  ◆  ✦</span>
-                    </>
-                  )}
-                  <span className="gallery-book-spine" />
-                </div>
-                <div className="gallery-book-caption">4컷 보기 →</div>
-              </button>
-            ))}
+            })().map((item, i) => {
+              const krName = ID_TO_KR[item.episodeId] ?? item.episodeId;
+              return (
+                <button
+                  key={`${item.episodeId}-${item.storylineId}`}
+                  className="gc-card"
+                  style={{ animationDelay: `${i * 0.05}s` }}
+                  onClick={() => setModal(item)}
+                  aria-label={`${krName} — ${item.title} 이야기 보기`}
+                >
+                  {/* 이미지 영역 */}
+                  <div className="gc-img-wrap">
+                    {item.panels[0]?.imageUrl ? (
+                      <img src={item.panels[0].imageUrl} alt={item.title} className="gc-img" />
+                    ) : (
+                      <div className="gc-img-ph">{krName}</div>
+                    )}
+                    {/* 호버 시 오버레이 */}
+                    <div className="gc-hover-overlay">
+                      <span className="gc-hover-label">4컷 보기 →</span>
+                    </div>
+                  </div>
+                  {/* 텍스트 정보 */}
+                  <div className="gc-info">
+                    <span className="gc-name">{krName}</span>
+                    <p className="gc-title">{item.title}</p>
+                    <p className="gc-path">{item.pathText}</p>
+                  </div>
+                </button>
+              );
+            })}
           </div>
         ) : (
-          // 백엔드 미응답 시 기존 정적 갤러리 fallback
-          <div className="gallery-grid">
+          <div className="gallery-grid">  {/* 기존 book 스타일 fallback */}
             {GALLERY_BOOKS.map((book, i) => {
               const targetEv = book.targetEventId ? events.find((e) => e.id === book.targetEventId) : null;
               const clickable = targetEv && targetEv.status === "ready";
@@ -121,48 +235,7 @@ export function Gallery({ events, onOpenEvent }: Props) {
         )}
       </section>
 
-      {/* 4컷 모달 */}
-      {modal && (
-        <div
-          className="gallery-modal-overlay"
-          onClick={() => setModal(null)}
-          role="dialog"
-          aria-modal="true"
-          aria-label="4컷 이야기 보기"
-        >
-          <div className="gallery-modal" onClick={(e) => e.stopPropagation()}>
-            <button className="gallery-modal-close" onClick={() => setModal(null)}>✕</button>
-            <div className="gallery-modal-header">
-              <span className="badge imagine">{modal.episodeId}</span>
-              <p className="gallery-modal-path">{modal.pathText}</p>
-            </div>
-            <div className="comic-grid">
-              {modal.panels.map((p, i) => (
-                <div key={i} className="cut">
-                  {p.imageUrl ? (
-                    <img src={p.imageUrl} alt={p.description} className="loaded" />
-                  ) : (
-                    <div className="ph">{p.description}</div>
-                  )}
-                  <div className="cap">
-                    <div className="num">{i + 1}</div>
-                    <span>{p.description}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-            {episodeToEvent[modal.episodeId] && (
-              <button
-                className="btn btn-teal"
-                style={{ marginTop: "1rem" }}
-                onClick={() => { setModal(null); onOpenEvent(episodeToEvent[modal.episodeId]); }}
-              >
-                이 이야기 직접 만들어보기 →
-              </button>
-            )}
-          </div>
-        </div>
-      )}
+      {modalEl}
     </>
   );
 }

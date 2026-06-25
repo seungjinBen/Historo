@@ -18,6 +18,7 @@ import { ComicScreen } from "@/components/story/ComicScreen";
 import { IntroScreen } from "@/components/story/IntroScreen";
 import { PlayScreen } from "@/components/story/PlayScreen";
 import BookExperience from "@/features/myeongnyang/BookExperience";
+import GenericBookExperience from "@/components/story/GenericBookExperience";
 import { EVENT_TO_EPISODE } from "@/lib/api";
 import { getCurrentEmail, signOut as cognitoSignOut } from "@/lib/cognito";
 import { useTTS } from "@/lib/use-tts";
@@ -97,7 +98,7 @@ export default function Page() {
     }
     try {
       const t: Tree = await fetch(`/data/trees/${ev.id}.json`).then((r) => r.json());
-      setEvent(ev); setTree(t); setNode(t.root); setPath([]); setScreen("intro");
+      setEvent(ev); setTree(t); setNode(t.root); setPath([]); setScreen("tree-book");
     } catch {
       setError(`트리를 불러오지 못했어요: /trees/${ev.id}.json`);
     }
@@ -167,6 +168,18 @@ export default function Page() {
 
       {screen === "myeongnyang" && (
         <BookExperience key="myeongnyang" onHome={home} speak={speak} stop={stop} speaking={speaking} />
+      )}
+
+      {screen === "tree-book" && event && tree && (
+        <GenericBookExperience
+          key={event.id}
+          event={event}
+          tree={tree}
+          onHome={home}
+          speak={speak}
+          stop={stop}
+          speaking={speaking}
+        />
       )}
 
       {screen === "about"     && <AboutScreen onBack={home} />}

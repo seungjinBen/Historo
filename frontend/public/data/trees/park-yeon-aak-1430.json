@@ -1,0 +1,124 @@
+{
+  "eventId": "park-yeon-aak-1430",
+  "root": {
+    "narration": "1430년, 음악 천재 박연이 왕에게 부탁을 받았습니다. 조선의 궁중 음악, 아악을 바로잡는 일이었지요. 박연은 밤새 악보를 들여다보며 고민했습니다. 자, 만약의 이야기를 함께 떠나볼까요?",
+    "choices": [
+      {
+        "label": "만약 박연이 악기를 직접 만들어 새 음악을 연주했다면?",
+        "node": {
+          "narration": "박연은 돌과 나무를 직접 골라 편경과 편종을 만들었습니다. 손에 물집이 생길 때까지 정성을 다해 깎고 다듬었지요. 드디어 완성된 악기에서 맑은 소리가 울려 퍼졌습니다.",
+          "choices": [
+            {
+              "label": "만약 백성들도 그 소리를 듣고 춤을 추었다면?",
+              "node": {
+                "narration": "맑은 편경 소리가 궁궐 담장을 넘어 시장까지 들렸습니다. 떡 파는 아주머니, 짐 나르는 아저씨 할 것 없이 자도 모르게 발이 움직이기 시작했지요. 박연은 창문 너머 그 모습을 보며 활짝 웃었습니다.",
+                "ending": "박연의 음악은 궁궐을 넘어 온 나라 백성의 마음을 움직였습니다. 좋은 음악은 담장도 신분도 뛰어넘는다는 것을 박연이 보여주었지요.",
+                "panels": [
+                  {
+                    "scene": "박연이 정성껏 편경을 두드리며 맑은 소리를 내고 있다.",
+                    "sceneEn": "Park Yeon carefully plays the pyeongyeong stone chimes, producing clear melodious sounds in the palace music hall."
+                  },
+                  {
+                    "scene": "아름다운 음악 소리가 궁궐 담장 너머 시장까지 흘러나간다.",
+                    "sceneEn": "Beautiful music from the palace drifts over the walls and into the busy marketplace outside."
+                  },
+                  {
+                    "scene": "시장 사람들이 저도 모르게 음악에 맞춰 발을 구르고 있다.",
+                    "sceneEn": "Market people spontaneously begin tapping their feet and swaying to the beautiful music from the palace."
+                  },
+                  {
+                    "scene": "박연이 창문 너머 백성들이 춤추는 모습을 보며 환하게 웃는다.",
+                    "sceneEn": "Park Yeon looks out a window smiling broadly as he sees citizens dancing to his music in the marketplace."
+                  }
+                ]
+              }
+            },
+            {
+              "label": "만약 어린 궁녀가 박연의 음악에서 잘못된 음을 찾아냈다면?",
+              "node": {
+                "narration": "열두 살 궁녀 단이가 용기를 내어 손을 들었습니다. '어른, 세 번째 음이 조금 낮은 것 같아요.' 박연은 귀를 기울이더니 무릎을 탁 쳤습니다. '네 말이 맞구나!'",
+                "ending": "작은 목소리도 음악을 더 아름답게 만들 수 있습니다. 박연은 어린 단이 덕분에 완벽한 아악을 완성했지요. 귀 기울이는 마음이 가장 훌륭한 악기였습니다.",
+                "panels": [
+                  {
+                    "scene": "어린 궁녀 단이가 용기를 내어 손을 들고 있다.",
+                    "sceneEn": "A young 12-year-old court lady bravely raises her hand in the palace music hall."
+                  },
+                  {
+                    "scene": "박연이 귀를 기울이며 단이의 말을 진지하게 듣는다.",
+                    "sceneEn": "Park Yeon listens seriously to the young court lady, cupping his ear attentively."
+                  },
+                  {
+                    "scene": "박연이 무릎을 치며 '맞아!'라고 기뻐한다.",
+                    "sceneEn": "Park Yeon slaps his knee with joy, exclaiming that the young girl was correct about the wrong note."
+                  },
+                  {
+                    "scene": "박연과 단이가 함께 악기 앞에서 음을 맞추며 웃고 있다.",
+                    "sceneEn": "Park Yeon and young Dani work together at the instrument, smiling as they tune the perfect note."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "label": "만약 박연이 전국을 돌며 잊혀진 우리 음악을 모았다면?",
+        "node": {
+          "narration": "박연은 먼지 쌓인 악보를 들고 전국을 돌아다녔습니다. 산골 마을 노인들이 기억하는 옛 가락을 받아 적으며 수백 리 길을 걸었지요. 가방에는 점점 새 악보가 쌓여 갔습니다.",
+          "choices": [
+            {
+              "label": "만약 박연이 할머니의 자장가에서 아악의 핵심 음계를 찾았다면?",
+              "node": {
+                "narration": "강원도 산골 할머니의 자장가 한 소절에서 박연은 귀를 번쩍 세웠습니다. '이 음이었어! 바로 이 음!' 할머니는 영문도 모른 채 박연이 황급히 악보를 그리는 모습을 바라보았지요.",
+                "ending": "할머니의 자장가 속에 수백 년 된 음악의 비밀이 숨어 있었습니다. 박연은 가장 소박한 곳에서 가장 값진 음악을 찾았지요. 우리 음악의 뿌리는 백성의 일상 속에 있었습니다.",
+                "panels": [
+                  {
+                    "scene": "박연이 강원도 산골 할머니의 자장가를 경청하고 있다.",
+                    "sceneEn": "Park Yeon listens intently to an elderly grandmother singing a lullaby in a mountain village of Gangwon."
+                  },
+                  {
+                    "scene": "박연이 갑자기 눈을 번쩍 뜨며 악보를 황급히 그리기 시작한다.",
+                    "sceneEn": "Park Yeon's eyes light up and he frantically writes down musical notation upon hearing the key melody."
+                  },
+                  {
+                    "scene": "할머니가 어리둥절한 표정으로 악보를 그리는 박연을 바라본다.",
+                    "sceneEn": "The elderly grandmother watches with a puzzled expression as Park Yeon excitedly writes music notation."
+                  },
+                  {
+                    "scene": "박연이 완성된 아악 악보를 들고 서울로 돌아오는 모습.",
+                    "sceneEn": "Park Yeon returns to Seoul with a completed volume of court music notation, looking satisfied."
+                  }
+                ]
+              }
+            },
+            {
+              "label": "만약 전국 음악가들이 한자리에 모여 아악을 연주했다면?",
+              "node": {
+                "narration": "박연의 초대를 받은 전국의 음악가들이 경복궁 앞마당에 모였습니다. 가야금, 거문고, 피리, 북이 한꺼번에 어우러지자 하늘을 찌를 듯한 소리가 울려 퍼졌지요. 세종대왕도 자리에서 일어나 박수를 쳤습니다.",
+                "ending": "전국의 음악이 하나로 어우러진 그날, 조선 아악이 완성되었습니다. 박연의 꿈이 온 나라 음악가들의 힘으로 이루어진 것이었지요.",
+                "panels": [
+                  {
+                    "scene": "전국의 음악가들이 경복궁 앞마당에 모여 악기를 준비하고 있다.",
+                    "sceneEn": "Musicians from across Joseon gather in the courtyard of Gyeongbokgung Palace, preparing their instruments."
+                  },
+                  {
+                    "scene": "가야금, 거문고, 피리, 북이 한꺼번에 울려 퍼지는 장엄한 연주 장면.",
+                    "sceneEn": "A grand performance of gayageum, geomungo, piri flute, and drums all playing together in the palace courtyard."
+                  },
+                  {
+                    "scene": "세종대왕이 자리에서 일어나 박수를 치며 감격해 하는 모습.",
+                    "sceneEn": "King Sejong rises from his throne and claps enthusiastically, moved by the magnificent music."
+                  },
+                  {
+                    "scene": "박연이 지휘를 마치고 음악가들과 함께 기쁨을 나누는 장면.",
+                    "sceneEn": "Park Yeon finishes conducting and celebrates joyfully with all the musicians gathered together."
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}
