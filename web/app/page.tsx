@@ -6,6 +6,7 @@
 import { useEffect, useState } from "react";
 
 import { AboutScreen } from "@/components/about/AboutScreen";
+import { GlossaryProvider } from "@/components/common/Glossary";
 import { SiteFooter } from "@/components/common/SiteFooter";
 import { EventGrid } from "@/components/home/EventGrid";
 import { Gallery } from "@/components/home/Gallery";
@@ -132,6 +133,7 @@ export default function Page() {
   const totalSteps = tree ? treeDepth(tree.root) : 0;
 
   return (
+    <GlossaryProvider>
     <div className="wrap">
       <TopBar
         onHome={home}
@@ -207,5 +209,6 @@ export default function Page() {
         />
       )}
     </div>
+    </GlossaryProvider>
   );
 }

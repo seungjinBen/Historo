@@ -7,6 +7,8 @@
 
 import { useEffect, useState } from "react";
 
+import { MeokdolChatLauncher } from "@/components/mascots/MeokdolChatLauncher";
+
 import {
   DATA,
   EFFECTS,
@@ -666,7 +668,6 @@ export default function MyeongnyangChatExperience({ onHome, speak, stop, speakin
         aria-haspopup="listbox"
         aria-expanded={gradeOpen}
       >
-        <span className="myn-grade-emoji">{gradeMeta.emoji}</span>
         {gradeMeta.label}
         <span className="myn-grade-caret">{gradeOpen ? "▴" : "▾"}</span>
       </button>
@@ -678,7 +679,6 @@ export default function MyeongnyangChatExperience({ onHome, speak, stop, speakin
                 className={"myn-grade-item" + (g.key === grade ? " on" : "")}
                 onClick={() => pickGrade(g.key)}
               >
-                <span className="myn-grade-emoji">{g.emoji}</span>
                 {g.label}
               </button>
             </li>
@@ -761,6 +761,7 @@ export default function MyeongnyangChatExperience({ onHome, speak, stop, speakin
             onClose={() => setActiveHeritage(null)}
           />
         )}
+        <MeokdolChatLauncher />
       </div>
     );
   }
@@ -859,6 +860,7 @@ export default function MyeongnyangChatExperience({ onHome, speak, stop, speakin
             })}
           </div>
         </div>
+        <MeokdolChatLauncher />
       </div>
     );
   }
@@ -1023,6 +1025,7 @@ export default function MyeongnyangChatExperience({ onHome, speak, stop, speakin
           </div>
         </div>
         {sharedModals}
+        <MeokdolChatLauncher />
       </div>
     );
   }
@@ -1181,6 +1184,7 @@ export default function MyeongnyangChatExperience({ onHome, speak, stop, speakin
           </div>
         </div>
         {sharedModals}
+        <MeokdolChatLauncher />
       </div>
     );
   }
