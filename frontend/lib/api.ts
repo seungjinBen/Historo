@@ -59,7 +59,7 @@ function parseCut(c: any): ApiComicCut {
     number:      c.number,
     camera:      c.camera,
     description: c.description,
-    imageUrl:    toCdnUrl(c.image_path ?? c.imageUrl),
+    imageUrl:    toCdnUrl(c.image_path ?? c.imageUrl).replace(/\.png($|\?)/, '.webp$1'),
   };
 }
 
