@@ -1,42 +1,34 @@
-// 백엔드 직접 호출 (CORS는 백엔드 WebConfig에서 허용)
-const BASE =
-  process.env.NEXT_PUBLIC_API_BASE ?? "https://historo-backend.onrender.com";
+import { getIdToken } from "./cognito";
 
-// 백엔드 S3 URL(NFD 인코딩) → glory CloudFront URL(NFC 인코딩)로 교체
-const OLD_S3 = "https://historo-images.s3.ap-northeast-2.amazonaws.com";
+// 책장만 Lambda 호출 - 나머지는 정적 JSON
+const AUTH_BASE =
+  process.env.NEXT_PUBLIC_API_BASE ??
+  "https://ti5h7b2bs2.execute-api.ap-northeast-2.amazonaws.com/prod";
+
 const CF_CDN = "https://d3382886jvvuzm.cloudfront.net";
-export function toCdnUrl(url: string): string {
-  if (!url.startsWith(OLD_S3)) return url;
-  // 백엔드 URL은 NFD(macOS 분해형), 우리 S3는 NFC(합성형)로 저장 → 정규화
-  const path = url.slice(OLD_S3.length);
-  try {
-    const nfcPath = decodeURIComponent(path).normalize("NFC");
-    const reencoded = nfcPath.split("/").map((seg) => seg ? encodeURIComponent(seg) : "").join("/");
-    return CF_CDN + reencoded;
-  } catch {
-    return CF_CDN + path;
-  }
+
+export function toCdnUrl(imagePath: string | null | undefined): string {
+  if (!imagePath) return "";
+  if (imagePath.startsWith("http")) return imagePath;
+  const nfc = imagePath.normalize("NFC");
+  const encoded = nfc.split("/").map((seg) => seg ? encodeURIComponent(seg) : "").join("/");
+  return `${CF_CDN}/${encoded}`;
 }
-const TOKEN_KEY = "historo_token";
-const USER_KEY  = "historo_username";
 
-export const getToken    = () => typeof window !== "undefined" ? localStorage.getItem(TOKEN_KEY) : null;
-export const setToken    = (t: string) => localStorage.setItem(TOKEN_KEY, t);
-export const clearToken  = () => { localStorage.removeItem(TOKEN_KEY); localStorage.removeItem(USER_KEY); };
-export const getUsername = () => typeof window !== "undefined" ? localStorage.getItem(USER_KEY) : null;
-export const setUsername = (u: string) => localStorage.setItem(USER_KEY, u);
+// ─── Lambda 호출 (책장 - Cognito 토큰 자동 첨부) ─────────────────────────────────
 
-async function apiFetch<T>(path: string, opts: RequestInit = {}): Promise<T> {
-  const token = getToken();
+async function authFetch<T>(path: string, opts: RequestInit = {}): Promise<T> {
+  const token = await getIdToken();
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (token) headers["Authorization"] = `Bearer ${token}`;
-  const res = await fetch(`${BASE}${path}`, { ...opts, headers });
+  const res = await fetch(`${AUTH_BASE}${path}`, { ...opts, headers });
   if (!res.ok) throw new Error(`${res.status}`);
   return res.json();
 }
 
-// -- API Response Types --
-export type ApiComicCut = { number: number; description: string; imageUrl: string };
+// ─── 타입 ─────────────────────────────────────────────────────────────────────────
+
+export type ApiComicCut = { number: number; camera?: string; description: string; imageUrl: string };
 export type ApiComicStoryline = {
   id: string; q1: string; q2: string; q3: string;
   pathText: string; cuts: ApiComicCut[];
@@ -50,42 +42,53 @@ export type ApiGalleryItem  = {
 };
 
 export type ApiBookshelfItem = {
-  id: number; eventId: string; title: string; picks: number[];
+  id: string; eventId: string; title: string; picks: number[];
   pathText: string; thumbnailUrl: string | null; createdAt: string;
 };
 export type ApiBookshelfSaveReq = {
   eventId: string; title: string; picks: number[]; pathText: string; thumbnailUrl?: string;
 };
 
-export const api = {
-  login:  (username: string, password: string) =>
-    apiFetch<{ token: string }>("/api/auth/login",  { method: "POST", body: JSON.stringify({ username, password }) }),
-  signup: (username: string, password: string) =>
-    apiFetch<{ token: string }>("/api/auth/signup", { method: "POST", body: JSON.stringify({ username, password }) }),
+// ─── 정적 데이터 로더 ─────────────────────────────────────────────────────────────
 
-  getComic: (episodeId: string) =>
-    apiFetch<ApiComic>(`/api/comics/${encodeURIComponent(episodeId)}`).then((comic) => ({
-      ...comic,
-      storylines: comic.storylines.map((sl) => ({
-        ...sl,
-        cuts: sl.cuts.map((c) => ({ ...c, imageUrl: toCdnUrl(c.imageUrl) })),
-      })),
-    })),
-  getGallery: () =>
-    apiFetch<ApiGalleryItem[]>("/api/gallery").then((items) =>
-      items.map((item) => ({
-        ...item,
-        panels: item.panels.map((p) => ({ ...p, imageUrl: toCdnUrl(p.imageUrl) })),
-      }))
-    ),
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseCut(c: any): ApiComicCut {
+  return {
+    number:      c.number,
+    camera:      c.camera,
+    description: c.description,
+    imageUrl:    toCdnUrl(c.image_path ?? c.imageUrl),
+  };
+}
 
-  getBookshelf:    ()                         => apiFetch<ApiBookshelfItem[]>("/api/bookshelf"),
-  saveBookshelf:   (req: ApiBookshelfSaveReq) =>
-    apiFetch<ApiBookshelfItem>("/api/bookshelf", { method: "POST", body: JSON.stringify(req) }),
-  deleteBookshelf: (id: number)               => apiFetch<unknown>(`/api/bookshelf/${id}`, { method: "DELETE" }),
-};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseStoryline(sl: any): ApiComicStoryline {
+  return {
+    id:       sl.id,
+    q1:       sl.q1,
+    q2:       sl.q2,
+    q3:       sl.q3,
+    pathText: sl.path_text ?? sl.pathText ?? "",
+    cuts:     (sl.cuts ?? []).map(parseCut),
+  };
+}
 
-// eventId(영문) → 백엔드 에피소드명(한글) 매핑
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseComic(data: any): ApiComic {
+  return {
+    id:         data.id,
+    title:      data.title,
+    storylines: (data.storylines ?? []).map(parseStoryline),
+  };
+}
+
+async function fetchJson<T>(url: string): Promise<T> {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`fetch ${url}: ${res.status}`);
+  return res.json();
+}
+
+// eventId(영문) → 에피소드명(한글) 매핑
 export const EVENT_TO_EPISODE: Record<string, string> = {
   "taejo-foundation-1392":          "태조",
   "park-yeon-aak-1430":             "박연",
@@ -97,4 +100,45 @@ export const EVENT_TO_EPISODE: Record<string, string> = {
   "gwanghaegun-junglib-1619":       "광해군",
   "kim-hongdo-genre-1780":          "김홍도",
   "jeong-yakyong-geojunggi-1792":   "정약용",
+};
+
+export const api = {
+  // ── 정적 데이터 ──────────────────────────────────────────────────────────────
+  getComic: async (episodeId: string): Promise<ApiComic> => {
+    const korName = EVENT_TO_EPISODE[episodeId] ?? episodeId;
+    const data = await fetchJson<unknown>(`/data/comics/${encodeURIComponent(korName)}.json`);
+    return parseComic(data);
+  },
+
+  getGallery: async (): Promise<ApiGalleryItem[]> => {
+    const names = Object.values(EVENT_TO_EPISODE);
+    const episodeIds = Object.keys(EVENT_TO_EPISODE);
+    const items: ApiGalleryItem[] = [];
+    await Promise.all(
+      names.map(async (korName, i) => {
+        try {
+          const data = await fetchJson<unknown>(`/data/comics/${encodeURIComponent(korName)}.json`);
+          const comic = parseComic(data);
+          for (const sl of comic.storylines) {
+            if (sl.cuts.length === 0) continue;
+            items.push({
+              episodeId:   episodeIds[i],
+              title:       comic.title,
+              storylineId: sl.id,
+              pathText:    sl.pathText,
+              panels:      sl.cuts.map((c) => ({ number: c.number, description: c.description, imageUrl: c.imageUrl })),
+            });
+          }
+        } catch { /* 파일 없으면 skip */ }
+      })
+    );
+    return items;
+  },
+
+  // ── 책장 (Lambda) ─────────────────────────────────────────────────────────────
+  getBookshelf:    ()                         => authFetch<ApiBookshelfItem[]>("/api/bookshelf"),
+  saveBookshelf:   (req: ApiBookshelfSaveReq) =>
+    authFetch<ApiBookshelfItem>("/api/bookshelf", { method: "POST", body: JSON.stringify(req) }),
+  deleteBookshelf: (id: string)               =>
+    authFetch<unknown>(`/api/bookshelf/${id}`, { method: "DELETE" }),
 };

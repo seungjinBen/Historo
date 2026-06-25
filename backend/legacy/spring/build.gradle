@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.3.6'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
 }
 
 group = 'com.historo'
@@ -24,12 +25,23 @@ dependencies {
     runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.12.6'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
 
+    // Lambda 핸들러
+    implementation 'com.amazonaws.serverless:aws-serverless-java-container-springboot3:2.0.3'
+
     // AWS DynamoDB Enhanced Client
     implementation platform('software.amazon.awssdk:bom:2.26.29')
     implementation 'software.amazon.awssdk:dynamodb-enhanced'
     implementation 'software.amazon.awssdk:sts'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+// Lambda 배포용 flat fat JAR (Spring Boot 3.x 호환)
+shadowJar {
+    archiveClassifier = 'lambda'
+    mergeServiceFiles()
+    append 'META-INF/spring.factories'
+    append 'META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports'
 }
 
 tasks.named('test') {

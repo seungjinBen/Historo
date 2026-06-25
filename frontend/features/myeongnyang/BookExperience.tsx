@@ -180,11 +180,12 @@ function ComicPanel({ src, s3Src, alt, idx, scene }: { src: string; s3Src?: stri
 
 function LeftPage({ spread, picks, data, heritageItems, s3CutUrls }: SharedProps & { spread: SpreadKey }) {
   if (spread === 0) {
+    const anchorUrl = s3CutUrls["0-0-0"]?.[0];
     return (
       <div className="mbook-side mbook-side-lead">
         <span className="mbook-eyebrow">실록 기반 · 만약에 체험</span>
         <div className="mbook-illust">
-          <img src={imgUrl("_anchor.png")} alt="" />
+          {anchorUrl && <img src={anchorUrl} alt="" />}
         </div>
         <p className="mbook-side-quote">“신에게는 아직 12척의<br/>배가 있사옵니다.”</p>
         <p className="mbook-side-cite">— 충무공 이순신</p>
@@ -242,10 +243,12 @@ function LeftPage({ spread, picks, data, heritageItems, s3CutUrls }: SharedProps
   if (spread >= REAL_FIRST && spread <= REAL_LAST) {
     const idx = spread - REAL_FIRST;
     const panel = REAL_PANELS[idx];
+    const pathKey = picks.join("-");
+    const s3Url = s3CutUrls[pathKey]?.[idx];
     return (
       <div className="mbook-side mbook-side-real-cut">
         <span className="mbook-eyebrow">실제 역사 · {idx + 1}장</span>
-        <ComicPanel src={panel.src} alt={panel.caption} idx={idx} scene={panel.caption} />
+        <ComicPanel src="" s3Src={s3Url} alt={panel.caption} idx={idx} scene={panel.caption} />
         <p className="mbook-real-bubble">&ldquo;{panel.bubble}&rdquo;</p>
       </div>
     );
@@ -490,7 +493,7 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/heritage.json")
+    fetch("/data/heritage.json")
       .then((r) => r.json())
       .then((d: { events: HeritageEvent[] }) => {
         if (cancelled) return;

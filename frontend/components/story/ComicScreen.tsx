@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { SpeakBtn } from "@/components/common/SpeakBtn";
 import { Cut } from "./Cut";
-import { api, getToken, type ApiComicCut } from "@/lib/api";
+import { api, type ApiComicCut } from "@/lib/api";
+import { isSignedIn } from "@/lib/cognito";
 import { streamAI } from "@/lib/ws";
 import type { EventMeta, KidStory, StoryNode } from "@/lib/types";
 
@@ -75,7 +76,7 @@ export function ComicScreen({
   }
 
   async function handleSave() {
-    if (!getToken()) { setSaveError("로그인 후 저장할 수 있어요."); return; }
+    if (!(await isSignedIn())) { setSaveError("로그인 후 저장할 수 있어요."); return; }
     setSaving(true); setSaveError(null);
     try {
       const thumbnailUrl = apiCuts?.[0]?.imageUrl ?? null;

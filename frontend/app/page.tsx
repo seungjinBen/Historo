@@ -18,7 +18,8 @@ import { ComicScreen } from "@/components/story/ComicScreen";
 import { IntroScreen } from "@/components/story/IntroScreen";
 import { PlayScreen } from "@/components/story/PlayScreen";
 import BookExperience from "@/features/myeongnyang/BookExperience";
-import { getToken, getUsername, clearToken, EVENT_TO_EPISODE } from "@/lib/api";
+import { EVENT_TO_EPISODE } from "@/lib/api";
+import { getCurrentEmail, signOut as cognitoSignOut } from "@/lib/cognito";
 import { useTTS } from "@/lib/use-tts";
 import { treeDepth, pathToStorylineId } from "@/lib/tree";
 import type {
@@ -48,8 +49,9 @@ export default function Page() {
   const [username, setUsernameState] = useState<string | null>(null);
 
   useEffect(() => {
-    setTokenState(getToken());
-    setUsernameState(getUsername());
+    getCurrentEmail().then((email) => {
+      if (email) { setTokenState("ok"); setUsernameState(email); }
+    });
   }, []);
 
   useEffect(() => {
@@ -60,7 +62,7 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    fetch("/heritage.json")
+    fetch("/data/heritage.json")
       .then((r) => r.json())
       .then((d: { events: HeritageEvent[] }) => {
         const map: Record<string, HeritageEvent> = {};
@@ -84,7 +86,7 @@ export default function Page() {
   useEffect(() => { return () => { stop(); }; }, [screen, stop]);
 
   function handleLogout() {
-    clearToken();
+    cognitoSignOut();
     setTokenState(null);
     setUsernameState(null);
   }
@@ -94,7 +96,7 @@ export default function Page() {
       setEvent(ev); setScreen("myeongnyang"); return;
     }
     try {
-      const t: Tree = await fetch(`/trees/${ev.id}.json`).then((r) => r.json());
+      const t: Tree = await fetch(`/data/trees/${ev.id}.json`).then((r) => r.json());
       setEvent(ev); setTree(t); setNode(t.root); setPath([]); setScreen("intro");
     } catch {
       setError(`트리를 불러오지 못했어요: /trees/${ev.id}.json`);

@@ -10,7 +10,7 @@ type Props = { onBack: () => void };
 export function BookshelfScreen({ onBack }: Props) {
   const [items, setItems]     = useState<ApiBookshelfItem[] | null>(null);
   const [error, setError]     = useState<string | null>(null);
-  const [deleting, setDeleting] = useState<number | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   useEffect(() => {
     api.getBookshelf()
@@ -18,7 +18,7 @@ export function BookshelfScreen({ onBack }: Props) {
       .catch(() => setError("책장을 불러오지 못했어요. 로그인 상태를 확인해 주세요."));
   }, []);
 
-  async function handleDelete(id: number) {
+  async function handleDelete(id: string) {
     setDeleting(id);
     try {
       await api.deleteBookshelf(id);
