@@ -132,13 +132,15 @@ export function Gallery({ events, onOpenEvent }: Props) {
             <div className="comic-grid">
               {modal.panels.map((p, i) => (
                 <div key={i} className="cut">
-                  <div className="num">{i + 1}</div>
                   {p.imageUrl ? (
                     <img src={p.imageUrl} alt={p.description} className="loaded" />
                   ) : (
                     <div className="ph">{p.description}</div>
                   )}
-                  <div className="cap">{p.description}</div>
+                  <div className="cap">
+                    <div className="num">{i + 1}</div>
+                    <span>{p.description}</span>
+                  </div>
                 </div>
               ))}
             </div>
