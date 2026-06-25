@@ -8,8 +8,8 @@ import {
   calcProgress,
   parseAiResponse,
   parsePlotSummary,
-} from "../lib/storyChat";
-import { streamAI } from "../lib/ws";
+} from "@/lib/storyChat";
+import { streamAI } from "@/lib/ws";
 
 type Msg = { role: "user" | "ai"; text: string };
 type PlotSummary = { title: string; scenes: string[] };
