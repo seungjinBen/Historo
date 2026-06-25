@@ -165,13 +165,15 @@ function ComicPanel({ src, s3Src, alt, idx, scene }: { src: string; s3Src?: stri
   const onError = (s3Src && !s3Err) ? () => setS3Err(true) : () => setErr(true);
   return (
     <figure className="mbook-panel">
-      <div className="mbook-panel-num">{idx + 1}</div>
       {err && !(s3Src && !s3Err) ? (
         <div className="mbook-panel-ph">{scene}<br/><span>(그림 준비 중)</span></div>
       ) : (
         <img src={effective} alt={alt} onError={onError} />
       )}
-      <figcaption>{scene}</figcaption>
+      <figcaption>
+        <div className="mbook-panel-num">{idx + 1}</div>
+        <span>{scene}</span>
+      </figcaption>
     </figure>
   );
 }
