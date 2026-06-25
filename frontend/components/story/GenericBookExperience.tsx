@@ -102,19 +102,36 @@ const CUT_ICONS = ["🖼️", "📜", "🎨", "🏯"];
 function CutPanel({ idx, scene, cdnUrl }: { idx: number; scene: string; cdnUrl?: string }) {
   const [err, setErr] = useState(false);
   const [ok, setOk] = useState(false);
+  const showPh = !cdnUrl || err || !ok;
   return (
     <div className="gbook-cut">
-      {(err || !cdnUrl) ? (
+      {/* placeholder: cdnUrl 없거나 로딩 중이거나 에러 */}
+      {showPh && (
         <div className="gbook-cut-ph">
           <span className="gbook-cut-ph-num">{idx + 1}</span>
           <span className="gbook-cut-ph-icon">{CUT_ICONS[idx]}</span>
           <p className="gbook-cut-ph-scene">{scene}</p>
-          <span className="gbook-cut-ph-badge">그림 생성 중</span>
+          <span className="gbook-cut-ph-badge">{err ? "그림 생성 중" : "불러오는 중…"}</span>
         </div>
-      ) : (
-        <img src={cdnUrl} alt={scene} className={ok ? "loaded" : ""} onLoad={() => setOk(true)} onError={() => setErr(true)} />
       )}
-      {!err && cdnUrl && (
+      {/* 이미지: 항상 렌더(브라우저 캐시 활용), 로드 완료 시 위에 표시 */}
+      {cdnUrl && !err && (
+        <img
+          src={cdnUrl}
+          alt={scene}
+          loading="eager"
+          style={{
+            position: "absolute", inset: 0,
+            width: "100%", height: "100%",
+            objectFit: "cover",
+            opacity: ok ? 1 : 0,
+            transition: "opacity .45s ease",
+          }}
+          onLoad={() => setOk(true)}
+          onError={() => setErr(true)}
+        />
+      )}
+      {ok && cdnUrl && !err && (
         <div className="gbook-cut-cap">
           <div className="gbook-cut-num">{idx + 1}</div>
           <span>{scene}</span>
@@ -352,6 +369,19 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
       });
     }).catch(() => {});
   }, [event.id]);
+
+  // 3번째 선택 완료 시 4컷 이미지 브라우저 캐시에 미리 로드
+  useEffect(() => {
+    if (!comic || picks.length < 3) return;
+    const sl = comic.storylines.find(
+      (s) => s.q1 === Q1_KEYS[picks[0]] && s.q2 === Q2_KEYS[picks[1]] && s.q3 === Q3_KEYS[picks[2]]
+    );
+    if (!sl) return;
+    sl.cuts.forEach((cut) => {
+      const img = new window.Image();
+      img.src = cut.imageUrl;
+    });
+  }, [picks, comic]);
 
   const openBook = useCallback(() => {
     if (phase !== "closed") return; playSfx("open"); setPhase("opening");
