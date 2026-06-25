@@ -22,9 +22,13 @@ public class JwtUtil {
         this.expirationMs = expirationMs;
     }
 
-    public String generateToken(Long userId, String email) {
+    /**
+     * JWT subject = username (email)
+     * userId(Long) 대신 username(String) 사용
+     */
+    public String generateToken(String username, String email) {
         return Jwts.builder()
-                .subject(userId.toString())
+                .subject(username)
                 .claim("email", email)
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expirationMs))
@@ -32,8 +36,11 @@ public class JwtUtil {
                 .compact();
     }
 
-    public Long getUserId(String token) {
-        return Long.parseLong(parseClaims(token).getSubject());
+    /**
+     * JWT에서 username(email) 추출
+     */
+    public String getUsername(String token) {
+        return parseClaims(token).getSubject();
     }
 
     public boolean isValid(String token) {

@@ -23,22 +23,22 @@ public class BookshelfController {
 
     @GetMapping
     public List<BookshelfItem> getMyStories(Authentication auth) {
-        Long userId = (Long) auth.getPrincipal();
-        return bookshelfService.getMyStories(userId);
+        String username = (String) auth.getPrincipal();
+        return bookshelfService.getMyStories(username);
     }
 
     @PostMapping
     public BookshelfItem saveStory(Authentication auth,
                                    @Valid @RequestBody BookshelfSaveRequest req) {
-        Long userId = (Long) auth.getPrincipal();
-        return bookshelfService.save(userId, req);
+        String username = (String) auth.getPrincipal();
+        return bookshelfService.save(username, req);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteStory(Authentication auth, @PathVariable Long id) {
-        Long userId = (Long) auth.getPrincipal();
+    public ResponseEntity<?> deleteStory(Authentication auth, @PathVariable String id) {
+        String username = (String) auth.getPrincipal();
         try {
-            bookshelfService.delete(userId, id);
+            bookshelfService.delete(username, id);
             return ResponseEntity.ok(Map.of("deleted", true));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));

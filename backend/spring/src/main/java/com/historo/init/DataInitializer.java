@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.historo.entity.*;
 import com.historo.repository.*;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
@@ -21,6 +21,7 @@ public class DataInitializer implements CommandLineRunner {
     private final ObjectMapper mapper;
     private final EventRepository eventRepo;
     private final HeritageEventRepository heritageRepo;
+    private final HeritageItemRepository heritageItemRepo;
     private final StoryTreeRepository treeRepo;
     private final KidStoryRepository kidStoryRepo;
     private final ComicRepository comicRepo;
@@ -28,12 +29,14 @@ public class DataInitializer implements CommandLineRunner {
     public DataInitializer(ObjectMapper mapper,
                            EventRepository eventRepo,
                            HeritageEventRepository heritageRepo,
+                           HeritageItemRepository heritageItemRepo,
                            StoryTreeRepository treeRepo,
                            KidStoryRepository kidStoryRepo,
                            ComicRepository comicRepo) {
         this.mapper = mapper;
         this.eventRepo = eventRepo;
         this.heritageRepo = heritageRepo;
+        this.heritageItemRepo = heritageItemRepo;
         this.treeRepo = treeRepo;
         this.kidStoryRepo = kidStoryRepo;
         this.comicRepo = comicRepo;
@@ -41,12 +44,14 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        if (eventRepo.count() > 0) {
+        // DynamoDB에는 cheap count()가 없으므로 scan 1건으로 초기화 여부 확인
+        boolean alreadyLoaded = eventRepo.findAll().stream().findFirst().isPresent();
+        if (alreadyLoaded) {
             log.info("DB already initialized, skipping data load");
             return;
         }
 
-        log.info("Loading initial data into DB...");
+        log.info("Loading initial data into DynamoDB...");
         try { loadEvents(); } catch (Exception e) { log.error("Failed to load events", e); }
         try { loadHeritage(); } catch (Exception e) { log.error("Failed to load heritage", e); }
         try { loadTrees(); } catch (Exception e) { log.error("Failed to load trees", e); }
@@ -57,6 +62,7 @@ public class DataInitializer implements CommandLineRunner {
 
     private void loadEvents() throws Exception {
         JsonNode root = readJson("data/events.json");
+        int count = 0;
         for (JsonNode node : root.get("events")) {
             JsonNode ch = node.get("character");
             eventRepo.save(new Event(
@@ -74,38 +80,47 @@ public class DataInitializer implements CommandLineRunner {
                     ch != null ? textOrNull(ch, "name") : null,
                     ch != null ? textOrNull(ch, "appearance") : null
             ));
+            count++;
         }
-        log.info("Loaded {} events", eventRepo.count());
+        log.info("Loaded {} events", count);
     }
 
     private void loadHeritage() throws Exception {
         JsonNode root = readJson("data/heritage.json");
+        int eventCount = 0, itemCount = 0;
         for (JsonNode node : root.get("events")) {
+            String eventId = node.get("id").asText();
             HeritageEventEntity entity = new HeritageEventEntity(
-                    node.get("id").asText(),
+                    eventId,
                     node.get("title").asText(),
                     textOrNull(node, "year"),
                     textOrNull(node, "sillokUrl")
             );
+            heritageRepo.save(entity);
+            eventCount++;
+
             if (node.has("heritageItems")) {
                 for (JsonNode item : node.get("heritageItems")) {
-                    entity.addItem(new HeritageItemEntity(
+                    HeritageItemEntity itemEntity = new HeritageItemEntity(
                             item.get("id").asText(),
                             item.get("name").asText(),
                             textOrNull(item, "imagePath"),
                             textOrNull(item, "docentText"),
                             textOrNull(item, "source"),
                             textOrNull(item, "sourceUrl")
-                    ));
+                    );
+                    itemEntity.setHeritageEventId(eventId);
+                    heritageItemRepo.save(itemEntity);
+                    itemCount++;
                 }
             }
-            heritageRepo.save(entity);
         }
-        log.info("Loaded {} heritage events", heritageRepo.count());
+        log.info("Loaded {} heritage events, {} items", eventCount, itemCount);
     }
 
     private void loadTrees() throws Exception {
         JsonNode events = readJson("data/events.json").get("events");
+        int count = 0;
         for (JsonNode ev : events) {
             String eventId = ev.get("id").asText();
             ClassPathResource res = new ClassPathResource("data/trees/" + eventId + ".json");
@@ -113,14 +128,16 @@ public class DataInitializer implements CommandLineRunner {
                 try (InputStream is = res.getInputStream()) {
                     String json = new String(is.readAllBytes());
                     treeRepo.save(new StoryTree(eventId, json));
+                    count++;
                 }
             }
         }
-        log.info("Loaded {} story trees", treeRepo.count());
+        log.info("Loaded {} story trees", count);
     }
 
     private void loadKidStories() throws Exception {
         JsonNode events = readJson("data/events.json").get("events");
+        int count = 0;
         for (JsonNode ev : events) {
             String eventId = ev.get("id").asText();
             ClassPathResource res = new ClassPathResource("data/kidstory/" + eventId + ".json");
@@ -134,23 +151,26 @@ public class DataInitializer implements CommandLineRunner {
                         textOrNull(node, "kidStory"),
                         node.has("funFacts") ? mapper.writeValueAsString(node.get("funFacts")) : "[]"
                 ));
+                count++;
             }
         }
-        log.info("Loaded {} kid stories", kidStoryRepo.count());
+        log.info("Loaded {} kid stories", count);
     }
 
     private void loadComics() throws Exception {
         var resolver = new PathMatchingResourcePatternResolver();
         var resources = resolver.getResources("classpath:data/comics/*.json");
+        int count = 0;
         for (var res : resources) {
             try (InputStream is = res.getInputStream()) {
                 String json = new String(is.readAllBytes());
                 JsonNode node = mapper.readTree(json);
                 String episodeId = node.get("id").asText();
                 comicRepo.save(new ComicEntity(episodeId, json));
+                count++;
             }
         }
-        log.info("Loaded {} comics", comicRepo.count());
+        log.info("Loaded {} comics", count);
     }
 
     private JsonNode readJson(String path) throws Exception {

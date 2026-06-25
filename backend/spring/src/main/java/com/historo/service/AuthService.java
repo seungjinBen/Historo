@@ -32,7 +32,8 @@ public class AuthService {
                 req.nickname()
         );
         userRepo.save(user);
-        String token = jwtUtil.generateToken(user.getId(), user.getEmail());
+        // subject = username (email)
+        String token = jwtUtil.generateToken(user.getUsername(), user.getEmail());
         return new AuthResponse(token, user.getNickname(), user.getEmail());
     }
 
@@ -42,7 +43,7 @@ public class AuthService {
         if (!passwordEncoder.matches(req.password(), user.getPassword())) {
             throw new IllegalArgumentException("이메일 또는 비밀번호가 올바르지 않습니다.");
         }
-        String token = jwtUtil.generateToken(user.getId(), user.getEmail());
+        String token = jwtUtil.generateToken(user.getUsername(), user.getEmail());
         return new AuthResponse(token, user.getNickname(), user.getEmail());
     }
 }

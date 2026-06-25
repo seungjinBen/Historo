@@ -34,10 +34,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/kidstory/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/comics", "/api/comics/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/gallery", "/api/gallery/**").permitAll()
-                .requestMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated()
             )
-            .headers(headers -> headers.frameOptions(fo -> fo.sameOrigin()))
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

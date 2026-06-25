@@ -21,6 +21,7 @@ public class DataService {
     private final ObjectMapper mapper;
     private final EventRepository eventRepo;
     private final HeritageEventRepository heritageRepo;
+    private final HeritageItemRepository heritageItemRepo;
     private final StoryTreeRepository treeRepo;
     private final KidStoryRepository kidStoryRepo;
     private final ComicRepository comicRepo;
@@ -31,12 +32,14 @@ public class DataService {
     public DataService(ObjectMapper mapper,
                        EventRepository eventRepo,
                        HeritageEventRepository heritageRepo,
+                       HeritageItemRepository heritageItemRepo,
                        StoryTreeRepository treeRepo,
                        KidStoryRepository kidStoryRepo,
                        ComicRepository comicRepo) {
         this.mapper = mapper;
         this.eventRepo = eventRepo;
         this.heritageRepo = heritageRepo;
+        this.heritageItemRepo = heritageItemRepo;
         this.treeRepo = treeRepo;
         this.kidStoryRepo = kidStoryRepo;
         this.comicRepo = comicRepo;
@@ -81,7 +84,8 @@ public class DataService {
     }
 
     private HeritageEvent toHeritageEvent(HeritageEventEntity e) {
-        List<HeritageItem> items = e.getHeritageItems().stream()
+        // GSI로 이 이벤트에 속한 items 조회
+        List<HeritageItem> items = heritageItemRepo.findByHeritageEventId(e.getId()).stream()
                 .map(i -> new HeritageItem(
                         i.getId(), i.getName(), i.getImagePath(),
                         i.getDocentText(), i.getSource(), i.getSourceUrl()))

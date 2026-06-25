@@ -1,27 +1,29 @@
 package com.historo.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
-@Entity
-@Table(name = "story_trees")
+/**
+ * historo-story-trees 테이블
+ * PK: eventId (String)
+ */
+@DynamoDbBean
 public class StoryTree {
 
-    @Id
     private String eventId;
-
-    @Column(columnDefinition = "TEXT")
     private String treeJson;
 
-    protected StoryTree() {}
+    public StoryTree() {}
 
     public StoryTree(String eventId, String treeJson) {
         this.eventId = eventId;
         this.treeJson = treeJson;
     }
 
+    @DynamoDbPartitionKey
     public String getEventId() { return eventId; }
+    public void setEventId(String eventId) { this.eventId = eventId; }
+
     public String getTreeJson() { return treeJson; }
+    public void setTreeJson(String treeJson) { this.treeJson = treeJson; }
 }

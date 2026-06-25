@@ -1,28 +1,23 @@
 package com.historo.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbBean;
+import software.amazon.awssdk.enhanced.dynamodb.mapper.annotations.DynamoDbPartitionKey;
 
-@Entity
-@Table(name = "kid_stories")
+/**
+ * historo-kid-stories 테이블
+ * PK: eventId (String)
+ */
+@DynamoDbBean
 public class KidStoryEntity {
 
-    @Id
     private String eventId;
-
     private String source;
     private String sillokUrl;
     private boolean fromSillok;
-
-    @Column(columnDefinition = "TEXT")
     private String kidStory;
-
-    @Column(columnDefinition = "TEXT")
     private String funFactsJson;
 
-    protected KidStoryEntity() {}
+    public KidStoryEntity() {}
 
     public KidStoryEntity(String eventId, String source, String sillokUrl,
                           boolean fromSillok, String kidStory, String funFactsJson) {
@@ -34,10 +29,22 @@ public class KidStoryEntity {
         this.funFactsJson = funFactsJson;
     }
 
+    @DynamoDbPartitionKey
     public String getEventId() { return eventId; }
+    public void setEventId(String eventId) { this.eventId = eventId; }
+
     public String getSource() { return source; }
+    public void setSource(String source) { this.source = source; }
+
     public String getSillokUrl() { return sillokUrl; }
+    public void setSillokUrl(String sillokUrl) { this.sillokUrl = sillokUrl; }
+
     public boolean isFromSillok() { return fromSillok; }
+    public void setFromSillok(boolean fromSillok) { this.fromSillok = fromSillok; }
+
     public String getKidStory() { return kidStory; }
+    public void setKidStory(String kidStory) { this.kidStory = kidStory; }
+
     public String getFunFactsJson() { return funFactsJson; }
+    public void setFunFactsJson(String funFactsJson) { this.funFactsJson = funFactsJson; }
 }

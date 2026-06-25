@@ -21,13 +21,13 @@ public class BookshelfService {
         this.mapper = mapper;
     }
 
-    public List<BookshelfItem> getMyStories(Long userId) {
-        return storyRepo.findByUserIdOrderByCreatedAtDesc(userId).stream()
+    public List<BookshelfItem> getMyStories(String username) {
+        return storyRepo.findByUsernameOrderByCreatedAtDesc(username).stream()
                 .map(this::toItem)
                 .toList();
     }
 
-    public BookshelfItem save(Long userId, BookshelfSaveRequest req) {
+    public BookshelfItem save(String username, BookshelfSaveRequest req) {
         String picksJson;
         try {
             picksJson = mapper.writeValueAsString(req.picks());
@@ -35,17 +35,17 @@ public class BookshelfService {
             picksJson = "[]";
         }
         UserStory story = new UserStory(
-                userId, req.eventId(), req.title(),
+                username, req.eventId(), req.title(),
                 picksJson, req.pathText(), req.thumbnailUrl()
         );
         storyRepo.save(story);
         return toItem(story);
     }
 
-    public void delete(Long userId, Long storyId) {
-        UserStory story = storyRepo.findById(storyId)
+    public void delete(String username, String storyId) {
+        UserStory story = storyRepo.findById(username, storyId)
                 .orElseThrow(() -> new IllegalArgumentException("스토리를 찾을 수 없습니다."));
-        if (!story.getUserId().equals(userId)) {
+        if (!story.getUsername().equals(username)) {
             throw new IllegalArgumentException("삭제 권한이 없습니다.");
         }
         storyRepo.delete(story);
