@@ -3,6 +3,13 @@
 const BASE =
   process.env.NEXT_PUBLIC_API_BASE ??
   (typeof window !== "undefined" ? "/api/proxy" : "https://historo-backend.onrender.com");
+
+// 백엔드가 반환하는 S3 URL → glory 계정 CloudFront URL로 교체
+const OLD_S3 = "https://historo-images.s3.ap-northeast-2.amazonaws.com";
+const CF_CDN = "https://d3382886jvvuzm.cloudfront.net";
+export function toCdnUrl(url: string): string {
+  return url.startsWith(OLD_S3) ? CF_CDN + url.slice(OLD_S3.length) : url;
+}
 const TOKEN_KEY = "historo_token";
 const USER_KEY  = "historo_username";
 
@@ -49,9 +56,21 @@ export const api = {
   signup: (username: string, password: string) =>
     apiFetch<{ token: string }>("/api/auth/signup", { method: "POST", body: JSON.stringify({ username, password }) }),
 
-  getComic:    (episodeId: string) =>
-    apiFetch<ApiComic>(`/api/comics/${encodeURIComponent(episodeId)}`),
-  getGallery:  () => apiFetch<ApiGalleryItem[]>("/api/gallery"),
+  getComic: (episodeId: string) =>
+    apiFetch<ApiComic>(`/api/comics/${encodeURIComponent(episodeId)}`).then((comic) => ({
+      ...comic,
+      storylines: comic.storylines.map((sl) => ({
+        ...sl,
+        cuts: sl.cuts.map((c) => ({ ...c, imageUrl: toCdnUrl(c.imageUrl) })),
+      })),
+    })),
+  getGallery: () =>
+    apiFetch<ApiGalleryItem[]>("/api/gallery").then((items) =>
+      items.map((item) => ({
+        ...item,
+        panels: item.panels.map((p) => ({ ...p, imageUrl: toCdnUrl(p.imageUrl) })),
+      }))
+    ),
 
   getBookshelf:    ()                         => apiFetch<ApiBookshelfItem[]>("/api/bookshelf"),
   saveBookshelf:   (req: ApiBookshelfSaveReq) =>
