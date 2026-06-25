@@ -385,7 +385,7 @@ function CoverFace({ event }: { event: EventMeta }) {
 }
 
 // ── 메인 컴포넌트 ─────────────────────────────
-type Props = { event: EventMeta; tree: Tree; onHome: () => void; speak: (t: string) => void; stop: () => void; speaking: boolean; };
+type Props = { event: EventMeta; onHome: () => void; speak: (t: string) => void; stop: () => void; speaking: boolean; };
 
 export default function GenericBookExperience({ event, onHome, speak, stop, speaking }: Props) {
   const [phase, setPhase] = useState<Phase>("closed");

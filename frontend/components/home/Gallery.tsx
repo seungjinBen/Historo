@@ -149,7 +149,7 @@ export function Gallery({ events, onOpenEvent }: Props) {
   return (
     <>
       <section className="home-section gallery-section" id="gallery-section">
-        <div className="section-header">
+        <div className="section-header" data-rv="up">
           <span className="section-header-eyebrow">갤러리 구경</span>
           <h2 className="section-header-title">지금까지 펼쳐진 이야기책</h2>
           <p className="section-header-sub">

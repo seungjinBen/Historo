@@ -6,8 +6,6 @@ import { MeokdolMascot } from "./MeokdolMascot";
 
 export function MeokdolChatLauncher() {
   const [open, setOpen] = useState(false);
-  const [hintSeen, setHintSeen] = useState(false);
-
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -17,18 +15,13 @@ export function MeokdolChatLauncher() {
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
 
-  useEffect(() => {
-    const t = setTimeout(() => setHintSeen(true), 6000);
-    return () => clearTimeout(t);
-  }, []);
-
   return (
     <>
       <div className="meokdol-fab-wrap">
         <button
           type="button"
           className={"meokdol-fab" + (open ? " on" : "")}
-          onClick={() => { setOpen(true); setHintSeen(true); }}
+          onClick={() => setOpen(true)}
           aria-label="먹돌이에게 물어보기"
         >
           <span className="meokdol-fab-avatar" aria-hidden="true">

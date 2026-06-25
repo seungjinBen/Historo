@@ -4,7 +4,7 @@ import { HOW_STEPS } from "@/lib/home-content";
 export function HowItWorks() {
   return (
     <section className="home-section how-section">
-      <div className="section-header how-section-header">
+      <div className="section-header how-section-header" data-rv="up">
         <span className="section-header-eyebrow">어떻게 만들어요?</span>
         <h2 className="section-header-title">대화하고 고르면, 4컷 완성!</h2>
         <p className="section-header-sub">
@@ -16,8 +16,14 @@ export function HowItWorks() {
         </div>
       </div>
       <ol className="how-steps" role="list">
-        {HOW_STEPS.map((step) => (
-          <li key={step.num} className="how-step" role="listitem">
+        {HOW_STEPS.map((step, idx) => (
+          <li
+            key={step.num}
+            className="how-step"
+            role="listitem"
+            data-rv="left"
+            data-rv-d={String(idx * 80)}
+          >
             <span className="how-step-num">{step.num}</span>
             <div className="how-step-title">{step.title}</div>
             <p className="how-step-desc">{step.desc}</p>

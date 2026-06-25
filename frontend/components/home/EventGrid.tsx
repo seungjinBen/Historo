@@ -70,7 +70,7 @@ export function EventGrid({ events, heritage, onOpenEvent }: Props) {
   const hasMore = sorted.length > 4;
   return (
     <section className="home-section" id="events-section">
-      <div className="section-header">
+      <div className="section-header" data-rv="up">
         <span className="section-header-eyebrow">사건 박스</span>
         <h2 className="section-header-title">좋아하는 이야기부터 골라봐요</h2>
         <p className="section-header-sub">관심 가는 사건의 박스를 눌러 4컷 이야기를 만들어보세요.</p>

@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { AboutScreen } from "@/components/about/AboutScreen";
 import { BookshelfScreen } from "@/components/BookshelfScreen";
 import MeokdolChat from "@/components/MeokdolChat";
 import { GlossaryProvider } from "@/components/common/Glossary";
+import { ScrollReveal } from "@/components/common/ScrollReveal";
 import { SiteFooter } from "@/components/common/SiteFooter";
 import { EventGrid } from "@/components/home/EventGrid";
 import { Gallery } from "@/components/home/Gallery";
@@ -41,6 +42,7 @@ export default function Page() {
   const [error, setError]   = useState<string | null>(null);
 
   const { speak, stop, speaking } = useTTS();
+  const fromPop = useRef(false);
 
   const [previewEventId, setPreviewEventId]                 = useState<string | null>(null);
   const [heritagePreviewEventId, setHeritagePreviewEventId] = useState<string | null>(null);
@@ -92,17 +94,68 @@ export default function Page() {
     setUsernameState(null);
   }
 
-  async function openEvent(ev: EventMeta) {
+  const home = useCallback(() => {
+    if (!fromPop.current) window.history.pushState(null, "", "/");
+    stop();
+    setScreen("home"); setEvent(null); setTree(null); setNode(null); setPath([]);
+    setPreviewEventId(null); setHeritagePreviewEventId(null);
+  }, [stop]);
+
+  const openEvent = useCallback((ev: EventMeta) => {
+    if (!fromPop.current) window.history.pushState(null, "", `/?e=${ev.id}`);
     if (ev.id === "yi-myeongnyang-1597") {
       setEvent(ev); setScreen("myeongnyang"); return;
     }
-    try {
-      const t: Tree = await fetch(`/data/trees/${ev.id}.json`).then((r) => r.json());
-      setEvent(ev); setTree(t); setNode(t.root); setPath([]); setScreen("tree-book");
-    } catch {
-      setError(`트리를 불러오지 못했어요: /trees/${ev.id}.json`);
+    setEvent(ev); setScreen("tree-book");
+  }, []);
+
+  // 초기 URL 파싱 — events 로드 직후 한 번만 실행
+  useEffect(() => {
+    if (!events) return;
+    const params = new URLSearchParams(window.location.search);
+    const e = params.get("e");
+    const s = params.get("s");
+    fromPop.current = true;
+    if (e) {
+      const ev = events.find((ev) => ev.id === e);
+      if (ev) openEvent(ev);
+    } else if (s === "about") {
+      setScreen("about");
+    } else if (s === "bookshelf") {
+      setScreen("bookshelf");
+    } else {
+      // 홈이면 초기 히스토리 엔트리 확보
+      window.history.replaceState(null, "", "/");
     }
-  }
+    fromPop.current = false;
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [events]);
+
+  // 브라우저 뒤로/앞으로 처리
+  useEffect(() => {
+    if (!events) return;
+    const onPop = () => {
+      fromPop.current = true;
+      stop();
+      const params = new URLSearchParams(window.location.search);
+      const e = params.get("e");
+      const s = params.get("s");
+      if (e) {
+        const ev = events.find((ev) => ev.id === e);
+        if (ev) openEvent(ev);
+      } else if (s === "about") {
+        setScreen("about"); setEvent(null);
+      } else if (s === "bookshelf") {
+        setScreen("bookshelf"); setEvent(null);
+      } else {
+        setScreen("home"); setEvent(null); setTree(null); setNode(null); setPath([]);
+        setPreviewEventId(null); setHeritagePreviewEventId(null);
+      }
+      fromPop.current = false;
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [events, openEvent, stop]);
 
   function scrollToTarget(id: string) {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -121,11 +174,6 @@ export default function Page() {
     setNode(tree.root); setPath([]); setScreen("play");
   };
 
-  const home = () => {
-    setScreen("home"); setEvent(null); setTree(null); setNode(null); setPath([]);
-    setPreviewEventId(null); setHeritagePreviewEventId(null);
-  };
-
   if (error)   return <div className="wrap"><div className="panel-card center">{error}</div></div>;
   if (!events) return <div className="wrap"><div className="center">불러오는 중…</div></div>;
 
@@ -136,11 +184,12 @@ export default function Page() {
 
   return (
     <GlossaryProvider>
+    <ScrollReveal />
     <div className="wrap">
       <TopBar
         onHome={home}
-        onAbout={() => setScreen("about")}
-        onBookshelf={() => setScreen("bookshelf")}
+        onAbout={() => { window.history.pushState(null, "", "/?s=about"); setScreen("about"); }}
+        onBookshelf={() => { window.history.pushState(null, "", "/?s=bookshelf"); setScreen("bookshelf"); }}
         token={token}
         username={username}
         onLogout={handleLogout}
@@ -170,11 +219,10 @@ export default function Page() {
         <BookExperience key="myeongnyang" onHome={home} speak={speak} stop={stop} speaking={speaking} />
       )}
 
-      {screen === "tree-book" && event && tree && (
+      {screen === "tree-book" && event && (
         <GenericBookExperience
           key={event.id}
           event={event}
-          tree={tree}
           onHome={home}
           speak={speak}
           stop={stop}

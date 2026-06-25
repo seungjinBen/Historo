@@ -150,7 +150,7 @@ export function Timeline({
   const hasMore = totalEvents > 4;
   return (
     <section className="home-section" id="study-timeline-section">
-      <div className="section-header">
+      <div className="section-header" data-rv="up">
         <span className="section-header-eyebrow" id="study-timeline">역사의 길</span>
         <h2 className="section-header-title">조선 1392 — 1897</h2>
         <p className="section-header-sub">
@@ -195,6 +195,8 @@ export function Timeline({
                         key={ev.id}
                         className="tl-item"
                         data-flat-hidden={flatHidden ? "true" : "false"}
+                        data-rv="left"
+                        data-rv-d={String(Math.min(idx % 4 * 80, 320))}
                       >
                         <div className="tl-dot" />
                         <div
@@ -237,6 +239,8 @@ export function Timeline({
                       key={ev.id}
                       className="tl-item"
                       data-flat-hidden={flatHidden ? "true" : "false"}
+                      data-rv="left"
+                      data-rv-d={String(Math.min(idx % 4 * 80, 320))}
                     >
                       <div className={"tl-dot " + ev.status} />
                       <div
