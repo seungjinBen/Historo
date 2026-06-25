@@ -91,6 +91,9 @@ async function fetchJson<T>(url: string): Promise<T> {
   return res.json();
 }
 
+// 모듈 레벨 캐시 — 같은 에피소드를 여러 컴포넌트에서 중복 요청하지 않도록
+const _comicCache = new Map<string, Promise<ApiComic>>();
+
 // eventId(영문) → 에피소드명(한글) 매핑
 export const EVENT_TO_EPISODE: Record<string, string> = {
   "taejo-foundation-1392":          "태조",
@@ -107,10 +110,13 @@ export const EVENT_TO_EPISODE: Record<string, string> = {
 
 export const api = {
   // ── 정적 데이터 ──────────────────────────────────────────────────────────────
-  getComic: async (episodeId: string): Promise<ApiComic> => {
+  getComic: (episodeId: string): Promise<ApiComic> => {
+    if (_comicCache.has(episodeId)) return _comicCache.get(episodeId)!;
     const korName = EVENT_TO_EPISODE[episodeId] ?? episodeId;
-    const data = await fetchJson<unknown>(`/data/comics/${encodeURIComponent(korName)}.json`);
-    return parseComic(data);
+    const p = fetchJson<unknown>(`/data/comics/${encodeURIComponent(korName)}.json`)
+      .then(parseComic);
+    _comicCache.set(episodeId, p);
+    return p;
   },
 
   getGallery: async (): Promise<ApiGalleryItem[]> => {

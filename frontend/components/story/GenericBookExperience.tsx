@@ -94,27 +94,23 @@ const COVER_ICON: Record<string, string> = {
 const STEP_LABELS = ["제 1 장 · 첫 번째 선택", "제 2 장 · 두 번째 선택", "제 3 장 · 세 번째 선택"];
 
 type Phase = "closed" | "opening" | "open";
-type SpreadKey = 0 | 1 | 2 | 3 | 4 | 5;
-const LAST_SPREAD: SpreadKey = 5;
+type SpreadKey = 0 | 1 | 2 | 3 | 4 | 5 | 6;
+const LAST_SPREAD: SpreadKey = 6;
 
-// ── 컷 패널 ──────────────────────────────────
-const CUT_ICONS = ["🖼️", "📜", "🎨", "🏯"];
+// ── 컷 패널 (아이콘 목업 없음, shimmer만) ───────
 function CutPanel({ idx, scene, cdnUrl }: { idx: number; scene: string; cdnUrl?: string }) {
   const [err, setErr] = useState(false);
   const [ok, setOk] = useState(false);
-  const showPh = !cdnUrl || err || !ok;
   return (
     <div className="gbook-cut">
-      {/* placeholder: cdnUrl 없거나 로딩 중이거나 에러 */}
-      {showPh && (
-        <div className="gbook-cut-ph">
+      {/* 로딩 중: shimmer 배경만 표시 (아이콘/텍스트 없음) */}
+      {!ok && (
+        <div className={"gbook-cut-ph" + (!err && cdnUrl ? " is-loading" : "")}>
           <span className="gbook-cut-ph-num">{idx + 1}</span>
-          <span className="gbook-cut-ph-icon">{CUT_ICONS[idx]}</span>
-          <p className="gbook-cut-ph-scene">{scene}</p>
-          <span className="gbook-cut-ph-badge">{err ? "그림 생성 중" : "불러오는 중…"}</span>
+          {err && <span className="gbook-cut-ph-badge">생성 중</span>}
         </div>
       )}
-      {/* 이미지: 항상 렌더(브라우저 캐시 활용), 로드 완료 시 위에 표시 */}
+      {/* 이미지: 항상 렌더해 브라우저 캐시 선점 */}
       {cdnUrl && !err && (
         <img
           src={cdnUrl}
@@ -125,7 +121,7 @@ function CutPanel({ idx, scene, cdnUrl }: { idx: number; scene: string; cdnUrl?:
             width: "100%", height: "100%",
             objectFit: "cover",
             opacity: ok ? 1 : 0,
-            transition: "opacity .45s ease",
+            transition: "opacity .4s ease",
           }}
           onLoad={() => setOk(true)}
           onError={() => setErr(true)}
@@ -233,15 +229,33 @@ function LeftPage({ spread, picks, comic, event }: {
     );
   }
 
-  // spread 5 — CTA 왼쪽
+  // spread 5 — 실제 역사로 (왼쪽: 선택 경로 + 아이콘)
+  if (spread === 5) {
+    const sl = picks.length === 3 && comic
+      ? comic.storylines.find(
+          (s) => s.q1 === Q1_KEYS[picks[0]] && s.q2 === Q2_KEYS[picks[1]] && s.q3 === Q3_KEYS[picks[2]]
+        ) ?? null
+      : null;
+    return (
+      <div className="mbook-side mbook-side-real-cut">
+        <span className="mbook-eyebrow mbook-eyebrow-real">실제 역사로</span>
+        <div className="gbook-end-icon">{icon}</div>
+        <p className="mbook-end-quote">{event.title}</p>
+        <div className="mbook-end-divider" aria-hidden="true">✦  ◆  ✦</div>
+        {sl?.pathText && (
+          <p className="gbook-real-path">내가 선택한 길<br /><strong>{sl.pathText}</strong></p>
+        )}
+      </div>
+    );
+  }
+
+  // spread 6 — CTA 왼쪽
   return (
     <div className="mbook-side mbook-side-ending">
-      <span className="mbook-eyebrow">이야기의 끝</span>
+      <span className="mbook-eyebrow">책을 덮으며</span>
       <div className="gbook-end-icon">{icon}</div>
       <p className="mbook-end-quote">{event.title}</p>
       <div className="mbook-end-divider" aria-hidden="true">✦  ◆  ✦</div>
-      <p className="mbook-end-real">{event.factCard}</p>
-      <div className="mbook-end-source">출처 · {event.source}</div>
     </div>
   );
 }
@@ -322,7 +336,24 @@ function RightPage({ spread, picks, comic, event, speak, stop, speaking, onChoos
     );
   }
 
-  // spread 5 — CTA
+  // spread 5 — 실제 역사로 (오른쪽: factCard + 실록 출처)
+  if (spread === 5) {
+    return (
+      <div className="mbook-side mbook-side-real-text">
+        <span className="mbook-eyebrow mbook-eyebrow-real">실록 이야기</span>
+        <h2 className="mbook-h2 mbook-real-title">{event.title}</h2>
+        <p className="gbook-real-fact">{event.factCard}</p>
+        <div className="gbook-real-source">출처 · {event.source}</div>
+        {event.sillokUrl && (
+          <a href={event.sillokUrl} target="_blank" rel="noopener noreferrer" className="gbook-real-sillok">
+            조선왕조실록 원문 보기 →
+          </a>
+        )}
+      </div>
+    );
+  }
+
+  // spread 6 — CTA
   return (
     <div className="mbook-side mbook-side-cta">
       <span className="mbook-eyebrow">책을 덮으며</span>
@@ -370,17 +401,23 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
     }).catch(() => {});
   }, [event.id]);
 
-  // 3번째 선택 완료 시 4컷 이미지 브라우저 캐시에 미리 로드
+  // Q2 선택(picks.length≥2) 시 해당 Q1+Q2 조합의 모든 Q3 스토리라인 이미지 preload
+  // → Q3 선택 전에 미리 캐시해 spread 4 도달 즉시 표시
   useEffect(() => {
-    if (!comic || picks.length < 3) return;
-    const sl = comic.storylines.find(
-      (s) => s.q1 === Q1_KEYS[picks[0]] && s.q2 === Q2_KEYS[picks[1]] && s.q3 === Q3_KEYS[picks[2]]
-    );
-    if (!sl) return;
-    sl.cuts.forEach((cut) => {
-      const img = new window.Image();
-      img.src = cut.imageUrl;
-    });
+    if (!comic || picks.length < 2) return;
+    const preloaded = new Set<string>();
+    const q1 = Q1_KEYS[picks[0]];
+    const q2 = Q2_KEYS[picks[1]];
+    comic.storylines
+      .filter((s) => s.q1 === q1 && (picks.length < 2 || s.q2 === q2))
+      .forEach((sl) => {
+        sl.cuts.forEach((cut) => {
+          if (preloaded.has(cut.imageUrl)) return;
+          preloaded.add(cut.imageUrl);
+          const img = new window.Image();
+          img.src = cut.imageUrl;
+        });
+      });
   }, [picks, comic]);
 
   const openBook = useCallback(() => {
@@ -415,7 +452,7 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
     if (phase !== "open") return;
     const onKey = (e: KeyboardEvent) => {
       if (flip) return;
-      const canNext = spread === 0 || spread === 4 || spread === 5;
+      const canNext = spread === 0 || spread === 4 || spread === 5 || spread === 6;
       if (e.key === "ArrowRight" && canNext) { e.preventDefault(); goSpread((spread + 1) as SpreadKey, "next"); }
       if (e.key === "ArrowLeft" && spread > 0 && spread !== 4) { e.preventDefault(); goSpread((spread - 1) as SpreadKey, "prev"); }
     };
@@ -544,12 +581,18 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
       {phase === "open" && spread === 4 && !flip && (
         <div className="mbook-controls mbook-controls-spread4">
           <button className="mbook-ctrl" onClick={onHome}>← 다른 이야기 고르기</button>
-          <button className="mbook-ctrl primary" onClick={() => goSpread(5, "next")}>마무리 →</button>
+          <button className="mbook-ctrl primary" onClick={() => goSpread(5, "next")}>실제 역사 공부하기 →</button>
         </div>
       )}
       {phase === "open" && spread === 5 && !flip && (
         <div className="mbook-controls">
           <button className="mbook-ctrl" onClick={() => goSpread(4, "prev")}>← 이전 장</button>
+          <button className="mbook-ctrl primary" onClick={() => goSpread(6, "next")}>마무리 →</button>
+        </div>
+      )}
+      {phase === "open" && spread === 6 && !flip && (
+        <div className="mbook-controls">
+          <button className="mbook-ctrl" onClick={() => goSpread(5, "prev")}>← 이전 장</button>
           <button className="mbook-ctrl primary" onClick={restart}>다시 펼치기 ↺</button>
         </div>
       )}

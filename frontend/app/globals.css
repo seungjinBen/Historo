@@ -7508,12 +7508,24 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   display: flex; align-items: center; justify-content: center;
 }
 /* placeholder */
+@keyframes gbook-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
 .gbook-cut-ph {
   position: absolute; inset: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   gap: 4px; padding: 10px; text-align: center;
   background: linear-gradient(145deg, #F5EDD8, #EAE0C6);
 }
+/* 로딩 중: shimmer 꿈틀 */
+.gbook-cut-ph.is-loading {
+  background: linear-gradient(90deg, #EDE5D0 25%, #F8F1E0 50%, #EDE5D0 75%);
+  background-size: 200% 100%;
+  animation: gbook-shimmer 1.6s ease-in-out infinite;
+}
+.gbook-cut-ph.is-loading .gbook-cut-ph-icon { animation: gbook-shimmer-pulse 1.6s ease-in-out infinite; }
+@keyframes gbook-shimmer-pulse { 0%,100%{opacity:.5;} 50%{opacity:1;} }
 .gbook-cut-ph-num {
   position: absolute; top: 6px; left: 8px;
   width: 18px; height: 18px; border-radius: 50%;
@@ -7524,6 +7536,14 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
 .gbook-cut-ph-icon { font-size: 22px; }
 .gbook-cut-ph-scene { font-size: 11px; line-height: 1.35; color: #4A2E10; font-family: 'Gowun Dodum', sans-serif; margin: 0; word-break: keep-all; }
 .gbook-cut-ph-badge { font-size: 9px; color: #9A7050; border: 1px solid #C8A880; border-radius: 20px; padding: 1px 6px; }
+
+/* 실제 역사로 (spread 5) */
+.gbook-real-path { font-size: 12px; color: #6B4423; font-family: 'Gowun Dodum', sans-serif; line-height: 1.6; margin: 14px 0 0; }
+.gbook-real-path strong { color: #3D1A00; }
+.gbook-real-fact { font-size: 13px; line-height: 1.75; color: #2C1800; font-family: 'Gowun Dodum', sans-serif; margin: 10px 0 0; word-break: keep-all; }
+.gbook-real-source { font-size: 10.5px; color: #9A7050; margin-top: 14px; }
+.gbook-real-sillok { display: inline-block; margin-top: 10px; font-size: 11px; color: #5A3A1A; border: 1px solid #C8A880; border-radius: 20px; padding: 3px 12px; text-decoration: none; }
+.gbook-real-sillok:hover { background: #F5E8CC; }
 
 /* 4컷 스프레드 아래 엔딩 텍스트 */
 .gbook-ending-text {
