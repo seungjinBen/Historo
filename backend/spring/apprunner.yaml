@@ -1,0 +1,17 @@
+version: 1.0
+runtime: corretto17
+build:
+  commands:
+    build:
+      - chmod +x gradlew
+      - ./gradlew bootJar -x test
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
+run:
+  command: java -jar build/libs/historo-backend-0.0.1-SNAPSHOT.jar
+  network:
+    port: 8080
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
