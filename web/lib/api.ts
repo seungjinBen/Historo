@@ -4,11 +4,20 @@ const BASE =
   process.env.NEXT_PUBLIC_API_BASE ??
   (typeof window !== "undefined" ? "/api/proxy" : "https://historo-backend.onrender.com");
 
-// 백엔드가 반환하는 S3 URL → glory 계정 CloudFront URL로 교체
+// 백엔드 S3 URL(NFD 인코딩) → glory CloudFront URL(NFC 인코딩)로 교체
 const OLD_S3 = "https://historo-images.s3.ap-northeast-2.amazonaws.com";
 const CF_CDN = "https://d3382886jvvuzm.cloudfront.net";
 export function toCdnUrl(url: string): string {
-  return url.startsWith(OLD_S3) ? CF_CDN + url.slice(OLD_S3.length) : url;
+  if (!url.startsWith(OLD_S3)) return url;
+  // 백엔드 URL은 NFD(macOS 분해형), 우리 S3는 NFC(합성형)로 저장 → 정규화
+  const path = url.slice(OLD_S3.length);
+  try {
+    const nfcPath = decodeURIComponent(path).normalize("NFC");
+    const reencoded = nfcPath.split("/").map((seg) => seg ? encodeURIComponent(seg) : "").join("/");
+    return CF_CDN + reencoded;
+  } catch {
+    return CF_CDN + path;
+  }
 }
 const TOKEN_KEY = "historo_token";
 const USER_KEY  = "historo_username";
