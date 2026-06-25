@@ -328,8 +328,8 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   position: relative;
   border-radius: 14px;
   overflow: hidden;
-  background: var(--bg-muted);
-  aspect-ratio: 1/1;
+  background: #1e1a14;
+  aspect-ratio: 3/2;
   border: 1px solid var(--border);
   box-shadow: var(--shadow-xs);
   animation: cutReveal .5s cubic-bezier(.2,.7,.3,1) both;
@@ -343,24 +343,24 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   background: var(--bg-muted);
 }
 .cut .num {
-  position: absolute; top: 10px; left: 10px;
-  width: 26px; height: 26px;
+  flex-shrink: 0;
+  width: 22px; height: 22px;
   border-radius: 50%;
-  background: rgba(255,255,255,.92);
-  color: var(--ink-soft);
+  background: rgba(255,255,255,.88);
+  color: #333;
   font-family: 'Jua', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 1px 4px rgba(0,0,0,.14);
 }
 .cut .cap {
   position: absolute; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(transparent, rgba(16,12,8,.85));
+  background: linear-gradient(transparent, rgba(16,12,8,.88));
   color: #fff;
   font-family: 'Gowun Dodum', sans-serif;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.5;
-  padding: 28px 12px 10px;
+  padding: 28px 10px 8px;
+  display: flex; align-items: flex-end; gap: 6px;
 }
 
 /* 실제 4컷 — 4:3 이미지, 말풍선 텍스트는 이미지에 포함됨 */

@@ -21,7 +21,6 @@ export function Cut({ eventId, pathKey, index, scene, imageUrl }: Props) {
 
   return (
     <div className="cut" style={{ animationDelay: `${index * 0.13}s` }}>
-      <div className="num">{index + 1}</div>
       {err ? (
         <div className="ph">
           {scene}
@@ -37,7 +36,12 @@ export function Cut({ eventId, pathKey, index, scene, imageUrl }: Props) {
           onError={() => setErr(true)}
         />
       )}
-      {!err && <div className="cap">{scene}</div>}
+      {!err && (
+        <div className="cap">
+          <div className="num">{index + 1}</div>
+          <span>{scene}</span>
+        </div>
+      )}
     </div>
   );
 }
