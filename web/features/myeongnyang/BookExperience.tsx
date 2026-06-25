@@ -10,6 +10,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { GlossText } from "@/components/common/Glossary";
 import { MeokdolChatLauncher } from "@/components/mascots/MeokdolChatLauncher";
+import { api } from "@/lib/api";
 import type { HeritageEvent, HeritageItem } from "@/lib/types";
 
 import {
@@ -103,6 +104,7 @@ type SharedProps = {
   picks: number[];
   data: ReturnType<typeof getData>;
   heritageItems: HeritageItem[] | null;
+  s3CutUrls: Record<string, string[]>;
 };
 
 function getData(grade: GradeKey) {
@@ -156,22 +158,25 @@ function HeritageCardPlaceholder() {
   );
 }
 
-function ComicPanel({ src, alt, idx, scene }: { src: string; alt: string; idx: number; scene: string }) {
+function ComicPanel({ src, s3Src, alt, idx, scene }: { src: string; s3Src?: string; alt: string; idx: number; scene: string }) {
   const [err, setErr] = useState(false);
+  const [s3Err, setS3Err] = useState(false);
+  const effective = (s3Src && !s3Err) ? s3Src : src;
+  const onError = (s3Src && !s3Err) ? () => setS3Err(true) : () => setErr(true);
   return (
     <figure className="mbook-panel">
       <div className="mbook-panel-num">{idx + 1}</div>
-      {err ? (
+      {err && !(s3Src && !s3Err) ? (
         <div className="mbook-panel-ph">{scene}<br/><span>(그림 준비 중)</span></div>
       ) : (
-        <img src={src} alt={alt} onError={() => setErr(true)} />
+        <img src={effective} alt={alt} onError={onError} />
       )}
       <figcaption>{scene}</figcaption>
     </figure>
   );
 }
 
-function LeftPage({ spread, picks, data, heritageItems }: SharedProps & { spread: SpreadKey }) {
+function LeftPage({ spread, picks, data, heritageItems, s3CutUrls }: SharedProps & { spread: SpreadKey }) {
   if (spread === 0) {
     return (
       <div className="mbook-side mbook-side-lead">
@@ -220,13 +225,14 @@ function LeftPage({ spread, picks, data, heritageItems }: SharedProps & { spread
   }
   if (spread === 4) {
     const pathKey = picks.join("-");
+    const s3 = s3CutUrls[pathKey];
     const o1 = data.questions[0].options[picks[0]];
     const o2 = data.questions[1].options[picks[1]];
     return (
       <div className="mbook-side mbook-side-comic">
         <span className="mbook-eyebrow">내가 만든 명량 · ①②</span>
-        <ComicPanel src={imgUrl(`${pathKey}_panel1.png`)} alt={o1.scene} idx={0} scene={o1.scene} />
-        <ComicPanel src={imgUrl(`${pathKey}_panel2.png`)} alt={o2.scene} idx={1} scene={o2.scene} />
+        <ComicPanel src={imgUrl(`${pathKey}_panel1.png`)} s3Src={s3?.[0]} alt={o1.scene} idx={0} scene={o1.scene} />
+        <ComicPanel src={imgUrl(`${pathKey}_panel2.png`)} s3Src={s3?.[1]} alt={o2.scene} idx={1} scene={o2.scene} />
       </div>
     );
   }
@@ -276,6 +282,7 @@ type RightInteractiveProps = {
   picks: number[];
   data: ReturnType<typeof getData>;
   heritageItems: HeritageItem[] | null;
+  s3CutUrls: Record<string, string[]>;
   grade: GradeKey;
   gradeOpen: boolean;
   setGradeOpen: (b: boolean) => void;
@@ -289,7 +296,7 @@ type RightInteractiveProps = {
 };
 
 function RightPage(props: RightInteractiveProps) {
-  const { spread, picks, data, heritageItems, grade, gradeOpen, setGradeOpen, pickGrade,
+  const { spread, picks, data, heritageItems, s3CutUrls, grade, gradeOpen, setGradeOpen, pickGrade,
           speak, stop, speaking, onChoose, onRestart, onHome } = props;
 
   if (spread === 0) {
@@ -328,12 +335,13 @@ function RightPage(props: RightInteractiveProps) {
   }
   if (spread === 4) {
     const pathKey = picks.join("-");
+    const s3 = s3CutUrls[pathKey];
     const o3 = data.questions[2].options[picks[2]];
     return (
       <div className="mbook-side mbook-side-comic">
         <span className="mbook-eyebrow">내가 만든 명량 · ③④</span>
-        <ComicPanel src={imgUrl(`${pathKey}_panel3.png`)} alt={data.climax} idx={2} scene={data.climax} />
-        <ComicPanel src={imgUrl(`${pathKey}_panel4.png`)} alt={o3.scene} idx={3} scene={o3.scene} />
+        <ComicPanel src={imgUrl(`${pathKey}_panel3.png`)} s3Src={s3?.[2]} alt={data.climax} idx={2} scene={data.climax} />
+        <ComicPanel src={imgUrl(`${pathKey}_panel4.png`)} s3Src={s3?.[3]} alt={o3.scene} idx={3} scene={o3.scene} />
       </div>
     );
   }
@@ -474,6 +482,7 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
   const [picks, setPicks] = useState<number[]>([]);
   const [flip, setFlip] = useState<{ from: SpreadKey; to: SpreadKey; dir: "next" | "prev" } | null>(null);
   const [heritageItems, setHeritageItems] = useState<HeritageItem[] | null>(null);
+  const [s3CutUrls, setS3CutUrls] = useState<Record<string, string[]>>({});
 
   const data = getData(grade);
 
@@ -487,6 +496,21 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
         if (target) setHeritageItems(target.heritageItems);
       })
       .catch(() => {});
+    return () => { cancelled = true; };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const Q1 = ["A","B","C"], Q2 = ["1","2","3"], Q3 = ["α","β","γ"];
+    api.getComic("이순신").then((comic) => {
+      if (cancelled) return;
+      const map: Record<string, string[]> = {};
+      comic.storylines.forEach((sl) => {
+        const key = `${Q1.indexOf(sl.q1)}-${Q2.indexOf(sl.q2)}-${Q3.indexOf(sl.q3)}`;
+        map[key] = sl.cuts.sort((a,b)=>a.number-b.number).map((c)=>c.imageUrl);
+      });
+      setS3CutUrls(map);
+    }).catch(() => {});
     return () => { cancelled = true; };
   }, []);
 
@@ -625,7 +649,7 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
           <div className="mbook-spread mbook-base mbook-base-source">
             <div className="mbook-half mbook-half-left">
               <div className="mbook-paper">
-                <LeftPage spread={sourceSpread} picks={picks} data={data} heritageItems={heritageItems} />
+                <LeftPage spread={sourceSpread} picks={picks} data={data} heritageItems={heritageItems} s3CutUrls={s3CutUrls} />
                 <div className="mbook-noise" aria-hidden="true" />
                 <div className="mbook-spine-shadow right" aria-hidden="true" />
               </div>
@@ -636,6 +660,7 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
                   spread={sourceSpread}
                   picks={picks} data={data}
                   heritageItems={heritageItems}
+                  s3CutUrls={s3CutUrls}
                   grade={grade}
                   gradeOpen={gradeOpen}
                   setGradeOpen={setGradeOpen}
@@ -656,7 +681,7 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
             <div className="mbook-spread mbook-base mbook-base-target">
               <div className="mbook-half mbook-half-left">
                 <div className="mbook-paper">
-                  <LeftPage spread={targetSpread} picks={picks} data={data} heritageItems={heritageItems} />
+                  <LeftPage spread={targetSpread} picks={picks} data={data} heritageItems={heritageItems} s3CutUrls={s3CutUrls} />
                   <div className="mbook-noise" aria-hidden="true" />
                   <div className="mbook-spine-shadow right" aria-hidden="true" />
                 </div>
@@ -667,6 +692,7 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
                     spread={targetSpread}
                     picks={picks} data={data}
                     heritageItems={heritageItems}
+                    s3CutUrls={s3CutUrls}
                     grade={grade}
                     gradeOpen={false}
                     setGradeOpen={noop}
@@ -692,6 +718,7 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
                     spread={leafFrontSpread as SpreadKey}
                     picks={picks} data={data}
                     heritageItems={heritageItems}
+                    s3CutUrls={s3CutUrls}
                     grade={grade}
                     gradeOpen={false}
                     setGradeOpen={noop}
@@ -707,7 +734,7 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
               </div>
               <div className="mbook-leaf-face mbook-leaf-back">
                 <div className="mbook-paper">
-                  <LeftPage spread={leafBackSpread as SpreadKey} picks={picks} data={data} heritageItems={heritageItems} />
+                  <LeftPage spread={leafBackSpread as SpreadKey} picks={picks} data={data} heritageItems={heritageItems} s3CutUrls={s3CutUrls} />
                   <div className="mbook-noise" aria-hidden="true" />
                   <div className="mbook-spine-shadow right" aria-hidden="true" />
                 </div>
