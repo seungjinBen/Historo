@@ -44,10 +44,17 @@ export function Gallery({ events, onOpenEvent }: Props) {
           </p>
         </div>
 
-        {/* API에서 받은 실제 스토리라인 갤러리 */}
+        {/* API에서 받은 실제 스토리라인 갤러리 — 에피소드별 1개씩 */}
         {galleryItems.length > 0 ? (
           <div className="gallery-grid">
-            {galleryItems.slice(0, 12).map((item, i) => (
+            {(() => {
+              const seen = new Set<string>();
+              return galleryItems.filter(item => {
+                if (seen.has(item.episodeId)) return false;
+                seen.add(item.episodeId);
+                return true;
+              }).slice(0, 12);
+            })().map((item, i) => (
               <button
                 key={`${item.episodeId}-${item.storylineId}`}
                 className="gallery-book clickable"
