@@ -4437,6 +4437,12 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   font-size: 13px;
   color: var(--mbook-ink-soft);
   text-align: center;
+  background: #E9DDBE;
+}
+.mbook-panel-ph.is-loading {
+  background: linear-gradient(90deg, #E9DDBE 25%, #F5EDD8 50%, #E9DDBE 75%);
+  background-size: 200% 100%;
+  animation: gbook-shimmer 1.6s ease-in-out infinite;
 }
 
 /* 결말 (LEFT) */

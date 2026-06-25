@@ -519,6 +519,23 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
     return () => { cancelled = true; };
   }, []);
 
+  // Q2 선택(picks.length≥2) 시 해당 조합 이미지 미리 로드
+  useEffect(() => {
+    if (picks.length < 2 || Object.keys(s3CutUrls).length === 0) return;
+    const preloaded = new Set<string>();
+    const p0 = picks[0], p1 = picks[1];
+    Object.entries(s3CutUrls).forEach(([key, urls]) => {
+      const [k0, k1] = key.split("-").map(Number);
+      if (k0 !== p0 || k1 !== p1) return;
+      urls.forEach((url) => {
+        if (preloaded.has(url)) return;
+        preloaded.add(url);
+        const img = new window.Image();
+        img.src = url;
+      });
+    });
+  }, [picks, s3CutUrls]);
+
   const openBook = useCallback(() => {
     if (phase !== "closed") return;
     playSfx("open");

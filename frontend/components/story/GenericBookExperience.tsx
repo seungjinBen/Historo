@@ -97,43 +97,36 @@ type Phase = "closed" | "opening" | "open";
 type SpreadKey = 0 | 1 | 2 | 3 | 4 | 5 | 6;
 const LAST_SPREAD: SpreadKey = 6;
 
-// ── 컷 패널 (아이콘 목업 없음, shimmer만) ───────
+// ── 컷 패널 (이순신 mbook-panel과 동일 구조) ───
+// shimmer 배경으로 로딩 표시, 이미지 로드 완료 시 figcaption 아래 표시
 function CutPanel({ idx, scene, cdnUrl }: { idx: number; scene: string; cdnUrl?: string }) {
   const [err, setErr] = useState(false);
   const [ok, setOk] = useState(false);
   return (
-    <div className="gbook-cut">
-      {/* 로딩 중: shimmer 배경만 표시 (아이콘/텍스트 없음) */}
+    <figure className="mbook-panel">
+      {/* 로딩/에러 shimmer — 이미지 보이기 전까지 */}
       {!ok && (
-        <div className={"gbook-cut-ph" + (!err && cdnUrl ? " is-loading" : "")}>
-          <span className="gbook-cut-ph-num">{idx + 1}</span>
-          {err && <span className="gbook-cut-ph-badge">생성 중</span>}
-        </div>
+        <div className={"mbook-panel-ph" + (!err && cdnUrl ? " is-loading" : "")} aria-hidden="true" />
       )}
-      {/* 이미지: 항상 렌더해 브라우저 캐시 선점 */}
+      {/* 이미지: opacity 0으로 항상 DOM에 놔서 브라우저 캐시 선점 */}
       {cdnUrl && !err && (
         <img
           src={cdnUrl}
           alt={scene}
           loading="eager"
-          style={{
-            position: "absolute", inset: 0,
-            width: "100%", height: "100%",
-            objectFit: "cover",
-            opacity: ok ? 1 : 0,
-            transition: "opacity .4s ease",
-          }}
+          style={ok
+            ? { flex: 1, width: "100%", objectFit: "cover" }
+            : { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0 }
+          }
           onLoad={() => setOk(true)}
           onError={() => setErr(true)}
         />
       )}
-      {ok && cdnUrl && !err && (
-        <div className="gbook-cut-cap">
-          <div className="gbook-cut-num">{idx + 1}</div>
-          <span>{scene}</span>
-        </div>
-      )}
-    </div>
+      <figcaption>
+        <div className="mbook-panel-num">{idx + 1}</div>
+        <span>{scene}</span>
+      </figcaption>
+    </figure>
   );
 }
 
