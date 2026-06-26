@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { streamAI } from "@/lib/ws";
 import { MeokdolMascot } from "./MeokdolMascot";
@@ -81,9 +82,19 @@ export function MeokdolChatLauncher({ context, eventId }: Props) {
   const [streaming, setStreaming] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>(STARTERS);
   const [goto, setGoto] = useState<Goto | null>(null);
+  const [mounted, setMounted] = useState(false);
   const catalogRef = useRef<CatalogItem[]>([]);
   const bodyRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // body로 portal — 책 컨테이너의 perspective/transform 영향 없이 뷰포트 기준 고정
+  useEffect(() => { setMounted(true); }, []);
+
+  // 도크가 열리면 본문을 왼쪽으로 밀어 겹치지 않게 (데스크탑은 CSS에서 처리)
+  useEffect(() => {
+    document.body.classList.toggle("meokdol-dock-open", open);
+    return () => document.body.classList.remove("meokdol-dock-open");
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -165,7 +176,9 @@ export function MeokdolChatLauncher({ context, eventId }: Props) {
     }
   }
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <>
       <div className="meokdol-fab-wrap">
         <button
@@ -324,6 +337,7 @@ export function MeokdolChatLauncher({ context, eventId }: Props) {
           </div>
         </div>
       )}
-    </>
+    </>,
+    document.body
   );
 }

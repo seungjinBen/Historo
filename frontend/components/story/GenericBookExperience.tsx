@@ -84,20 +84,15 @@ const COVER_EYEBROW: Record<string, string> = {
   "kim-hongdo-genre-1780":       "풍속화의 시대 1780",
   "jeong-yakyong-geojunggi-1792":"거중기 발명 1792",
 };
-const COVER_ICON: Record<string, string> = {
-  "taejo-foundation-1392":"👑","park-yeon-aak-1430":"🎵",
-  "jangnyeongsil-jagyeokru-1434":"⚙️","sejong-hunmin-1446":"📜",
-  "shin-saimdang-art-1551":"🎨","heojun-donguibogam-1613":"🌿",
-  "gwanghaegun-junglib-1619":"🕊️","kim-hongdo-genre-1780":"🖌️",
-  "jeong-yakyong-geojunggi-1792":"🔧",
-};
 const STEP_LABELS = ["제 1 장 · 첫 번째 선택", "제 2 장 · 두 번째 선택", "제 3 장 · 세 번째 선택"];
 
 type Phase = "closed" | "opening" | "open";
-type SpreadKey = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
-const REAL_FIRST = 5 as SpreadKey;
-const REAL_LAST  = 8 as SpreadKey;
-const LAST_SPREAD: SpreadKey = 9;
+type SpreadKey = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+// 4컷을 한 컷씩 2개 스프레드로: 4=컷①②, 5=컷③④
+const COMIC_LAST = 5 as SpreadKey;
+const REAL_FIRST = 6 as SpreadKey;
+const REAL_LAST  = 9 as SpreadKey;
+const LAST_SPREAD: SpreadKey = 10;
 
 // ── 컷 패널 (이순신 mbook-panel과 동일 구조) ───
 // "먹돌이가 그리는 중" 연출 → 이미지 준비 + 최소 연출시간 모두 충족 시 그려지듯 공개
@@ -119,10 +114,11 @@ function CutPanel({ idx, scene, cdnUrl }: { idx: number; scene: string; cdnUrl?:
     <figure className="mbook-panel">
       {/* AI 생성 연출 — 그림 준비 전까지 */}
       {generating && (
-        <div className="mbook-panel-gen" role="status" aria-label="먹돌이가 그림을 그리는 중">
-          <span className="mbook-gen-brush" aria-hidden="true">🖌️</span>
-          <span className="mbook-gen-text">먹돌이가 그리는 중…</span>
-          <span className="mbook-gen-bar" aria-hidden="true"><i /></span>
+        <div className="mbook-panel-gen" role="status" aria-label="그림을 그리는 중">
+          <svg className="mbook-gen-svg" viewBox="0 0 72 44" aria-hidden="true">
+            <path className="mbook-gen-stroke" d="M6 30 C 18 8, 30 8, 38 26 S 58 38, 66 14" fill="none" />
+          </svg>
+          <span className="mbook-gen-text">그림을 그리는 중</span>
         </div>
       )}
       {/* 에러 폴백 */}
@@ -137,8 +133,8 @@ function CutPanel({ idx, scene, cdnUrl }: { idx: number; scene: string; cdnUrl?:
           loading="eager"
           className={ok ? "mbook-panel-reveal" : ""}
           style={ok
-            ? { flex: 1, width: "100%", objectFit: "cover" }
-            : { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0 }
+            ? { flex: 1, width: "100%", objectFit: "contain" }
+            : { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", opacity: 0 }
           }
           onLoad={() => setLoaded(true)}
           onError={() => setErr(true)}
@@ -164,14 +160,17 @@ type ComicData = {
 };
 
 // ── 인트로 이미지 (컷1 = 공통도입, 모든 스토리라인 동일) ──────
-function IntroImage({ comic, icon }: { comic: ComicData | null; icon: string }) {
+function IntroImage({ comic }: { comic: ComicData | null }) {
   const [ok, setOk] = useState(false);
   const [err, setErr] = useState(false);
   const url = comic?.storylines[0]?.cuts[0]?.imageUrl;
   if (!url || err) {
     return (
-      <div className="mbook-illust gbook-illust-ph">
-        <span className="gbook-illust-icon">{icon}</span>
+      <div className="mbook-illust gbook-illust-ph" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M24 11c-4-3-9-3.5-14-2v26c5-1.5 10-1 14 2 4-3 9-3.5 14-2V9c-5-1.5-10-1-14 2z" />
+          <path d="M24 11v26" />
+        </svg>
       </div>
     );
   }
@@ -187,7 +186,6 @@ function IntroImage({ comic, icon }: { comic: ComicData | null; icon: string }) 
 function LeftPage({ spread, picks, comic, event }: {
   spread: SpreadKey; picks: number[]; comic: ComicData | null; event: EventMeta;
 }) {
-  const icon = COVER_ICON[event.id] ?? "📖";
   const cuts = picks.length === 3 && comic
     ? comic.storylines.find(
         (sl) => sl.q1 === Q1_KEYS[picks[0]] && sl.q2 === Q2_KEYS[picks[1]] && sl.q3 === Q3_KEYS[picks[2]]
@@ -198,7 +196,7 @@ function LeftPage({ spread, picks, comic, event }: {
     return (
       <div className="mbook-side mbook-side-lead">
         <span className="mbook-eyebrow">실록 기반 · 만약에 체험</span>
-        <IntroImage comic={comic} icon={icon} />
+        <IntroImage comic={comic} />
         <p className="mbook-side-quote">&ldquo;{event.factCard.split(/[.!?。]/)[0].trim()}&rdquo;</p>
         <p className="mbook-side-cite">— {event.character?.name ?? event.king}</p>
       </div>
@@ -228,18 +226,17 @@ function LeftPage({ spread, picks, comic, event }: {
             })}
           </ol>
         )}
-        <div className="gbook-illust-sm">{icon}</div>
       </div>
     );
   }
 
-  // spread 4 — 컷 ①②
-  if (spread === 4) {
+  // spread 4·5 — 내가 만든 4컷, 한 페이지에 한 컷 (왼쪽: 4→①, 5→③)
+  if (spread === 4 || spread === 5) {
+    const i = spread === 4 ? 0 : 2;
     return (
-      <div className="mbook-side mbook-side-comic">
-        <span className="mbook-eyebrow">내가 만든 4컷 · ①②</span>
-        <CutPanel idx={0} scene={cuts?.[0]?.description ?? ""} cdnUrl={cuts?.[0]?.imageUrl} />
-        <CutPanel idx={1} scene={cuts?.[1]?.description ?? ""} cdnUrl={cuts?.[1]?.imageUrl} />
+      <div className="mbook-side mbook-side-comic mbook-side-comic-one">
+        <span className="mbook-eyebrow">내가 만든 4컷 · {i + 1}컷</span>
+        <CutPanel idx={i} scene={cuts?.[i]?.description ?? ""} cdnUrl={cuts?.[i]?.imageUrl} />
       </div>
     );
   }
@@ -268,7 +265,6 @@ function LeftPage({ spread, picks, comic, event }: {
   return (
     <div className="mbook-side mbook-side-ending">
       <span className="mbook-eyebrow">책을 덮으며</span>
-      <div className="gbook-end-icon">{icon}</div>
       <p className="mbook-end-quote">{event.title}</p>
       <div className="mbook-end-divider" aria-hidden="true">✦  ◆  ✦</div>
     </div>
@@ -330,13 +326,13 @@ function RightPage({ spread, picks, comic, event, speak, stop, speaking, onChoos
     );
   }
 
-  // spread 4 — 컷 ③④
-  if (spread === 4) {
+  // spread 4·5 — 내가 만든 4컷, 한 페이지에 한 컷 (오른쪽: 4→②, 5→④)
+  if (spread === 4 || spread === 5) {
+    const i = spread === 4 ? 1 : 3;
     return (
-      <div className="mbook-side mbook-side-comic">
-        <span className="mbook-eyebrow">내가 만든 4컷 · ③④</span>
-        <CutPanel idx={2} scene={cuts?.[2]?.description ?? ""} cdnUrl={cuts?.[2]?.imageUrl} />
-        <CutPanel idx={3} scene={cuts?.[3]?.description ?? ""} cdnUrl={cuts?.[3]?.imageUrl} />
+      <div className="mbook-side mbook-side-comic mbook-side-comic-one">
+        <span className="mbook-eyebrow">내가 만든 4컷 · {i + 1}컷</span>
+        <CutPanel idx={i} scene={cuts?.[i]?.description ?? ""} cdnUrl={cuts?.[i]?.imageUrl} />
       </div>
     );
   }
@@ -477,7 +473,7 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
     if (phase !== "open") return;
     const onKey = (e: KeyboardEvent) => {
       if (flip) return;
-      const canNext = spread === 0 || spread === 4 || spread === 5 || spread === 6;
+      const canNext = spread === 0 || spread === 4 || spread === COMIC_LAST || (spread >= REAL_FIRST && spread < REAL_LAST);
       if (e.key === "ArrowRight" && canNext) { e.preventDefault(); goSpread((spread + 1) as SpreadKey, "next"); }
       if (e.key === "ArrowLeft" && spread > 0 && spread !== 4) { e.preventDefault(); goSpread((spread - 1) as SpreadKey, "prev"); }
     };
@@ -603,25 +599,33 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
           <span className="mbook-ctrl-note">선택하면 다음 장으로 넘어가요</span>
         </div>
       )}
+      {/* 내가 만든 4컷 — 첫 스프레드(컷①②) */}
       {phase === "open" && spread === 4 && !flip && (
         <div className="mbook-controls mbook-controls-spread4">
           <button className="mbook-ctrl" onClick={onHome}>← 다른 이야기 고르기</button>
-          <button className="mbook-ctrl primary" onClick={() => goSpread(5, "next")}>실제 역사 공부하기 →</button>
+          <button className="mbook-ctrl primary" onClick={() => goSpread(5, "next")}>다음 컷 →</button>
         </div>
       )}
-      {/* 실제 역사 스프레드 5-8: 이전/다음 */}
+      {/* 내가 만든 4컷 — 둘째 스프레드(컷③④) */}
+      {phase === "open" && spread === 5 && !flip && (
+        <div className="mbook-controls">
+          <button className="mbook-ctrl" onClick={() => goSpread(4, "prev")}>← 이전 컷</button>
+          <button className="mbook-ctrl primary" onClick={() => goSpread(REAL_FIRST, "next")}>실제 역사 공부하기 →</button>
+        </div>
+      )}
+      {/* 실제 역사 스프레드: 이전/다음 */}
       {phase === "open" && spread >= REAL_FIRST && spread <= REAL_LAST && !flip && (
         <div className="mbook-controls">
           <button className="mbook-ctrl" onClick={() => goSpread((spread - 1) as SpreadKey, "prev")}>← 이전 장</button>
           {spread < REAL_LAST
             ? <button className="mbook-ctrl primary" onClick={() => goSpread((spread + 1) as SpreadKey, "next")}>다음 장 →</button>
-            : <button className="mbook-ctrl primary" onClick={() => goSpread(9, "next")}>마무리 →</button>
+            : <button className="mbook-ctrl primary" onClick={() => goSpread(LAST_SPREAD, "next")}>마무리 →</button>
           }
         </div>
       )}
-      {phase === "open" && spread === 9 && !flip && (
+      {phase === "open" && spread === LAST_SPREAD && !flip && (
         <div className="mbook-controls">
-          <button className="mbook-ctrl" onClick={() => goSpread(8, "prev")}>← 이전 장</button>
+          <button className="mbook-ctrl" onClick={() => goSpread(REAL_LAST, "prev")}>← 이전 장</button>
           <button className="mbook-ctrl primary" onClick={restart}>다시 펼치기 ↺</button>
         </div>
       )}

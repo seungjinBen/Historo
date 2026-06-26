@@ -178,10 +178,11 @@ function ComicPanel({ src, s3Src, alt, idx, scene }: { src: string; s3Src?: stri
   return (
     <figure className="mbook-panel">
       {generating && (
-        <div className="mbook-panel-gen" role="status" aria-label="먹돌이가 그림을 그리는 중">
-          <span className="mbook-gen-brush" aria-hidden="true">🖌️</span>
-          <span className="mbook-gen-text">먹돌이가 그리는 중…</span>
-          <span className="mbook-gen-bar" aria-hidden="true"><i /></span>
+        <div className="mbook-panel-gen" role="status" aria-label="그림을 그리는 중">
+          <svg className="mbook-gen-svg" viewBox="0 0 72 44" aria-hidden="true">
+            <path className="mbook-gen-stroke" d="M6 30 C 18 8, 30 8, 38 26 S 58 38, 66 14" fill="none" />
+          </svg>
+          <span className="mbook-gen-text">그림을 그리는 중</span>
         </div>
       )}
       {failed ? (
