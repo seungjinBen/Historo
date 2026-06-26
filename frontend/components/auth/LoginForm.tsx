@@ -31,8 +31,8 @@ export function LoginForm() {
     const errDesc = searchParams?.get("error_description");
     const errCode = searchParams?.get("error");
     if (errCode || errDesc) {
-      const isCancel = (errDesc ?? "").toLowerCase().includes("cancel");
-      setError(isCancel ? "Google 로그인이 취소됐어요." : "Google 로그인에 실패했어요. 다시 시도해 주세요.");
+      // 디버깅용: 실제 에러 코드 표시
+      setError(`[${errCode ?? "?"}] ${errDesc ?? ""}`);
       return;
     }
 
