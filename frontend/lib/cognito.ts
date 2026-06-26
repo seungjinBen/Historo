@@ -1,6 +1,10 @@
 import {
   CognitoUserPool,
   CognitoUser,
+  CognitoUserSession,
+  CognitoIdToken,
+  CognitoAccessToken,
+  CognitoRefreshToken,
   AuthenticationDetails,
   CognitoUserAttribute,
   type IAuthenticationCallback,
@@ -97,6 +101,19 @@ export async function handleOAuthCallback(code: string, redirectUri: string): Pr
   });
   if (!res.ok) throw new Error("토큰 교환 실패");
   const data = await res.json();
+  if (!data.id_token) throw new Error("토큰 교환 실패");
+
+  // 받은 토큰을 Cognito 로컬 세션으로 저장 → getCurrentUser()/getIdToken()이 인식
+  const idToken      = new CognitoIdToken({ IdToken: data.id_token });
+  const accessToken  = new CognitoAccessToken({ AccessToken: data.access_token });
+  const refreshToken = new CognitoRefreshToken({ RefreshToken: data.refresh_token ?? "" });
+  const session = new CognitoUserSession({ IdToken: idToken, AccessToken: accessToken, RefreshToken: refreshToken });
+
+  const payload  = idToken.decodePayload();
+  const username = (payload["cognito:username"] as string) || (payload.sub as string);
+  const user = new CognitoUser({ Username: username, Pool: pool });
+  user.setSignInUserSession(session);
+
   return data.id_token as string;
 }
 
