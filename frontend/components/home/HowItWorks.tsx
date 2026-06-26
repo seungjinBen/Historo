@@ -1,5 +1,5 @@
 import { MeokdolMascot } from "@/components/mascots/MeokdolMascot";
-import { HOW_STEPS } from "@/lib/home-content";
+import { UsageDemo } from "@/components/common/UsageDemo";
 
 export function HowItWorks() {
   return (
@@ -15,21 +15,7 @@ export function HowItWorks() {
           <span className="how-mascot-name">먹돌이</span>
         </div>
       </div>
-      <ol className="how-steps" role="list">
-        {HOW_STEPS.map((step, idx) => (
-          <li
-            key={step.num}
-            className="how-step"
-            role="listitem"
-            data-rv="left"
-            data-rv-d={String(idx * 80)}
-          >
-            <span className="how-step-num">{step.num}</span>
-            <div className="how-step-title">{step.title}</div>
-            <p className="how-step-desc">{step.desc}</p>
-          </li>
-        ))}
-      </ol>
+      <UsageDemo />
     </section>
   );
 }
