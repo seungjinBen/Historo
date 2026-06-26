@@ -606,7 +606,7 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
         </div>
       )}
 
-      <MeokdolChatLauncher />
+      <MeokdolChatLauncher context={event.title} />
     </div>
   );
 }

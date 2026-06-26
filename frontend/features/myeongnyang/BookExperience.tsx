@@ -891,7 +891,7 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
         </div>
       )}
 
-      <MeokdolChatLauncher />
+      <MeokdolChatLauncher context="이순신 장군과 명량 해전" />
     </div>
   );
 }

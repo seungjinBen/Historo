@@ -761,7 +761,7 @@ export default function MyeongnyangChatExperience({ onHome, speak, stop, speakin
             onClose={() => setActiveHeritage(null)}
           />
         )}
-        <MeokdolChatLauncher />
+        <MeokdolChatLauncher context="이순신 장군과 명량 해전" />
       </div>
     );
   }
@@ -860,7 +860,7 @@ export default function MyeongnyangChatExperience({ onHome, speak, stop, speakin
             })}
           </div>
         </div>
-        <MeokdolChatLauncher />
+        <MeokdolChatLauncher context="이순신 장군과 명량 해전" />
       </div>
     );
   }
@@ -1025,7 +1025,7 @@ export default function MyeongnyangChatExperience({ onHome, speak, stop, speakin
           </div>
         </div>
         {sharedModals}
-        <MeokdolChatLauncher />
+        <MeokdolChatLauncher context="이순신 장군과 명량 해전" />
       </div>
     );
   }
@@ -1184,7 +1184,7 @@ export default function MyeongnyangChatExperience({ onHome, speak, stop, speakin
           </div>
         </div>
         {sharedModals}
-        <MeokdolChatLauncher />
+        <MeokdolChatLauncher context="이순신 장군과 명량 해전" />
       </div>
     );
   }
