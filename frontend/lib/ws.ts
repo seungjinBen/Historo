@@ -49,7 +49,8 @@ export async function generateImage(prompt: string): Promise<string | null> {
 export async function streamAI(
   action: string,
   payload: Record<string, unknown>,
-  handlers: StreamHandlers
+  handlers: StreamHandlers,
+  opts: { rag?: boolean } = {}
 ): Promise<{ text: string } | null> {
   let s: WebSocket;
   try { s = await connect(); } catch { handlers.onError?.("connect failed"); return null; }
@@ -76,7 +77,7 @@ export async function streamAI(
     };
     s.addEventListener("message", onMsg);
     try {
-      s.send(JSON.stringify({ action, rag: false, reqId, payload }));
+      s.send(JSON.stringify({ action, rag: opts.rag === true, reqId, payload }));
     } catch { done(null); }
   });
 }

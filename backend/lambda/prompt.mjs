@@ -229,7 +229,7 @@ function contextBlock(chunks) {
 }
 
 export function maxTokensFor(action) {
-  return action === "classify" ? 16 : action === "respond" ? 130 : action === "talk" ? 180 : action === "branch" ? 140 : action === "story" ? 800 : action === "story_chat" ? 600 : action === "compare" || action === "coach" ? 320 : 240;
+  return action === "classify" ? 16 : action === "respond" ? 130 : action === "talk" ? 260 : action === "branch" ? 140 : action === "story" ? 800 : action === "story_chat" ? 600 : action === "compare" || action === "coach" ? 320 : 240;
 }
 export function wantsHistory(action) {
   return action === "respond" || action === "chat" || action === "talk" || action === "story_chat";
@@ -241,8 +241,10 @@ export function buildPrompt({ action, payload, useRag }) {
       ? payload.question || ""
       : action === "explain"
         ? payload.topic || ""
-        : `${payload.context || ""} ${payload.choiceLabel || ""} 명량 울돌목 13척 이순신`;
-  const chunks = useRag ? retrieve(q, action === "chat" || action === "explain" ? 4 : 6) : [];
+        : action === "talk"
+          ? payload.text || ""
+          : `${payload.context || ""} ${payload.choiceLabel || ""} 명량 울돌목 13척 이순신`;
+  const chunks = useRag ? retrieve(q, action === "chat" || action === "explain" || action === "talk" ? 4 : 6) : [];
   const grounding = useRag
     ? `아래 '실록 근거' 안에서만 답하라. 근거에 없는 사실은 절대 지어내지 마라.\n${contextBlock(chunks)}`
     : `참고 자료 없이 너의 일반 지식으로만 답하라.`;
@@ -275,8 +277,22 @@ export function buildPrompt({ action, payload, useRag }) {
     system = `너는 8~13세 아이를 위한 역사 동화 작가다. ${grounding} 아이가 대화로 고른 '만약에' 선택을 살려, 한 편의 짧은 동화로 완성하라. 첫 장면은 실록의 사실대로, 그 뒤 장면은 아이의 선택을 반영한 상상. 각 장면은 2~3문장, 쉬운 말, 따뜻하고 생생하게. 사실은 실록 근거를 벗어나지 마라.`;
     user = `사건: ${payload.title || "이순신 명량해전"}. 아이가 고른 길: ${payload.path || ""}.${payload.tone ? ` 톤: ${payload.tone}.` : ""} 장면 4~6개로 나눠, 아래 형식 그대로만 출력해라(설명·머리말 금지):\n제목: <동화 제목>\n[1] <장면 문장>\n[2] <장면 문장>\n[3] <장면 문장>\n[4] <장면 문장>`;
   } else if (action === "talk") {
-    system = `너는 한국 역사 길잡이 '먹돌이'야. 어린이(8~13세)와 자유롭게 대화하는 다정한 친구야. 아이가 꺼내는 어떤 한국 역사 이야기든 자연스럽게 받아줘 — 이순신이든, 세종대왕이든, 한산도든, 행주산성이든 뭐든 OK. 아이가 말하는 주제에 맞게 흥미롭게 반응해줘. 중요한 규칙: 아이가 "어떤 역사가 좋아?", "뭐가 재미있어?" 같이 먹돌이의 취향을 물어보면, 특정 인물이나 사건을 먼저 제시하지 말고 아이에게 되물어라. 예: "네가 좋아하는 건 뭐야? 전쟁 이야기? 왕 이야기? 발명 이야기?" 식으로. 역사와 전혀 관계없는 이야기(먹을 것, 게임 등)면 잠깐 받아주면서 한국 역사 이야기로 부드럽게 연결해줘. 욕설·이상한 말은 "우리 재미있는 이야기 하자!" 하고 부드럽게 돌려줘. 대답은 2~3문장, 이모지 최대 1개, 마크다운 기호 절대 금지.`;
-    user = payload.text ? `아이의 말: "${payload.text}". 아이가 말한 주제에 맞게 자연스럽고 따뜻하게 2~3문장으로 답해줘.` : "안녕! 먼저 말을 걸어줘.";
+    const ref = chunks.length
+      ? `\n\n[참고 실록 근거] — 사실·숫자(연도, 척수 등)는 반드시 아래를 따르고, 아래에 없으면 너의 일반 지식으로 보충하되 지어내지 마라:\n${contextBlock(chunks)}`
+      : "";
+    system = `너는 한국 역사 길잡이 '먹돌이'야. 어린이(8~13세)와 대화하며 한국 역사를 재미있게 들려주는 다정한 친구야. 이순신, 세종대왕, 정약용, 행주산성 등 아이가 꺼내는 어떤 한국 역사 이야기든 받아줘.
+
+[가장 중요한 규칙 — 반복 금지]
+직전 대화에서 네가 이미 말한 사실(예: "작은 배로 큰 적을 이겼다", "좁은 물길로 유인", "위대한 영웅")을 다시 똑같이 말하지 마라. 매 답변마다 아직 말하지 않은 새로운 사실·장면·인물·숫자를 반드시 하나 이상 더해서 이야기를 앞으로 진전시켜라.
+
+[길 잃은 아이 이끌기]
+아이가 "몰라", "나도 몰라서", "어떤 이야기가 있는지 모르겠어"처럼 막막해하면, 절대 "뭐가 궁금해?"라고 되묻지 마라. 대신 네가 먼저 그 사건의 구체적이고 생생한 장면 하나를 짧은 이야기처럼 들려주고(예: 그날 무슨 일이 있었는지, 누가 무슨 말을 했는지), 끝에 "더 들려줄까?" 정도로 가볍게 이어가라.
+
+[되묻기는 이럴 때만]
+아이가 "먹돌이는 뭐가 좋아?"처럼 너의 취향을 직접 물을 때만 되물어라. 그 외에는 네가 먼저 흥미로운 내용을 채워줘라.
+
+대답은 3~4문장, 쉬운 말, 구체적인 장면 위주로. 이모지는 최대 1개. 역사와 무관한 이야기(먹을 것·게임 등)는 잠깐 받아주고 부드럽게 역사로 연결해. 욕설·이상한 말은 "우리 재미있는 이야기 하자!"로 돌려줘.${ref}`;
+    user = payload.text ? `아이의 말: "${payload.text}". 앞 대화에서 안 한 새로운 내용을 더해 3~4문장으로 답해줘.` : "안녕! 먼저 말을 걸어줘.";
   } else if (action === "story_chat") {
     const sess = payload.session || {};
     const phase = sess.phase || "interest";

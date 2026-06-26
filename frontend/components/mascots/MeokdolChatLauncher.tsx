@@ -78,7 +78,8 @@ export function MeokdolChatLauncher({ context }: Props) {
           setStreaming("");
           setBusy(false);
         },
-      }
+      },
+      { rag: true } // 실록 근거(corpus) 주입 — 반복·환각 줄이고 책 사건에 맞게 답하게
     );
   }
 
