@@ -4936,10 +4936,33 @@ body { transition: padding-right .28s cubic-bezier(.16,.8,.3,1); }
   flex: 1;
 }
 .mbook-cta.primary { background: var(--mbook-accent); color: #FBEDC4; border-color: var(--mbook-accent-deep); }
-.mbook-cta.mbook-cta-save { width: 100%; margin-bottom: 12px; background: var(--imagine); color: #fff; border-color: var(--imagine); font-size: 15px; padding: 13px 18px; }
-.mbook-cta.mbook-cta-save.saved { background: #4A7C59; border-color: #4A7C59; cursor: default; }
-.mbook-cta.mbook-cta-save:disabled { opacity: 0.7; }
-.mbook-cta-login-hint { font-family: 'Gowun Dodum', sans-serif; font-size: 13px; color: var(--mbook-ink-soft); margin-bottom: 12px; text-align: center; }
+/* 책장 저장 카드 */
+.mbook-save-card {
+  margin: 14px 0 10px;
+  padding: 14px 16px;
+  background: rgba(255,255,255,0.45);
+  border: 1px solid rgba(120,80,40,0.18);
+  border-radius: 12px;
+}
+.mbook-save-btn {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  width: 100%; padding: 11px 0;
+  background: var(--mbook-accent); color: #FBEDC4;
+  border: none; border-radius: 9px;
+  font-family: 'Jua', sans-serif; font-size: 15px;
+  cursor: pointer; transition: filter .15s;
+}
+.mbook-save-btn:hover:not(:disabled) { filter: brightness(1.08); }
+.mbook-save-btn:disabled { opacity: 0.65; cursor: default; }
+.mbook-save-done {
+  display: flex; align-items: center; justify-content: center; gap: 7px;
+  font-family: 'Jua', sans-serif; font-size: 15px;
+  color: #4A7C59; padding: 8px 0;
+}
+.mbook-save-hint {
+  font-family: 'Gowun Dodum', sans-serif; font-size: 13px;
+  color: var(--mbook-ink-soft); text-align: center; margin: 0;
+}
 .mbook-cta:hover { filter: brightness(1.05); }
 
 /* 컨트롤 바 (책 아래) */

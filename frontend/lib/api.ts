@@ -22,7 +22,11 @@ async function authFetch<T>(path: string, opts: RequestInit = {}): Promise<T> {
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (token) headers["Authorization"] = `Bearer ${token}`;
   const res = await fetch(`${AUTH_BASE}${path}`, { ...opts, headers });
-  if (!res.ok) throw new Error(`${res.status}`);
+  if (!res.ok) {
+    console.error(`authFetch ${path} → ${res.status}`, token ? "token present" : "NO TOKEN");
+    if (res.status === 401) throw new Error("401: 로그아웃 후 다시 로그인해 주세요.");
+    throw new Error(`${res.status}`);
+  }
   return res.json();
 }
 

@@ -424,6 +424,7 @@ function CtaPage({ event, picks, comic, cutsForPicks, onRestart, onHome }: {
   const [saved, setSaved] = useState(false);
   const [saving, setSaving] = useState(false);
   const [signedIn, setSignedIn] = useState(false);
+  const [saveErr, setSaveErr] = useState<string | null>(null);
 
   useEffect(() => { isSignedIn().then(setSignedIn); }, []);
 
@@ -442,8 +443,8 @@ function CtaPage({ event, picks, comic, cutsForPicks, onRestart, onHome }: {
         thumbnailUrl: cutsForPicks?.[0]?.imageUrl ?? undefined,
       });
       setSaved(true);
-    } catch {
-      alert("저장에 실패했어요. 다시 시도해 주세요.");
+    } catch (e: unknown) {
+      setSaveErr(e instanceof Error ? e.message : "저장에 실패했어요.");
     } finally {
       setSaving(false);
     }
@@ -453,25 +454,35 @@ function CtaPage({ event, picks, comic, cutsForPicks, onRestart, onHome }: {
     <div className="mbook-side mbook-side-cta">
       <span className="mbook-eyebrow">책을 덮으며</span>
       <h2 className="mbook-h2">너만의 {event.character?.name ?? event.title} 한 권</h2>
-      <p className="mbook-narr">같은 역사, 하지만 너의 선택이 만든 단 한 권의 책이에요. 다른 선택으로 또 다른 결말을 만들어 볼까요?</p>
+      <p className="mbook-narr">같은 역사, 하지만 너의 선택이 만든 단 한 권의 책이에요.</p>
 
-      {/* 책장 저장 — 로그인 + 3선택 완료 시 */}
-      {signedIn && picks.length === 3 && (
-        <button
-          className={`mbook-cta mbook-cta-save${saved ? " saved" : ""}`}
-          onClick={handleSave}
-          disabled={saving || saved}
-        >
-          {saved ? "책장에 담겼어요!" : saving ? "저장 중…" : "내 책장에 담기"}
-        </button>
-      )}
-      {!signedIn && picks.length === 3 && (
-        <p className="mbook-cta-login-hint">로그인하면 이 이야기를 책장에 저장할 수 있어요.</p>
+      {/* 책장 저장 카드 */}
+      {picks.length === 3 && (
+        <div className="mbook-save-card">
+          {signedIn ? (
+            saved ? (
+              <div className="mbook-save-done">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                책장에 담겼어요!
+              </div>
+            ) : (
+              <>
+                <button className="mbook-save-btn" onClick={handleSave} disabled={saving}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+                  {saving ? "저장 중…" : "내 책장에 담기"}
+                </button>
+                {saveErr && <p style={{ fontSize: 12, color: "#b03030", margin: "8px 0 0", textAlign: "center", fontFamily: "'Gowun Dodum',sans-serif" }}>{saveErr}</p>}
+              </>
+            )
+          ) : (
+            <p className="mbook-save-hint">로그인하면 이 이야기를 책장에 보관할 수 있어요.</p>
+          )}
+        </div>
       )}
 
       <div className="mbook-cta-row">
         <button className="mbook-cta primary" onClick={onRestart}>다시 펼치기 ↺</button>
-        <button className="mbook-cta" onClick={onHome}>다른 이야기 고르기</button>
+        <button className="mbook-cta" onClick={onHome}>다른 이야기</button>
       </div>
     </div>
   );
