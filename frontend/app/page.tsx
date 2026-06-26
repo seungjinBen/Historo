@@ -18,7 +18,7 @@ import { TopBar } from "@/components/home/TopBar";
 import { ComicScreen } from "@/components/story/ComicScreen";
 import { IntroScreen } from "@/components/story/IntroScreen";
 import { PlayScreen } from "@/components/story/PlayScreen";
-import BookExperience from "@/features/myeongnyang/BookExperience";
+// BookExperience(이순신 전용) — 모든 에피소드가 GenericBookExperience로 통일됨
 import GenericBookExperience from "@/components/story/GenericBookExperience";
 import { EVENT_TO_EPISODE } from "@/lib/api";
 import { getCurrentEmail, signOut as cognitoSignOut } from "@/lib/cognito";
@@ -103,9 +103,6 @@ export default function Page() {
 
   const openEvent = useCallback((ev: EventMeta) => {
     if (!fromPop.current) window.history.pushState(null, "", `/?e=${ev.id}`);
-    if (ev.id === "yi-myeongnyang-1597") {
-      setEvent(ev); setScreen("myeongnyang"); return;
-    }
     setEvent(ev); setScreen("tree-book");
   }, []);
 
@@ -218,10 +215,6 @@ export default function Page() {
           <SillokPillars />
           <SiteFooter />
         </div>
-      )}
-
-      {screen === "myeongnyang" && (
-        <BookExperience key="myeongnyang" onHome={home} speak={speak} stop={stop} speaking={speaking} />
       )}
 
       {screen === "tree-book" && event && (
