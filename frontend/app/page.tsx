@@ -123,6 +123,8 @@ export default function Page() {
       setScreen("about");
     } else if (s === "bookshelf") {
       setScreen("bookshelf");
+    } else if (s === "gallery") {
+      setScreen("gallery");
     } else {
       // 홈이면 초기 히스토리 엔트리 확보
       window.history.replaceState(null, "", "/");
@@ -147,6 +149,8 @@ export default function Page() {
         setScreen("about"); setEvent(null);
       } else if (s === "bookshelf") {
         setScreen("bookshelf"); setEvent(null);
+      } else if (s === "gallery") {
+        setScreen("gallery"); setEvent(null);
       } else {
         setScreen("home"); setEvent(null); setTree(null); setNode(null); setPath([]);
         setPreviewEventId(null); setHeritagePreviewEventId(null);
@@ -188,6 +192,7 @@ export default function Page() {
     <div className="wrap">
       <TopBar
         onHome={home}
+        onGallery={() => { window.history.pushState(null, "", "/?s=gallery"); setScreen("gallery"); }}
         onAbout={() => { window.history.pushState(null, "", "/?s=about"); setScreen("about"); }}
         onBookshelf={() => { window.history.pushState(null, "", "/?s=bookshelf"); setScreen("bookshelf"); }}
         token={token}
@@ -233,6 +238,19 @@ export default function Page() {
       {screen === "about"     && <AboutScreen onBack={home} />}
       {screen === "chat"      && <MeokdolChat key="chat" onBack={home} />}
       {screen === "bookshelf" && <BookshelfScreen onBack={home} />}
+
+      {screen === "gallery" && (
+        <div className="screen" key="gallery">
+          <button className="screen-back" onClick={home} aria-label="홈으로">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M19 12H5" />
+              <path d="m12 19-7-7 7-7" />
+            </svg>
+            홈으로
+          </button>
+          <Gallery events={events} onOpenEvent={openEvent} />
+        </div>
+      )}
 
       {screen === "intro" && event && (
         <IntroScreen

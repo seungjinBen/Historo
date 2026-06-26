@@ -113,6 +113,13 @@ export function LoginForm() {
       </Link>
 
       <div className="login-card">
+        <Link href="/" className="login-back" aria-label="홈으로 돌아가기">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M19 12H5" />
+            <path d="m12 19-7-7 7-7" />
+          </svg>
+          <span>홈으로</span>
+        </Link>
         <div className="login-mascot" aria-hidden="true">
           <SejongMascot />
         </div>

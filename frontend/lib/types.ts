@@ -51,6 +51,6 @@ export type KidStory = {
   funFacts: string[];
 };
 
-export type Screen = "home" | "intro" | "play" | "comic" | "myeongnyang" | "tree-book" | "chat" | "about" | "bookshelf";
+export type Screen = "home" | "intro" | "play" | "comic" | "myeongnyang" | "tree-book" | "chat" | "about" | "bookshelf" | "gallery";
 
 export type HeroActionId = "story" | "study" | "heritage" | "gallery";
