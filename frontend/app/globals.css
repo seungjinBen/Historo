@@ -4689,11 +4689,12 @@ body { transition: padding-right .28s cubic-bezier(.16,.8,.3,1); }
   border-left-color: #2F7A4A;
 }
 .mbook-side-real-cut {
-  justify-content: center;
+  justify-content: flex-start;
 }
 .mbook-side-real-cut .mbook-panel {
-  flex: 0 0 auto;
-  aspect-ratio: 3 / 2;
+  flex: 1;
+  min-height: 0;
+  aspect-ratio: unset;
 }
 .mbook-side-real-cut .mbook-panel-num {
   background: #2F7A4A;
@@ -7959,12 +7960,19 @@ body { transition: padding-right .28s cubic-bezier(.16,.8,.3,1); }
 }
 
 @media (max-width: 640px) {
-  .login-card { max-width: 420px; }
-  .login-mascot { padding: 26px 18px 4px; }
-  .login-mascot svg { width: 92px; }
-  .login-mascot::before { width: 130px; height: 130px; }
-  .login-body { padding: 6px 24px 30px; }
-  .login-title { font-size: 24px; }
+  .login-shell { padding: 24px 16px 40px; }
+  .login-card { max-width: 100%; border-radius: 18px; }
+  .login-brand { margin-bottom: 16px; font-size: 21px; }
+  /* 마스코트 크기 줄여 eyebrow와 겹침 방지 */
+  .login-mascot { padding: 20px 18px 2px; }
+  .login-mascot::before { width: 80px; height: 80px; top: 16px; }
+  .login-mascot svg { width: 72px; }
+  .login-body { padding: 4px 20px 28px; }
+  .login-eyebrow { font-size: 11px; letter-spacing: .08em; }
+  .login-title { font-size: 22px; margin: 4px 0 5px; }
+  .login-sub { font-size: 13px; margin-bottom: 18px; }
+  .login-input { font-size: 16px; padding: 12px 14px; } /* iOS zoom 방지(16px 이상) */
+  .login-submit { font-size: 15px; padding: 13px 16px; }
 }
 
 /* ════════════════════════════════════════
@@ -8531,13 +8539,14 @@ body { transition: padding-right .28s cubic-bezier(.16,.8,.3,1); }
 
 /* 인트로 실제 이미지 (컷1 공통도입) */
 .gbook-intro-img-wrap {
-  width: 100%; aspect-ratio: 4/3; border-radius: 10px; overflow: hidden;
+  width: 100%; aspect-ratio: 3/2; border-radius: 10px; overflow: hidden;
   border: 1.5px solid rgba(200,170,100,.35); margin-bottom: 14px;
   background: #EDE5D0;
 }
 .gbook-intro-img-wrap img {
-  width: 100%; height: 100%; object-fit: cover; display: block;
+  width: 100%; height: 100%; object-fit: contain; display: block;
   opacity: 0; transition: opacity .55s ease;
+  background: #EDE5D0;
 }
 .gbook-intro-img-wrap img.loaded { opacity: 1; }
 
