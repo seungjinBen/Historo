@@ -3571,21 +3571,23 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   .tl-heritage-count { font-size: 10px; padding: 1px 6px; }
 
   .tl-heritage-peek  { padding: 14px 12px 16px; }
-  .heritage-grid     { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-  .heritage-item     { border-radius: 10px; }
+  .heritage-grid     { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .heritage-item     { border-radius: 12px; }
   .heritage-thumb    { aspect-ratio: 4 / 3; }
-  .heritage-thumb img { padding: 6px; }
-  .heritage-body     { padding: 8px 9px 10px; gap: 4px; }
-  .heritage-name     { font-size: 12px; line-height: 1.25; }
+  .heritage-thumb img { padding: 8px; }
+  .heritage-body     { padding: 10px 12px 12px; gap: 6px; }
+  .heritage-name     { font-size: 13px; line-height: 1.35; font-weight: 600; }
   .heritage-docent   {
-    font-size: 10.5px;
-    line-height: 1.5;
+    font-size: 12px;
+    line-height: 1.6;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 5;
     -webkit-box-orient: vertical;
     overflow: hidden;
   }
-  .heritage-source   { font-size: 9.5px; padding-top: 4px; }
+  .heritage-source   { font-size: 11px; padding-top: 6px; }
+  /* 터치 타겟 최소 44px 보장 */
+  .heritage-source a, a.heritage-source { min-height: 44px; display: inline-flex; align-items: center; }
 
   .myn-feature { flex-direction: column; gap: 14px; }
   .myn-feature-thumb { width: 100%; aspect-ratio: 16/9; }
@@ -3639,6 +3641,64 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   .heritage-modal { padding: 20px 18px 22px; border-radius: 18px; }
   .heritage-modal-title { font-size: 17px; }
   .heritage-modal-desc  { font-size: 14px; line-height: 1.8; }
+}
+
+/* ════════════════════════════════════════
+   모바일 전반 최적화 (480px 이하 소형 디바이스)
+   권장 기준 — 터치 44px(WCAG), 최소 폰트 14px(Mobile UX)
+════════════════════════════════════════ */
+@media (max-width: 480px) {
+  /* 기본 */
+  body { font-size: 15px; }
+  .wrap { padding: 16px 14px 56px; }
+
+  /* 터치 버튼 최소 높이 44px */
+  .mbook-ctrl,
+  .event-cta,
+  .peek-cta,
+  .top-btn,
+  .mbook-choice-btn { min-height: 44px; }
+
+  /* 선택지 버튼 가독성 */
+  .mbook-choice-btn { font-size: 14px; }
+
+  /* 타임라인 유물 설명 — 행 수 늘림 */
+  .study-heritage-desc {
+    -webkit-line-clamp: 5;
+    font-size: 12.5px;
+  }
+
+  /* 섹션 헤더 */
+  .section-header-title { font-size: 20px; }
+  .section-header-sub   { font-size: 13.5px; }
+
+  /* 홈 Hero */
+  .hero-title { font-size: 30px; letter-spacing: -.8px; }
+  .hero-sub   { font-size: 14.5px; }
+
+  /* 이벤트 그리드 */
+  .event-grid { grid-template-columns: 1fr; }
+  .event-title { font-size: 15px; }
+  .event-fact  { font-size: 12px; }
+  .event-cta   { font-size: 14px; }
+
+  /* 타임라인 카드 */
+  .tl-inner { padding: 12px 14px; }
+  .tl-title { font-size: 15px; }
+
+  /* 책 컨트롤 */
+  .mbook-ctrl { font-size: 14px; padding: 11px 18px; }
+
+  /* cutv 뷰어 */
+  .cutv-cap-text { font-size: 13.5px; }
+  .cutv-cap-no   { width: 22px; height: 22px; font-size: 12px; }
+
+  /* 먹돌이 FAB 위치 — 소형 디바이스 */
+  .meokdol-fab-wrap { bottom: 80px; right: 12px; }
+  .meokdol-fab-text { display: none; } /* pill 텍스트 숨겨 FAB만 노출 */
+
+  /* 스크롤 탑 버튼 */
+  .scroll-top { width: 40px; height: 40px; right: 14px; bottom: 14px; }
 }
 
 .story-section-desc {
