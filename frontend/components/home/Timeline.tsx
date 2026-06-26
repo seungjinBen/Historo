@@ -2,11 +2,11 @@
 
 /* eslint-disable @next/next/no-img-element */
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { GlossText } from "@/components/common/Glossary";
 import { HeritageIcon } from "@/components/common/HeritageIcon";
 import { HISTORY_CONTENT } from "@/lib/home-content";
-import { api, EVENT_TO_EPISODE } from "@/lib/api";
+import { getInstantCutUrl } from "@/lib/api";
 import type { EventMeta, HeritageEvent, HeritageItem } from "@/lib/types";
 
 // CDN 이미지만 사용 — 로컬 파일 의존 제거
@@ -104,27 +104,16 @@ export function Timeline({
 }: Props) {
   const [expanded, setExpanded] = useState(false);
 
-  // 에피소드별 S3 프리뷰 이미지 (A-1-α 첫 번째 스토리라인 4컷)
-  const [s3Cuts, setS3Cuts] = useState<Record<string, string[]>>({});
-  useEffect(() => {
-    events
-      .filter((ev) => ev.status === "ready")
-      .forEach((ev) => {
-        const kr = EVENT_TO_EPISODE[ev.id];
-        if (!kr) return;
-        api.getComic(kr)
-          .then((comic) => {
-            const sl = comic.storylines.find((s) => s.id === "A-1-α");
-            if (!sl) return;
-            const urls = sl.cuts
-              .sort((a, b) => a.number - b.number)
-              .map((c) => c.imageUrl);
-            setS3Cuts((prev) => ({ ...prev, [ev.id]: urls }));
-          })
-          .catch(() => {});
-      });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // URL 패턴이 고정이므로 즉시 계산 — fetch 0회, 마운트 즉시 4컷 표시
+  const s3Cuts = useMemo(
+    () => Object.fromEntries(
+      events.map((ev) => [
+        ev.id,
+        [1, 2, 3, 4].map((n) => getInstantCutUrl(ev.id, n)),
+      ])
+    ),
+    [events]
+  );
   const ERAS = ["조선 초기", "조선 중기", "조선 후기"] as const;
   const flatIndex = new Map<string, number>();
   const eraMinIndex: Record<string, number> = {};

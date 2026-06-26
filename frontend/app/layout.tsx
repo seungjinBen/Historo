@@ -58,6 +58,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
+      <head>
+        {/* CDN 도메인 preconnect — DNS/TLS 선점으로 이미지 첫 요청 지연 최소화 */}
+        <link rel="preconnect" href="https://d3382886jvvuzm.cloudfront.net" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://d3382886jvvuzm.cloudfront.net" />
+        {/* 정적 데이터(comics JSON) 서빙 CDN */}
+        <link rel="preconnect" href="https://d6a53spc1xryh.cloudfront.net" crossOrigin="anonymous" />
+        <link rel="dns-prefetch" href="https://d6a53spc1xryh.cloudfront.net" />
+      </head>
       <body>
         {children}
         <ScrollToTop />

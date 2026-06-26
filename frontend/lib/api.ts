@@ -86,7 +86,8 @@ function parseComic(data: any): ApiComic {
 }
 
 async function fetchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url);
+  // 'force-cache': 브라우저 HTTP 캐시 우선 사용 → 재방문 시 네트워크 요청 0
+  const res = await fetch(url, { cache: "force-cache" });
   if (!res.ok) throw new Error(`fetch ${url}: ${res.status}`);
   return res.json();
 }
@@ -107,6 +108,18 @@ export const EVENT_TO_EPISODE: Record<string, string> = {
   "kim-hongdo-genre-1780":          "김홍도",
   "jeong-yakyong-geojunggi-1792":   "정약용",
 };
+
+/**
+ * JSON fetch 없이 A-1-α 첫 번째 컷 CDN URL을 즉시 계산.
+ * 모든 에피소드가 {한글명}/A/1/α/컷{n}.png 패턴을 따름.
+ * EventGrid / Timeline 썸네일의 "2-round-trip" 지연을 제거한다.
+ */
+export function getInstantCutUrl(eventId: string, cutNo = 1): string {
+  const kr = EVENT_TO_EPISODE[eventId];
+  if (!kr) return "";
+  const path = `${kr}/A/1/α/컷${cutNo}.png`; // α, 컷
+  return toCdnUrl(path).replace(/\.png($|\?)/, ".webp$1");
+}
 
 export const api = {
   // ── 정적 데이터 ──────────────────────────────────────────────────────────────

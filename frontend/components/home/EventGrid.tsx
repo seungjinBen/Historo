@@ -2,13 +2,14 @@
 
 /* eslint-disable @next/next/no-img-element */
 
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { KID_ORDER } from "@/lib/home-content";
-import { api, EVENT_TO_EPISODE } from "@/lib/api";
+import { getInstantCutUrl } from "@/lib/api";
 import type { EventMeta, HeritageEvent } from "@/lib/types";
 
 // CDN 첫 번째 컷을 썸네일로 — 로드 전엔 shimmer placeholder
-function EventBoxThumb({ ev, cdnUrl }: { ev: EventMeta; cdnUrl?: string }) {
+// priority: 첫 화면에 보이는 카드는 eager+high, 나머지는 lazy
+function EventBoxThumb({ ev, cdnUrl, priority }: { ev: EventMeta; cdnUrl?: string; priority?: boolean }) {
   const [ok, setOk] = useState(false);
   const [err, setErr] = useState(false);
 
@@ -35,6 +36,9 @@ function EventBoxThumb({ ev, cdnUrl }: { ev: EventMeta; cdnUrl?: string }) {
         src={cdnUrl}
         alt=""
         className={ok ? "loaded" : ""}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
+        decoding={priority ? "sync" : "async"}
         style={ok ? undefined : { opacity: 0, position: "absolute" }}
         onLoad={() => setOk(true)}
         onError={() => setErr(true)}
@@ -51,22 +55,11 @@ type Props = {
 
 export function EventGrid({ events, heritage, onOpenEvent }: Props) {
   const [expanded, setExpanded] = useState(false);
-  // 에피소드별 CDN 첫 번째 컷 (A-1-α 스토리라인)
-  const [cdnCut1, setCdnCut1] = useState<Record<string, string>>({});
-  useEffect(() => {
-    events
-      .filter((ev) => ev.status === "ready" && EVENT_TO_EPISODE[ev.id])
-      .forEach((ev) => {
-        api.getComic(ev.id)
-          .then((comic) => {
-            const sl = comic.storylines.find((s) => s.id === "A-1-α") ?? comic.storylines[0];
-            const url = sl?.cuts.sort((a, b) => a.number - b.number)[0]?.imageUrl;
-            if (url) setCdnCut1((prev) => ({ ...prev, [ev.id]: url }));
-          })
-          .catch(() => {});
-      });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // URL 패턴이 고정이므로 즉시 계산 — fetch 0회, 마운트 즉시 표시
+  const cdnCut1 = useMemo(
+    () => Object.fromEntries(events.map((ev) => [ev.id, getInstantCutUrl(ev.id)])),
+    [events]
+  );
   const sorted = events
     .slice()
     .sort((a, b) => {
@@ -94,7 +87,7 @@ export function EventGrid({ events, heritage, onOpenEvent }: Props) {
                 className={"event-box " + ev.status}
                 style={{ animationDelay: `${idx * 0.04}s` }}
               >
-                <EventBoxThumb ev={ev} cdnUrl={cdnCut1[ev.id]} />
+                <EventBoxThumb ev={ev} cdnUrl={cdnCut1[ev.id]} priority={idx < 6} />
                 <div className="event-body">
                   <div className="event-meta">
                     <span className="event-year">{ev.year}</span>
