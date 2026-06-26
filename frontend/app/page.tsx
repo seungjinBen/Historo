@@ -185,7 +185,6 @@ export default function Page() {
 
   return (
     <GlossaryProvider>
-    <ScrollReveal />
     <div className="wrap">
       <TopBar
         onHome={home}
@@ -199,6 +198,7 @@ export default function Page() {
 
       {screen === "home" && (
         <div className="screen" key="home">
+          <ScrollReveal />
           <HeroSection scrollToTarget={scrollToTarget} />
           <HowItWorks />
           <EventGrid events={events} heritage={heritage} onOpenEvent={openEvent} />
