@@ -10,6 +10,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { GlossText } from "@/components/common/Glossary";
 import { MeokdolChatLauncher } from "@/components/mascots/MeokdolChatLauncher";
+import { ComicCutViewer } from "@/components/story/ComicCutViewer";
 import { api } from "@/lib/api";
 import type { HeritageEvent, HeritageItem } from "@/lib/types";
 
@@ -518,6 +519,20 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
 
   const data = getData(grade);
 
+  // 선택 경로의 완성 4컷 (스프레드 4 전용 뷰어용)
+  const cutsForPicks = picks.length === 3
+    ? (() => {
+        const pathKey = picks.join("-");
+        const s3 = s3CutUrls[pathKey];
+        return [
+          { imageUrl: s3?.[0] ?? imgUrl(`${pathKey}_panel1.png`), description: data.questions[0].options[picks[0]]?.scene },
+          { imageUrl: s3?.[1] ?? imgUrl(`${pathKey}_panel2.png`), description: data.questions[1].options[picks[1]]?.scene },
+          { imageUrl: s3?.[2] ?? imgUrl(`${pathKey}_panel3.png`), description: data.climax },
+          { imageUrl: s3?.[3] ?? imgUrl(`${pathKey}_panel4.png`), description: data.questions[2].options[picks[2]]?.scene },
+        ];
+      })()
+    : [];
+
   useEffect(() => {
     let cancelled = false;
     fetch("/data/heritage.json")
@@ -587,6 +602,8 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
       if (flip || phase !== "open") return;
       if (to === spread) return;
       if (to < 0 || to > LAST_SPREAD) return;
+      // 4컷 뷰어(스프레드 4)는 3D 책장 넘김 대신 페이드 전환
+      if (to === 4 || spread === 4) { playSfx("turn"); setSpread(to); return; }
       playSfx("turn");
       setFlip({ from: spread, to, dir });
     },
@@ -671,6 +688,13 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
         )}
       </div>
 
+      {phase === "open" && spread === 4 ? (
+        <ComicCutViewer
+          cuts={cutsForPicks}
+          onHome={onHome}
+          onDone={() => goSpread(REAL_FIRST, "next")}
+        />
+      ) : (
       <div
         className={"mbook-stage mbook-phase-" + phase + (flip ? " is-flipping" : "")}
         ref={stageRef}
@@ -838,6 +862,7 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
           </div>
         )}
       </div>
+      )}
 
       {/* 인트로(0) — 다음 장 */}
       {phase === "open" && spread === 0 && !flip && (
@@ -850,26 +875,6 @@ export default function MyeongnyangBookExperience({ onHome, speak, stop, speakin
             onClick={() => goSpread(1 as SpreadKey, "next")}
           >
             다음 장 →
-          </button>
-        </div>
-      )}
-
-      {/* 스프레드 4 — 내가 만든 4컷: 커스텀 두 버튼만 */}
-      {phase === "open" && spread === 4 && !flip && (
-        <div className="mbook-controls mbook-controls-spread4">
-          <button
-            className="mbook-ctrl"
-            onClick={onHome}
-            aria-label="다른 이야기 고르기 — 홈으로"
-          >
-            ← 다른 이야기 고르기
-          </button>
-          <button
-            className="mbook-ctrl primary"
-            onClick={() => goSpread(REAL_FIRST, "next")}
-            aria-label="실제 역사 공부하러 가기"
-          >
-            실제 역사 공부하기 →
           </button>
         </div>
       )}

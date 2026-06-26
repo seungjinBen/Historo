@@ -2687,7 +2687,7 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   line-height: 1.6;
   color: var(--ink-soft);
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 6;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
@@ -4451,9 +4451,85 @@ body { transition: padding-right .28s cubic-bezier(.16,.8,.3,1); }
 
 /* 결과 4컷 */
 .mbook-side-comic { gap: 10px; }
-/* 한 페이지 한 컷 — 3:2로 크게, 세로 중앙 정렬 */
-.mbook-side-comic-one { justify-content: center; }
-.mbook-side-comic-one .mbook-panel { flex: 0 0 auto; aspect-ratio: 3 / 2; }
+
+/* ── 완성 4컷 — 한 화면 한 컷 큰 뷰어 (모든 에피소드 공용) ── */
+.cutv {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 8px 16px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: fadeSlide .4s cubic-bezier(.16,.8,.3,1) both;
+}
+.cutv-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.cutv-eyebrow {
+  font-family: 'Jua', sans-serif;
+  font-size: 13px;
+  letter-spacing: .04em;
+  color: var(--mbook-accent);
+  padding-left: 10px;
+  border-left: 3px solid var(--mbook-accent);
+}
+.cutv-dots { display: flex; gap: 7px; }
+.cutv-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--mbook-paper-deep); opacity: .5;
+  transition: all .2s ease;
+}
+.cutv-dot.past { opacity: .8; background: var(--mbook-accent); }
+.cutv-dot.on   { opacity: 1; background: var(--mbook-accent); transform: scale(1.4); }
+.cutv-stage { animation: cutvIn .34s ease both; }
+@keyframes cutvIn {
+  from { opacity: 0; transform: translateY(8px) scale(.995); }
+  to   { opacity: 1; transform: none; }
+}
+.cutv-frame {
+  width: 100%;
+  aspect-ratio: 3 / 2;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #E9DDBE;
+  border: 1px solid var(--mbook-paper-deep);
+  box-shadow: 0 10px 30px rgba(61, 26, 8, .16), 0 2px 6px rgba(61, 26, 8, .08);
+}
+.cutv-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cutv-ph {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Gowun Dodum', sans-serif; font-size: 14px; color: var(--mbook-ink-soft);
+}
+.cutv-cap {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: rgba(255, 247, 224, .92);
+  border: 1px solid var(--mbook-paper-deep);
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+.cutv-cap-no {
+  flex-shrink: 0;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--mbook-accent); color: #FBEDC4;
+  font-family: 'Jua', sans-serif; font-size: 13px;
+  display: flex; align-items: center; justify-content: center;
+}
+.cutv-cap-text {
+  font-family: 'Gowun Dodum', sans-serif;
+  font-size: 15px; line-height: 1.65; color: var(--mbook-ink);
+  word-break: keep-all;
+}
+.cutv-controls {
+  display: flex; align-items: center; justify-content: center;
+  gap: 14px; margin-top: 4px;
+}
+@media (max-width: 540px) {
+  .cutv { padding: 4px 4px 0; gap: 12px; }
+  .cutv-cap-text { font-size: 13.5px; }
+}
 .mbook-panel {
   margin: 0;
   border: 1px solid var(--mbook-paper-deep);
@@ -8320,7 +8396,7 @@ body { transition: padding-right .28s cubic-bezier(.16,.8,.3,1); }
 }
 
 @media (max-width: 540px) {
-  .meokdol-fab-wrap { right: 14px; bottom: 16px; }
+  .meokdol-fab-wrap { right: 14px; bottom: 100px; }
   /* 모바일은 바텀시트 + 딤 배경(탭하면 닫힘) */
   .meokdol-chat-backdrop { pointer-events: auto; background: rgba(26, 22, 18, .34); }
   .meokdol-chat-modal {

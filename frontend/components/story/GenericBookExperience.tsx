@@ -8,7 +8,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { MeokdolChatLauncher } from "@/components/mascots/MeokdolChatLauncher";
+import { ComicCutViewer } from "@/components/story/ComicCutViewer";
 import { api, type ApiComicCut, type ApiComicQuestions, type ApiComicStoryline } from "@/lib/api";
+import { GRADES, type GradeKey } from "@/features/myeongnyang/data";
 import type { EventMeta, Tree } from "@/lib/types";
 
 // ── 선택지 키 매핑 ────────────────────────────
@@ -87,12 +89,11 @@ const COVER_EYEBROW: Record<string, string> = {
 const STEP_LABELS = ["제 1 장 · 첫 번째 선택", "제 2 장 · 두 번째 선택", "제 3 장 · 세 번째 선택"];
 
 type Phase = "closed" | "opening" | "open";
-type SpreadKey = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
-// 4컷을 한 컷씩 2개 스프레드로: 4=컷①②, 5=컷③④
-const COMIC_LAST = 5 as SpreadKey;
-const REAL_FIRST = 6 as SpreadKey;
-const REAL_LAST  = 9 as SpreadKey;
-const LAST_SPREAD: SpreadKey = 10;
+type SpreadKey = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+// 스프레드 4 = 완성 4컷(전용 뷰어), 5~8 = 실제 역사, 9 = 결말
+const REAL_FIRST = 5 as SpreadKey;
+const REAL_LAST  = 8 as SpreadKey;
+const LAST_SPREAD: SpreadKey = 9;
 
 // ── 컷 패널 (이순신 mbook-panel과 동일 구조) ───
 // "먹돌이가 그리는 중" 연출 → 이미지 준비 + 최소 연출시간 모두 충족 시 그려지듯 공개
@@ -230,17 +231,6 @@ function LeftPage({ spread, picks, comic, event }: {
     );
   }
 
-  // spread 4·5 — 내가 만든 4컷, 한 페이지에 한 컷 (왼쪽: 4→①, 5→③)
-  if (spread === 4 || spread === 5) {
-    const i = spread === 4 ? 0 : 2;
-    return (
-      <div className="mbook-side mbook-side-comic mbook-side-comic-one">
-        <span className="mbook-eyebrow">내가 만든 4컷 · {i + 1}컷</span>
-        <CutPanel idx={i} scene={cuts?.[i]?.description ?? ""} cdnUrl={cuts?.[i]?.imageUrl} />
-      </div>
-    );
-  }
-
   // spread 5-8 — 실제 역사 컷 1장씩 (이순신 구조 동일)
   if (spread >= REAL_FIRST && spread <= REAL_LAST) {
     const idx = (spread - REAL_FIRST) as number;
@@ -272,10 +262,11 @@ function LeftPage({ spread, picks, comic, event }: {
 }
 
 // ── RIGHT PAGE ───────────────────────────────
-function RightPage({ spread, picks, comic, event, speak, stop, speaking, onChoose, onRestart, onHome }: {
+function RightPage({ spread, picks, comic, event, speak, stop, speaking, onChoose, onRestart, onHome, grade, setGrade, gradeOpen, setGradeOpen }: {
   spread: SpreadKey; picks: number[]; comic: ComicData | null; event: EventMeta;
   speak: (t: string) => void; stop: () => void; speaking: boolean;
   onChoose: (i: number) => void; onRestart: () => void; onHome: () => void;
+  grade: GradeKey; setGrade: (g: GradeKey) => void; gradeOpen: boolean; setGradeOpen: (v: boolean) => void;
 }) {
   const cuts = picks.length === 3 && comic
     ? comic.storylines.find(
@@ -284,7 +275,10 @@ function RightPage({ spread, picks, comic, event, speak, stop, speaking, onChoos
     : null;
 
   if (spread === 0) {
-    const intro = comic?.questions.Q1 ?? event.factCard;
+    // 학년별: 1~2는 factCard(쉬운 문장), 3~4·5~6는 Q1(전체 맥락)
+    const intro = grade === "1-2"
+      ? event.factCard
+      : (comic?.questions.Q1 ?? event.factCard);
     return (
       <div className="mbook-side mbook-side-intro">
         <span className="mbook-eyebrow">제 1 장 · 이야기의 시작</span>
@@ -295,6 +289,29 @@ function RightPage({ spread, picks, comic, event, speak, stop, speaking, onChoos
             onClick={() => (speaking ? stop() : speak(intro))}>
             {speaking ? "멈추기" : "읽어줘"}
           </button>
+          {/* 학년별 맞춤 선택기 — 이순신과 동일 UI */}
+          <div className="mbook-grade">
+            <button
+              className="mbook-grade-btn"
+              onClick={() => setGradeOpen(!gradeOpen)}
+              aria-expanded={gradeOpen}
+            >
+              {GRADES.find((g) => g.key === grade)?.label}
+              <span className="mbook-grade-caret">{gradeOpen ? "▴" : "▾"}</span>
+            </button>
+            {gradeOpen && (
+              <ul className="mbook-grade-menu" role="listbox">
+                {GRADES.map((g) => (
+                  <li key={g.key}
+                    role="option"
+                    aria-selected={g.key === grade}
+                    className={"mbook-grade-item" + (g.key === grade ? " on" : "")}
+                    onClick={() => { setGrade(g.key); setGradeOpen(false); }}
+                  >{g.label}</li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
         <div className="mbook-hint-flip">아래 &lsquo;다음 장 →&rsquo;을 눌러 첫 번째 질문으로</div>
       </div>
@@ -322,17 +339,6 @@ function RightPage({ spread, picks, comic, event, speak, stop, speaking, onChoos
           ))}
         </ul>
         <div className="mbook-hint-flip">선택하면 책장이 스르륵 넘어가요</div>
-      </div>
-    );
-  }
-
-  // spread 4·5 — 내가 만든 4컷, 한 페이지에 한 컷 (오른쪽: 4→②, 5→④)
-  if (spread === 4 || spread === 5) {
-    const i = spread === 4 ? 1 : 3;
-    return (
-      <div className="mbook-side mbook-side-comic mbook-side-comic-one">
-        <span className="mbook-eyebrow">내가 만든 4컷 · {i + 1}컷</span>
-        <CutPanel idx={i} scene={cuts?.[i]?.description ?? ""} cdnUrl={cuts?.[i]?.imageUrl} />
       </div>
     );
   }
@@ -406,11 +412,20 @@ type Props = { event: EventMeta; onHome: () => void; speak: (t: string) => void;
 export default function GenericBookExperience({ event, onHome, speak, stop, speaking }: Props) {
   const [phase, setPhase] = useState<Phase>("closed");
   const [spread, setSpread] = useState<SpreadKey>(0);
+  const [grade, setGrade] = useState<GradeKey>("3-4");
+  const [gradeOpen, setGradeOpen] = useState(false);
   const [picks, setPicks] = useState<number[]>([]);
   const [flip, setFlip] = useState<{ from: SpreadKey; to: SpreadKey; dir: "next" | "prev" } | null>(null);
   const [comic, setComic] = useState<ComicData | null>(null);
 
   const coverBg = COVER_BG[event.id] ?? "#4A1A0E";
+
+  // 선택 경로에 해당하는 완성 4컷 (스프레드 4 전용 뷰어용)
+  const cutsForPicks = picks.length === 3 && comic
+    ? comic.storylines.find(
+        (s) => s.q1 === Q1_KEYS[picks[0]] && s.q2 === Q2_KEYS[picks[1]] && s.q3 === Q3_KEYS[picks[2]]
+      )?.cuts ?? null
+    : null;
 
   useEffect(() => {
     api.getComic(event.id).then((data) => {
@@ -455,6 +470,8 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
 
   const goSpread = useCallback((to: SpreadKey, dir: "next" | "prev") => {
     if (flip || phase !== "open" || to === spread || to < 0 || to > LAST_SPREAD) return;
+    // 4컷 뷰어(스프레드 4)는 3D 책장 넘김 대신 페이드 전환 (가로 컷 ↔ 세로 책 구조가 달라서)
+    if (to === 4 || spread === 4) { playSfx("turn"); setSpread(to); return; }
     playSfx("turn"); setFlip({ from: spread, to, dir });
   }, [flip, phase, spread]);
 
@@ -473,9 +490,10 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
     if (phase !== "open") return;
     const onKey = (e: KeyboardEvent) => {
       if (flip) return;
-      const canNext = spread === 0 || spread === 4 || spread === COMIC_LAST || (spread >= REAL_FIRST && spread < REAL_LAST);
+      if (spread === 4) return; // 4컷 뷰어는 자체 화살표 처리
+      const canNext = spread === 0 || (spread >= REAL_FIRST && spread < REAL_LAST);
       if (e.key === "ArrowRight" && canNext) { e.preventDefault(); goSpread((spread + 1) as SpreadKey, "next"); }
-      if (e.key === "ArrowLeft" && spread > 0 && spread !== 4) { e.preventDefault(); goSpread((spread - 1) as SpreadKey, "prev"); }
+      if (e.key === "ArrowLeft" && spread > 0) { e.preventDefault(); goSpread((spread - 1) as SpreadKey, "prev"); }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -505,6 +523,13 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
         )}
       </div>
 
+      {phase === "open" && spread === 4 ? (
+        <ComicCutViewer
+          cuts={cutsForPicks ?? []}
+          onHome={onHome}
+          onDone={() => goSpread(5, "next")}
+        />
+      ) : (
       <div className={"mbook-stage mbook-phase-" + phase + (flip ? " is-flipping" : "")}>
         <svg className="mbook-defs" aria-hidden="true">
           <defs>
@@ -525,7 +550,7 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
               <div className="mbook-spine-shadow right" aria-hidden="true" />
             </div></div>
             <div className="mbook-half mbook-half-right"><div className="mbook-paper">
-              <RightPage spread={sourceSpread} {...shared} speak={speak} stop={stop} speaking={speaking} onChoose={choose} onRestart={restart} onHome={onHome} />
+              <RightPage spread={sourceSpread} {...shared} speak={speak} stop={stop} speaking={speaking} onChoose={choose} onRestart={restart} onHome={onHome} grade={grade} setGrade={setGrade} gradeOpen={gradeOpen} setGradeOpen={setGradeOpen} />
               <div className="mbook-noise" aria-hidden="true" />
               <div className="mbook-spine-shadow left" aria-hidden="true" />
             </div></div>
@@ -539,7 +564,7 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
                 <div className="mbook-spine-shadow right" aria-hidden="true" />
               </div></div>
               <div className="mbook-half mbook-half-right"><div className="mbook-paper">
-                <RightPage spread={targetSpread} {...shared} speak={speak} stop={stop} speaking={speaking} onChoose={noop as (i: number) => void} onRestart={restart} onHome={onHome} />
+                <RightPage spread={targetSpread} {...shared} speak={speak} stop={stop} speaking={speaking} onChoose={noop as (i: number) => void} onRestart={restart} onHome={onHome} grade={grade} setGrade={setGrade} gradeOpen={gradeOpen} setGradeOpen={setGradeOpen} />
                 <div className="mbook-noise" aria-hidden="true" />
                 <div className="mbook-spine-shadow left" aria-hidden="true" />
               </div></div>
@@ -549,7 +574,7 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
           {flip && (
             <div className={"mbook-leaf to-" + flip.dir} onAnimationEnd={onLeafEnd}>
               <div className="mbook-leaf-face mbook-leaf-front"><div className="mbook-paper">
-                <RightPage spread={leafFrontSpread as SpreadKey} {...shared} speak={speak} stop={stop} speaking={speaking} onChoose={noop as (i: number) => void} onRestart={restart} onHome={onHome} />
+                <RightPage spread={leafFrontSpread as SpreadKey} {...shared} speak={speak} stop={stop} speaking={speaking} onChoose={noop as (i: number) => void} onRestart={restart} onHome={onHome} grade={grade} setGrade={setGrade} gradeOpen={gradeOpen} setGradeOpen={setGradeOpen} />
                 <div className="mbook-noise" aria-hidden="true" />
                 <div className="mbook-spine-shadow left" aria-hidden="true" />
               </div></div>
@@ -586,6 +611,7 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
           </div>
         )}
       </div>
+      )}
 
       {phase === "open" && spread === 0 && !flip && (
         <div className="mbook-controls">
@@ -597,20 +623,6 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
         <div className="mbook-controls">
           <button className="mbook-ctrl" onClick={() => goSpread((spread - 1) as SpreadKey, "prev")}>← 이전 장</button>
           <span className="mbook-ctrl-note">선택하면 다음 장으로 넘어가요</span>
-        </div>
-      )}
-      {/* 내가 만든 4컷 — 첫 스프레드(컷①②) */}
-      {phase === "open" && spread === 4 && !flip && (
-        <div className="mbook-controls mbook-controls-spread4">
-          <button className="mbook-ctrl" onClick={onHome}>← 다른 이야기 고르기</button>
-          <button className="mbook-ctrl primary" onClick={() => goSpread(5, "next")}>다음 컷 →</button>
-        </div>
-      )}
-      {/* 내가 만든 4컷 — 둘째 스프레드(컷③④) */}
-      {phase === "open" && spread === 5 && !flip && (
-        <div className="mbook-controls">
-          <button className="mbook-ctrl" onClick={() => goSpread(4, "prev")}>← 이전 컷</button>
-          <button className="mbook-ctrl primary" onClick={() => goSpread(REAL_FIRST, "next")}>실제 역사 공부하기 →</button>
         </div>
       )}
       {/* 실제 역사 스프레드: 이전/다음 */}
