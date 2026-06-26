@@ -11,8 +11,8 @@ import {
 } from "amazon-cognito-identity-js";
 
 const REGION    = "ap-northeast-2";
-const POOL_ID   = process.env.NEXT_PUBLIC_COGNITO_POOL_ID   ?? "ap-northeast-2_Dqiy0pN79";
-const CLIENT_ID = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID ?? "4sh7tjr7ah6je410rnaqb297f4";
+const POOL_ID   = process.env.NEXT_PUBLIC_COGNITO_POOL_ID   ?? "ap-northeast-2_5IeZz4RJA";
+const CLIENT_ID = process.env.NEXT_PUBLIC_COGNITO_CLIENT_ID ?? "1on185telkssmkrg3b2ngoocc2";
 const DOMAIN    = process.env.NEXT_PUBLIC_COGNITO_DOMAIN    ?? "historo-auth.auth.ap-northeast-2.amazoncognito.com";
 
 const pool = new CognitoUserPool({ UserPoolId: POOL_ID, ClientId: CLIENT_ID });
