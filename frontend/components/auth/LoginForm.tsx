@@ -27,13 +27,27 @@ export function LoginForm() {
 
   // Google OAuth 콜백 처리
   useEffect(() => {
+    // 에러 콜백 처리 (Cognito가 error_description을 붙여 돌려보내는 경우)
+    const errDesc = searchParams?.get("error_description");
+    const errCode = searchParams?.get("error");
+    if (errCode || errDesc) {
+      const isCancel = (errDesc ?? "").toLowerCase().includes("cancel");
+      setError(isCancel ? "Google 로그인이 취소됐어요." : "Google 로그인에 실패했어요. 다시 시도해 주세요.");
+      return;
+    }
+
     const oauthCode = searchParams?.get("code");
     if (!oauthCode) return;
     setSubmitting(true);
     setInfo("Google 로그인 처리 중…");
     handleOAuthCallback(oauthCode, LOGIN_URL)
       .then(() => router.replace("/"))
-      .catch(() => { setError("Google 로그인에 실패했어요. 다시 시도해 주세요."); setSubmitting(false); setInfo(null); });
+      .catch((e: unknown) => {
+        console.error("OAuth callback error:", e);
+        setError("Google 로그인에 실패했어요. 다시 시도해 주세요.");
+        setSubmitting(false);
+        setInfo(null);
+      });
   }, [searchParams, router]);
 
   async function handleLogin(e: React.FormEvent) {
@@ -44,10 +58,12 @@ export function LoginForm() {
       await signIn(email, password);
       router.replace("/");
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "";
-      if (msg.includes("NotAuthorizedException") || msg.includes("UserNotFoundException")) {
+      const code = (err as { name?: string; code?: string })?.name ?? (err as { name?: string; code?: string })?.code ?? "";
+      const msg  = err instanceof Error ? err.message : "";
+      const any  = code + msg;
+      if (any.includes("NotAuthorizedException") || any.includes("UserNotFoundException")) {
         setError("이메일 또는 비밀번호가 올바르지 않아요.");
-      } else if (msg.includes("UserNotConfirmedException")) {
+      } else if (any.includes("UserNotConfirmedException")) {
         setError(null);
         setStep("verify");
         setInfo("이메일 인증이 필요해요. 받은 코드를 입력해 주세요.");
@@ -68,13 +84,17 @@ export function LoginForm() {
       setStep("verify");
       setInfo(`${email} 로 인증 코드를 보냈어요.`);
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : "";
-      if (msg.includes("UsernameExistsException")) {
-        setError("이미 사용 중인 이메일이에요.");
-      } else if (msg.includes("InvalidPasswordException")) {
+      const code = (err as { name?: string; code?: string })?.name ?? (err as { name?: string; code?: string })?.code ?? "";
+      const msg  = err instanceof Error ? err.message : "";
+      const any  = code + msg;
+      if (any.includes("UsernameExistsException")) {
+        setError("이미 사용 중인 이메일이에요. 로그인을 시도해 보세요.");
+      } else if (any.includes("InvalidPasswordException")) {
         setError("비밀번호는 8자 이상이어야 해요.");
-      } else if (msg.includes("InvalidParameterException") && msg.includes("email")) {
+      } else if (any.includes("InvalidParameterException") && any.includes("email")) {
         setError("올바른 이메일 형식을 입력해 주세요.");
+      } else if (any.includes("TooManyRequestsException") || any.includes("LimitExceeded")) {
+        setError("요청이 너무 많아요. 잠시 후 다시 시도해 주세요.");
       } else {
         setError("잠시 후 다시 시도해 주세요.");
       }
