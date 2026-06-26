@@ -6983,74 +6983,106 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
    로그인 — 폼 UI 전용
 ═══════════════════════════════════════════ */
 .login-shell {
-  min-height: 100vh;
+  min-height: 100dvh;
+  position: relative;
   background:
-    radial-gradient(circle at 18% 22%, rgba(200, 69, 59, 0.06), transparent 55%),
-    radial-gradient(circle at 82% 78%, rgba(201, 136, 42, 0.07), transparent 55%),
+    radial-gradient(38rem 30rem at 12% 8%, rgba(200, 69, 59, 0.08), transparent 60%),
+    radial-gradient(34rem 28rem at 88% 92%, rgba(201, 136, 42, 0.10), transparent 60%),
+    radial-gradient(26rem 22rem at 80% 12%, rgba(120, 90, 60, 0.05), transparent 60%),
     var(--bg-subtle);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 32px 20px 64px;
-}
-.login-brand {
-  margin-bottom: 28px;
-  font-size: 24px;
-}
-.login-card {
-  width: 100%;
-  max-width: 880px;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-lg);
-  display: grid;
-  grid-template-columns: 240px 1fr;
+  justify-content: center;
+  padding: 40px 20px 56px;
   overflow: hidden;
 }
+/* 카드 주변을 종이빛으로 모아 배경을 가장자리로 밀어내는 비네트 */
+.login-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 52% 48% at 50% 52%, rgba(255, 251, 243, 0.72), transparent 72%);
+}
+.login-brand {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 22px;
+  font-size: 24px;
+  animation: login-rise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 412px;
+  background: linear-gradient(180deg, #FFFDF8 0%, var(--bg) 38%);
+  border: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  border-radius: 22px;
+  box-shadow:
+    0 18px 48px rgba(61, 26, 8, 0.13),
+    0 4px 14px rgba(61, 26, 8, 0.07);
+  overflow: hidden;
+  animation: login-rise 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.06s both;
+}
+/* 세종 크레스트 — 글로우 헤일로 위에 떠 있는 마스코트 */
 .login-mascot {
-  background:
-    radial-gradient(circle at 50% 30%, rgba(251, 229, 164, 0.45), transparent 65%),
-    linear-gradient(180deg, #F8F1E2 0%, #F1E5C9 100%);
+  position: relative;
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
-  padding: 36px 18px;
-  border-right: 1px solid var(--border-muted);
+  padding: 30px 18px 6px;
+}
+.login-mascot::before {
+  content: "";
+  position: absolute;
+  top: 14px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(251, 229, 164, 0.7), transparent 68%);
+  filter: blur(4px);
 }
 .login-mascot svg {
-  width: 180px;
+  position: relative;
+  width: 104px;
   height: auto;
+  filter: drop-shadow(0 6px 12px rgba(61, 26, 8, 0.16));
 }
 .login-body {
-  padding: 44px 48px;
+  padding: 6px 34px 34px;
   display: flex;
   flex-direction: column;
 }
 .login-eyebrow {
   font-family: 'Gowun Dodum', serif;
-  font-size: 13px;
-  letter-spacing: 0.08em;
-  color: var(--red-deep);
+  font-size: 12px;
+  letter-spacing: 0.12em;
+  color: var(--red);
   text-transform: uppercase;
+  text-align: center;
 }
 .login-title {
   font-family: 'Black Han Sans', serif;
-  font-size: 32px;
+  font-size: 27px;
   color: var(--ink);
-  margin: 8px 0 6px;
+  margin: 6px 0 7px;
   letter-spacing: -0.01em;
+  text-align: center;
 }
 .login-sub {
   color: var(--ink-soft);
-  font-size: 14.5px;
-  line-height: 1.55;
-  margin: 0 0 24px;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 22px;
+  text-align: center;
+  word-break: keep-all;
 }
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 14px;
 }
 .login-field {
   display: flex;
@@ -7058,19 +7090,20 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   gap: 6px;
 }
 .login-label {
-  font-size: 13px;
+  font-size: 12.5px;
   color: var(--ink-soft);
   font-weight: 600;
+  letter-spacing: 0.01em;
 }
 .login-input {
   font: inherit;
   font-size: 15px;
-  padding: 12px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--bg);
+  padding: 13px 15px;
+  border: 1px solid color-mix(in srgb, var(--border) 80%, transparent);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--bg-subtle) 60%, #fff);
   color: var(--ink);
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
   outline: none;
 }
 .login-input::placeholder {
@@ -7078,10 +7111,13 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
 }
 .login-input:focus {
   border-color: var(--red);
-  box-shadow: 0 0 0 3px rgba(200, 69, 59, 0.12);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(200, 69, 59, 0.13);
 }
 .login-submit {
-  margin-top: 8px;
+  position: relative;
+  overflow: hidden;
+  margin-top: 6px;
   font: inherit;
   font-family: 'Jua', sans-serif;
   font-size: 16px;
@@ -7089,15 +7125,25 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   color: #FFF8EC;
   background: linear-gradient(180deg, var(--red) 0%, var(--red-deep) 100%);
   border: none;
-  border-radius: var(--radius-sm);
-  padding: 13px 16px;
+  border-radius: 12px;
+  padding: 14px 16px;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(160, 53, 44, 0.18);
+  box-shadow: 0 4px 14px rgba(160, 53, 44, 0.22);
   transition: transform 0.08s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+/* 진입 시 1회 스치는 광택 */
+.login-submit::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 34%;
+  transform: skewX(-14deg) translateX(-160%);
+  background: linear-gradient(105deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: login-shine 1.1s ease 0.55s 1;
 }
 .login-submit:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(160, 53, 44, 0.25);
+  box-shadow: 0 7px 18px rgba(160, 53, 44, 0.3);
 }
 .login-submit:active:not(:disabled) {
   transform: translateY(0);
@@ -7107,23 +7153,22 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
   cursor: progress;
 }
 .login-aux {
-  margin-top: 22px;
+  margin-top: 20px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  justify-content: center;
+  gap: 6px;
   font-size: 13.5px;
-  color: var(--ink-soft);
+  color: var(--ink-faint);
 }
 .login-aux-link {
-  color: var(--ink-soft);
+  color: var(--red-deep);
+  font-weight: 600;
   text-decoration: none;
-  border-bottom: 1px dashed var(--border);
-  padding-bottom: 1px;
-  transition: color 0.15s ease, border-color 0.15s ease;
+  transition: color 0.15s ease;
 }
 .login-aux-link:hover {
-  color: var(--red-deep);
-  border-bottom-color: var(--red-deep);
+  color: var(--red);
 }
 .login-aux-sep {
   color: var(--ink-faint);
@@ -7131,48 +7176,64 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
 
 .login-divider {
   display: flex; align-items: center; gap: 12px;
-  margin: 16px 0;
-  color: var(--ink-faint); font-size: 0.82rem;
+  margin: 18px 0;
+  color: var(--ink-faint); font-size: 0.78rem;
+  letter-spacing: 0.06em;
 }
 .login-divider::before,
 .login-divider::after {
-  content: ""; flex: 1; height: 1px; background: var(--border-muted);
+  content: ""; flex: 1; height: 1px;
+  background: color-mix(in srgb, var(--border-muted) 80%, transparent);
 }
 
 .login-google {
   display: flex; align-items: center; justify-content: center; gap: 10px;
-  width: 100%; padding: 11px 0;
-  border: 1.5px solid var(--border-muted); border-radius: 10px;
+  width: 100%; padding: 12px 0;
+  border: 1px solid var(--border); border-radius: 12px;
   background: #fff; color: #3c4043;
-  font-size: 0.9rem; font-weight: 500; cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  font-size: 0.92rem; font-weight: 500; cursor: pointer;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+  transition: background 0.15s, border-color 0.15s, transform 0.08s;
 }
-.login-google:hover { background: #f8f9fa; border-color: #aaa; }
+.login-google:hover { background: #f8f9fa; border-color: #c8b89a; }
+.login-google:active { transform: scale(0.985); }
 
 .login-info {
-  font-size: 0.83rem; color: var(--accent-teal, #2aa9a0);
-  background: color-mix(in srgb, var(--accent-teal, #2aa9a0) 8%, transparent);
-  border-radius: 8px; padding: 8px 12px; margin: 2px 0;
+  font-size: 0.83rem;
+  color: var(--red-deep);
+  background: rgba(200, 69, 59, 0.07);
+  border: 1px solid rgba(200, 69, 59, 0.16);
+  border-radius: 10px; padding: 9px 12px; margin: 2px 0;
+  line-height: 1.5;
+}
+.login-error {
+  font-size: 0.83rem;
+  color: #B42318;
+  background: rgba(180, 35, 24, 0.07);
+  border: 1px solid rgba(180, 35, 24, 0.18);
+  border-radius: 10px; padding: 9px 12px; margin: 2px 0;
+  line-height: 1.5;
+}
+
+@keyframes login-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes login-shine {
+  to { transform: skewX(-14deg) translateX(420%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .login-brand, .login-card { animation: none; }
+  .login-submit::after { display: none; }
 }
 
 @media (max-width: 640px) {
-  .login-card {
-    grid-template-columns: 1fr;
-  }
-  .login-mascot {
-    border-right: none;
-    border-bottom: 1px solid var(--border-muted);
-    padding: 28px 18px;
-  }
-  .login-mascot svg {
-    width: 140px;
-  }
-  .login-body {
-    padding: 32px 26px 36px;
-  }
-  .login-title {
-    font-size: 26px;
-  }
+  .login-card { max-width: 420px; }
+  .login-mascot { padding: 26px 18px 4px; }
+  .login-mascot svg { width: 92px; }
+  .login-mascot::before { width: 130px; height: 130px; }
+  .login-body { padding: 6px 24px 30px; }
+  .login-title { font-size: 24px; }
 }
 
 /* ════════════════════════════════════════

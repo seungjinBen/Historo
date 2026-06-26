@@ -150,8 +150,9 @@ export function LoginForm() {
             </button>
 
             <div className="login-aux">
+              <span>처음이신가요?</span>
               <button className="login-aux-link" onClick={() => { setStep("signup"); setError(null); setInfo(null); }}>
-                처음이에요 — 회원가입
+                회원가입
               </button>
             </div>
           </>}
@@ -187,8 +188,9 @@ export function LoginForm() {
             </button>
 
             <div className="login-aux">
+              <span>이미 계정이 있으신가요?</span>
               <button className="login-aux-link" onClick={() => { setStep("login"); setError(null); setInfo(null); }}>
-                이미 계정이 있어요 — 로그인
+                로그인
               </button>
             </div>
           </>}
@@ -212,8 +214,9 @@ export function LoginForm() {
             </form>
 
             <div className="login-aux">
+              <span>코드를 못 받으셨나요?</span>
               <button className="login-aux-link" onClick={() => { setStep("signup"); setError(null); setInfo(null); }}>
-                코드를 못 받았어요 — 다시 시도
+                다시 시도
               </button>
             </div>
           </>}
