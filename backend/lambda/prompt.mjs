@@ -229,7 +229,7 @@ function contextBlock(chunks) {
 }
 
 export function maxTokensFor(action) {
-  return action === "classify" ? 16 : action === "respond" ? 130 : action === "talk" ? 340 : action === "branch" ? 140 : action === "story" ? 800 : action === "story_chat" ? 600 : action === "compare" || action === "coach" ? 320 : 240;
+  return action === "classify" ? 16 : action === "respond" ? 130 : action === "talk" ? 420 : action === "branch" ? 140 : action === "story" ? 800 : action === "story_chat" ? 600 : action === "compare" || action === "coach" ? 320 : 240;
 }
 export function wantsHistory(action) {
   return action === "respond" || action === "chat" || action === "talk" || action === "story_chat";
@@ -280,6 +280,13 @@ export function buildPrompt({ action, payload, useRag }) {
     const ref = chunks.length
       ? `\n\n[참고 실록 근거] — 사실·숫자(연도, 척수 등)는 반드시 아래를 따르고, 아래에 없으면 너의 일반 지식으로 보충하되 지어내지 마라:\n${contextBlock(chunks)}`
       : "";
+    const related = Array.isArray(payload.related) ? payload.related : [];
+    const catalog = related.length
+      ? `\n\n[더 읽을 수 있는 다른 이야기 — 갤러리 작품]\n${related.map((r) => `- id=${r.id} · ${r.who || ""} "${r.title}" (${r.category || ""})`).join("\n")}\n규칙: 위 목록 중 관련 깊은 작품 1개를 답변 맨 끝에 [GOTO:id]짧은 권유 문구[/GOTO] 형식으로 권할 수 있다(예: [GOTO:jangnyeongsil-jagyeokru-1434]장영실의 발명 이야기도 있어, 보러 갈래?[/GOTO]).
+- 다음 경우에는 반드시 [GOTO]를 넣어라: (1) 아이가 "다른 이야기 있어?", "또 뭐 있어?"처럼 다른 작품을 궁금해할 때, (2) 네 답변에서 위 목록에 있는 다른 인물·작품을 언급했을 때.
+- 그 외엔 매 답변마다 넣지 말고 자연스러울 때만. 많아야 1개.
+- 지금 읽는 이야기와 같은 작품은 절대 추천하지 마라. id는 위 목록에 있는 것만 토씨 그대로 써라.`
+      : "";
     system = `너는 한국 역사 길잡이 '먹돌이'야. 어린이(8~13세)와 대화하며 한국 역사를 재미있게 들려주는 다정한 친구야. 이순신, 세종대왕, 정약용, 행주산성 등 아이가 꺼내는 어떤 한국 역사 이야기든 받아줘.
 
 [가장 중요한 규칙 — 반복 금지]
@@ -294,7 +301,7 @@ export function buildPrompt({ action, payload, useRag }) {
 대답은 3~4문장, 쉬운 말, 구체적인 장면 위주로. 이모지는 최대 1개. 역사와 무관한 이야기(먹을 것·게임 등)는 잠깐 받아주고 부드럽게 역사로 연결해. 욕설·이상한 말은 "우리 재미있는 이야기 하자!"로 돌려줘.
 
 [추천 질문 — 반드시 지켜라]
-답변 맨 마지막 줄에 아이가 이어서 묻고 싶어할 만한 짧은 질문 3개를 아이 말투로 [SUGGESTIONS]질문1|질문2|질문3[/SUGGESTIONS] 형식으로 적어라. 이건 화면에 버튼으로 보이니 본문에서 따로 설명하지 마라. 질문은 방금 들려준 이야기에서 자연스럽게 이어지는 새로운 것으로, 앞에서 이미 다룬 내용과 겹치지 않게, 각 14자 이내로.${ref}`;
+답변 맨 마지막 줄에 아이가 이어서 묻고 싶어할 만한 짧은 질문 3개를 아이 말투로 [SUGGESTIONS]질문1|질문2|질문3[/SUGGESTIONS] 형식으로 적어라. 이건 화면에 버튼으로 보이니 본문에서 따로 설명하지 마라. 질문은 방금 들려준 이야기에서 자연스럽게 이어지는 새로운 것으로, 앞에서 이미 다룬 내용과 겹치지 않게, 각 14자 이내로.${ref}${catalog}`;
     user = payload.text ? `아이의 말: "${payload.text}". 앞 대화에서 안 한 새로운 내용을 더해 3~4문장으로 답하고, 맨 끝에 추천 질문 3개를 [SUGGESTIONS]...[/SUGGESTIONS]로 붙여줘.` : "안녕! 먼저 말을 걸어줘.";
   } else if (action === "story_chat") {
     const sess = payload.session || {};

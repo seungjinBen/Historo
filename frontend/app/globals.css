@@ -7470,6 +7470,18 @@ h1, h2, h3, .jua, button { font-family: 'Jua', sans-serif; font-weight: 400; }
 .meokdol-chat-chip:hover { background: rgba(139, 62, 32, .08); border-color: rgba(139, 62, 32, .45); }
 .meokdol-chat-chip:active { transform: scale(.97); }
 .meokdol-chat-chip:focus-visible { outline: 2px solid #8B3E20; outline-offset: 2px; }
+/* 다른 이야기로 이동하는 칩 — 책 테마로 구분 */
+.meokdol-chat-chip.goto {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  background: linear-gradient(135deg, #C8453B 0%, #A4332A 100%);
+  border-color: transparent;
+  font-weight: 500;
+}
+.meokdol-chat-chip.goto svg { opacity: .9; }
+.meokdol-chat-chip.goto:hover { background: linear-gradient(135deg, #d04e43 0%, #b03930 100%); border-color: transparent; }
 .meokdol-chat-coming {
   align-self: center;
   margin-top: 4px;

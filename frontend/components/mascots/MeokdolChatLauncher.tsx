@@ -6,10 +6,14 @@ import { streamAI } from "@/lib/ws";
 import { MeokdolMascot } from "./MeokdolMascot";
 
 type Msg = { role: "user" | "ai"; text: string };
+type CatalogItem = { id: string; title: string; category?: string; who?: string };
+type Goto = { id: string; label: string };
 
 interface Props {
   /** 지금 읽고 있는 이야기 제목 — 답변을 그 사건에 맞게 안내하는 데 쓰임 */
   context?: string;
+  /** 지금 읽고 있는 이야기 id — 같은 작품을 추천하지 않도록 제외 */
+  eventId?: string;
 }
 
 const GREETING: Msg[] = [
@@ -18,43 +22,85 @@ const GREETING: Msg[] = [
 // 첫 화면에서 아이가 막막하지 않게 띄워 주는 시작 질문들
 const STARTERS = ["이건 무슨 이야기야?", "주인공은 누구야?", "그래서 어떻게 됐어?"];
 
-// AI 응답에서 [SUGGESTIONS]a|b|c[/SUGGESTIONS] 추천 질문을 떼어낸다
-function splitSuggestions(raw: string): { text: string; suggestions: string[] } {
-  const m = raw.match(/\[SUGGESTIONS\]([\s\S]*?)\[\/SUGGESTIONS\]/);
-  const suggestions = m
-    ? m[1].split("|").map((s) => s.trim()).filter(Boolean).slice(0, 3)
+// 갤러리 작품 목록(모든 런처 인스턴스 공유) — 다른 이야기 추천에 씀
+let catalogCache: CatalogItem[] | null = null;
+async function loadCatalog(): Promise<CatalogItem[]> {
+  if (catalogCache) return catalogCache;
+  try {
+    const r = await fetch("/data/events.json");
+    const d = await r.json();
+    catalogCache = (d.events || [])
+      .filter((e: { status?: string }) => e.status === "ready")
+      .map((e: { id: string; title: string; category?: string; king?: string; character?: { name?: string } | null }) => ({
+        id: e.id,
+        title: e.title,
+        category: e.category,
+        who: e.character?.name || e.king,
+      }));
+  } catch {
+    catalogCache = [];
+  }
+  return catalogCache!;
+}
+
+// AI 응답에서 제어 마커를 떼어내 본문/추천질문/이동제안으로 나눈다
+function parseMarkers(raw: string): { text: string; suggestions: string[]; goto: Goto | null } {
+  const sug = raw.match(/\[SUGGESTIONS\]([\s\S]*?)\[\/SUGGESTIONS\]/);
+  const suggestions = sug
+    ? sug[1].split("|").map((s) => s.trim()).filter(Boolean).slice(0, 3)
     : [];
-  const text = raw.replace(/\[SUGGESTIONS\][\s\S]*?(\[\/SUGGESTIONS\]|$)/, "").trim();
-  return { text, suggestions };
+  const go = raw.match(/\[GOTO:([\w-]+)\]([\s\S]*?)\[\/GOTO\]/);
+  const goto = go ? { id: go[1], label: go[2].trim() } : null;
+  const text = raw
+    .replace(/\[SUGGESTIONS\][\s\S]*?(\[\/SUGGESTIONS\]|$)/, "")
+    .replace(/\[GOTO:[\w-]+\][\s\S]*?(\[\/GOTO\]|$)/, "")
+    .trim();
+  return { text, suggestions, goto };
 }
 
 // 스트리밍 중에는 마커(완성·미완성)가 깜빡이지 않게 가린다
 function stripForStream(raw: string): string {
-  const full = raw.indexOf("[SUGGESTIONS");
-  if (full >= 0) return raw.slice(0, full).trim();
-  const lb = raw.lastIndexOf("[");
-  if (lb >= 0 && "[SUGGESTIONS]".startsWith(raw.slice(lb))) return raw.slice(0, lb).trim();
-  return raw;
+  let cut = raw.length;
+  for (const tok of ["[SUGGESTIONS", "[GOTO"]) {
+    const i = raw.indexOf(tok);
+    if (i >= 0) cut = Math.min(cut, i);
+  }
+  let t = raw.slice(0, cut);
+  const lb = t.lastIndexOf("[");
+  if (lb >= 0 && ("[SUGGESTIONS]".startsWith(t.slice(lb)) || "[GOTO".startsWith(t.slice(lb)))) {
+    t = t.slice(0, lb);
+  }
+  return t.trim();
 }
 
-export function MeokdolChatLauncher({ context }: Props) {
+export function MeokdolChatLauncher({ context, eventId }: Props) {
   const [open, setOpen] = useState(false);
   const [msgs, setMsgs] = useState<Msg[]>(GREETING);
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [streaming, setStreaming] = useState("");
   const [suggestions, setSuggestions] = useState<string[]>(STARTERS);
+  const [goto, setGoto] = useState<Goto | null>(null);
+  const catalogRef = useRef<CatalogItem[]>([]);
   const bodyRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (!open) return;
+    void loadCatalog().then((c) => { catalogRef.current = c; });
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") setOpen(false);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [open]);
+
+  // 다른 책으로 이동 — 앱의 ?e= 기반 라우팅을 popstate로 깨운다
+  function navigateTo(id: string) {
+    setOpen(false);
+    window.history.pushState(null, "", `/?e=${id}`);
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  }
 
   // 새 메시지·스트리밍마다 맨 아래로
   useEffect(() => {
@@ -77,23 +123,28 @@ export function MeokdolChatLauncher({ context }: Props) {
     setBusy(true);
     setStreaming("");
     setSuggestions([]);
+    setGoto(null);
 
     // 책을 읽는 중이면 지금 사건을 컨텍스트로 살짝 얹어 그 이야기에 맞게 답하게 한다
     const sent = context ? `(지금 읽는 이야기: "${context}") ${text}` : text;
+    // 지금 책을 뺀 나머지 작품 목록 — 먹돌이가 연관된 다른 이야기를 권할 수 있게
+    const related = catalogRef.current.filter((c) => c.id !== eventId);
 
     let full = "";
     await streamAI(
       "talk",
-      { text: sent, history },
+      { text: sent, history, related },
       {
         onChunk: (t) => {
           full += t;
           setStreaming(stripForStream(full));
         },
         onDone: (d) => {
-          const { text: clean, suggestions: sug } = splitSuggestions(d.text || full);
+          const { text: clean, suggestions: sug, goto: g } = parseMarkers(d.text || full);
           setMsgs([...next, { role: "ai", text: clean || "음, 잘 못 들었어. 다시 한 번 물어봐 줄래?" }]);
           setSuggestions(sug);
+          // 카탈로그에 있고 지금 책이 아닌 경우에만 이동 칩 노출
+          setGoto(g && g.id !== eventId && catalogRef.current.some((c) => c.id === g.id) ? g : null);
           setStreaming("");
           setBusy(false);
         },
@@ -206,8 +257,8 @@ export function MeokdolChatLauncher({ context }: Props) {
                   )}
                 </div>
               )}
-              {!busy && suggestions.length > 0 && (
-                <div className="meokdol-chat-chips" role="group" aria-label="추천 질문">
+              {!busy && (suggestions.length > 0 || goto) && (
+                <div className="meokdol-chat-chips" role="group" aria-label="추천">
                   {suggestions.map((s, i) => (
                     <button
                       key={i}
@@ -218,6 +269,19 @@ export function MeokdolChatLauncher({ context }: Props) {
                       {s}
                     </button>
                   ))}
+                  {goto && (
+                    <button
+                      type="button"
+                      className="meokdol-chat-chip goto"
+                      onClick={() => navigateTo(goto.id)}
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z" />
+                      </svg>
+                      {goto.label}
+                    </button>
+                  )}
                 </div>
               )}
             </div>
