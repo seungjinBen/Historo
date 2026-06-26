@@ -100,15 +100,34 @@ const REAL_LAST  = 8 as SpreadKey;
 const LAST_SPREAD: SpreadKey = 9;
 
 // ── 컷 패널 (이순신 mbook-panel과 동일 구조) ───
-// shimmer 배경으로 로딩 표시, 이미지 로드 완료 시 figcaption 아래 표시
+// "먹돌이가 그리는 중" 연출 → 이미지 준비 + 최소 연출시간 모두 충족 시 그려지듯 공개
 function CutPanel({ idx, scene, cdnUrl }: { idx: number; scene: string; cdnUrl?: string }) {
   const [err, setErr] = useState(false);
-  const [ok, setOk] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [minDone, setMinDone] = useState(false);
+
+  // 이미지가 즉시 떠도 컷이 순차로 "그려지는" 느낌을 주려고 최소 연출시간을 둔다
+  useEffect(() => {
+    const t = setTimeout(() => setMinDone(true), 700 + (idx % 2) * 450);
+    return () => clearTimeout(t);
+  }, [idx]);
+
+  const ok = loaded && minDone;
+  const generating = !ok && !err && !!cdnUrl;
+
   return (
     <figure className="mbook-panel">
-      {/* 로딩/에러 shimmer — 이미지 보이기 전까지 */}
-      {!ok && (
-        <div className={"mbook-panel-ph" + (!err && cdnUrl ? " is-loading" : "")} aria-hidden="true" />
+      {/* AI 생성 연출 — 그림 준비 전까지 */}
+      {generating && (
+        <div className="mbook-panel-gen" role="status" aria-label="먹돌이가 그림을 그리는 중">
+          <span className="mbook-gen-brush" aria-hidden="true">🖌️</span>
+          <span className="mbook-gen-text">먹돌이가 그리는 중…</span>
+          <span className="mbook-gen-bar" aria-hidden="true"><i /></span>
+        </div>
+      )}
+      {/* 에러 폴백 */}
+      {err && (
+        <div className="mbook-panel-ph">{scene}<br/><span>(그림 준비 중)</span></div>
       )}
       {/* 이미지: opacity 0으로 항상 DOM에 놔서 브라우저 캐시 선점 */}
       {cdnUrl && !err && (
@@ -116,11 +135,12 @@ function CutPanel({ idx, scene, cdnUrl }: { idx: number; scene: string; cdnUrl?:
           src={cdnUrl}
           alt={scene}
           loading="eager"
+          className={ok ? "mbook-panel-reveal" : ""}
           style={ok
             ? { flex: 1, width: "100%", objectFit: "cover" }
             : { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0 }
           }
-          onLoad={() => setOk(true)}
+          onLoad={() => setLoaded(true)}
           onError={() => setErr(true)}
         />
       )}

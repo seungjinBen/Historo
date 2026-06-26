@@ -161,14 +161,40 @@ function HeritageCardPlaceholder() {
 function ComicPanel({ src, s3Src, alt, idx, scene }: { src: string; s3Src?: string; alt: string; idx: number; scene: string }) {
   const [err, setErr] = useState(false);
   const [s3Err, setS3Err] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [minDone, setMinDone] = useState(false);
   const effective = (s3Src && !s3Err) ? s3Src : src;
   const onError = (s3Src && !s3Err) ? () => setS3Err(true) : () => setErr(true);
+  const failed = err && !(s3Src && !s3Err);
+
+  useEffect(() => {
+    const t = setTimeout(() => setMinDone(true), 700 + (idx % 2) * 450);
+    return () => clearTimeout(t);
+  }, [idx]);
+
+  const ok = loaded && minDone;
+  const generating = !ok && !failed;
+
   return (
     <figure className="mbook-panel">
-      {err && !(s3Src && !s3Err) ? (
+      {generating && (
+        <div className="mbook-panel-gen" role="status" aria-label="먹돌이가 그림을 그리는 중">
+          <span className="mbook-gen-brush" aria-hidden="true">🖌️</span>
+          <span className="mbook-gen-text">먹돌이가 그리는 중…</span>
+          <span className="mbook-gen-bar" aria-hidden="true"><i /></span>
+        </div>
+      )}
+      {failed ? (
         <div className="mbook-panel-ph">{scene}<br/><span>(그림 준비 중)</span></div>
       ) : (
-        <img src={effective} alt={alt} onError={onError} />
+        <img
+          src={effective}
+          alt={alt}
+          className={ok ? "mbook-panel-reveal" : ""}
+          style={ok ? undefined : { position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain", opacity: 0 }}
+          onLoad={() => setLoaded(true)}
+          onError={onError}
+        />
       )}
       <figcaption>
         <div className="mbook-panel-num">{idx + 1}</div>
