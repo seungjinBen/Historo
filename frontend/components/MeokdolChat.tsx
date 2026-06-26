@@ -11,7 +11,7 @@ import {
 } from "@/lib/storyChat";
 import { streamAI, generateImage } from "@/lib/ws";
 
-type Msg = { role: "user" | "ai"; text: string };
+type Msg = { role: "user" | "ai"; text: string; imgUrl?: string };
 type PlotSummary = { title: string; scenes: string[] };
 
 interface Props {
@@ -36,6 +36,7 @@ export default function MeokdolChat({ onBack }: Props) {
   const [plotReady, setPlotReady] = useState(false);
   const [comicUrls, setComicUrls] = useState<(string | null)[]>([]);
   const [genBusy, setGenBusy] = useState(false);
+  const [quickImgBusy, setQuickImgBusy] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -121,6 +122,23 @@ export default function MeokdolChat({ onBack }: Props) {
       setComicUrls([...results, ...new Array(plotSummary.scenes.length - results.length).fill(null)]);
     }
     setGenBusy(false);
+  }
+
+  async function generateQuickImage() {
+    if (quickImgBusy || busy) return;
+    setQuickImgBusy(true);
+
+    // 마지막 AI 메시지를 맥락으로 사용
+    const lastAiMsg = [...msgs].reverse().find((m) => m.role === "ai")?.text ?? "";
+    const ctx = lastAiMsg.slice(0, 200);
+    const eventHint = session.eventId ? `event: ${session.eventId}` : "joseon dynasty";
+    const prompt = `Korean historical comic panel, ink and watercolor illustration, joseon dynasty setting, cinematic composition, detailed background, no text. Context: ${ctx}. ${eventHint}`;
+
+    const url = await generateImage(prompt);
+    setQuickImgBusy(false);
+    if (url) {
+      setMsgs((prev) => [...prev, { role: "ai", text: "이 장면을 그려봤어!", imgUrl: url }]);
+    }
   }
 
   function sendMessage(text: string) {
@@ -229,13 +247,23 @@ export default function MeokdolChat({ onBack }: Props) {
               color: m.role === "ai" ? "var(--ink)" : "#fff",
               border: m.role === "ai" ? "1px solid var(--border-muted)" : "none",
               borderRadius: m.role === "ai" ? "4px 14px 14px 14px" : "14px 14px 4px 14px",
-              padding: "12px 16px",
+              padding: m.imgUrl ? "10px 10px 0" : "12px 16px",
               fontFamily: "'Gowun Dodum', sans-serif",
               fontSize: 16, lineHeight: 1.75,
               boxShadow: "var(--shadow-xs)",
               whiteSpace: "pre-wrap", wordBreak: "break-word",
+              overflow: "hidden",
             }}>
-              {m.text}
+              {m.imgUrl ? (
+                <>
+                  <div style={{ fontSize: 14, marginBottom: 8, padding: "0 6px" }}>{m.text}</div>
+                  <img
+                    src={m.imgUrl}
+                    alt="생성된 장면"
+                    style={{ width: "100%", display: "block", borderRadius: "0 0 14px 14px" }}
+                  />
+                </>
+              ) : m.text}
             </div>
           </div>
         ))}
@@ -406,6 +434,34 @@ export default function MeokdolChat({ onBack }: Props) {
             color: "var(--ink)", outline: "none",
           }}
         />
+        {/* 그림 그리기 버튼 */}
+        <button
+          onClick={generateQuickImage}
+          disabled={busy || quickImgBusy || msgs.length === 0}
+          title="이 장면 그리기"
+          style={{
+            flexShrink: 0, width: 34, height: 34, borderRadius: "50%",
+            background: quickImgBusy ? "var(--imagine-soft)" : "var(--bg-muted)",
+            border: "1.5px solid var(--border)",
+            cursor: busy || quickImgBusy || msgs.length === 0 ? "default" : "pointer",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            opacity: busy || msgs.length === 0 ? 0.4 : 1,
+            transition: "opacity .15s",
+          }}
+        >
+          {quickImgBusy ? (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--imagine)" strokeWidth="2" strokeLinecap="round" style={{ animation: "spin 1.2s linear infinite" }}>
+              <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+            </svg>
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--ink-soft)" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+              <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+              <path d="M2 2l7.586 7.586"/>
+              <circle cx="11" cy="11" r="2"/>
+            </svg>
+          )}
+        </button>
         <button
           onClick={() => sendMessage(input)}
           disabled={busy || !input.trim()}
