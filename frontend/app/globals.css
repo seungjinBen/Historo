@@ -6066,6 +6066,7 @@ body { transition: padding-right .28s cubic-bezier(.16,.8,.3,1); }
   background-size: 200% 100%;
   animation: event-shimmer 1.6s ease-in-out infinite;
 }
+@keyframes spin { to { transform: rotate(360deg); } }
 @keyframes event-shimmer {
   0%   { background-position: 200% 0; }
   100% { background-position: -200% 0; }

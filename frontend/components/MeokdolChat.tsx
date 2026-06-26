@@ -9,7 +9,7 @@ import {
   parseAiResponse,
   parsePlotSummary,
 } from "@/lib/storyChat";
-import { streamAI } from "@/lib/ws";
+import { streamAI, generateImage } from "@/lib/ws";
 
 type Msg = { role: "user" | "ai"; text: string };
 type PlotSummary = { title: string; scenes: string[] };
@@ -34,6 +34,8 @@ export default function MeokdolChat({ onBack }: Props) {
   const [plotSummary, setPlotSummary] = useState<PlotSummary | null>(null);
   const [streamingText, setStreamingText] = useState("");
   const [plotReady, setPlotReady] = useState(false);
+  const [comicUrls, setComicUrls] = useState<(string | null)[]>([]);
+  const [genBusy, setGenBusy] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -101,6 +103,24 @@ export default function MeokdolChat({ onBack }: Props) {
 
     setBusy(false);
     setTimeout(() => inputRef.current?.focus(), 80);
+  }
+
+  async function generateComic() {
+    if (!plotSummary || genBusy) return;
+    setGenBusy(true);
+    setComicUrls(new Array(plotSummary.scenes.length).fill(null));
+
+    // 조선 역사 만화 스타일 마스터 프롬프트 — 이미지 모델 일관성 확보
+    const master = "Korean historical comic style, ink and watercolor illustration, joseon dynasty setting, clean speech bubbles in Korean, cinematic composition, detailed background, no text except speech bubbles";
+
+    const results: (string | null)[] = [];
+    for (let i = 0; i < plotSummary.scenes.length; i++) {
+      const prompt = `${master}. Scene ${i + 1} of 4: ${plotSummary.scenes[i]}. Title: ${plotSummary.title}`;
+      const url = await generateImage(prompt);
+      results.push(url);
+      setComicUrls([...results, ...new Array(plotSummary.scenes.length - results.length).fill(null)]);
+    }
+    setGenBusy(false);
   }
 
   function sendMessage(text: string) {
@@ -274,7 +294,7 @@ export default function MeokdolChat({ onBack }: Props) {
           </button>
         )}
 
-        {/* 줄거리 완성 표시 */}
+        {/* 줄거리 완성 표시 + 4컷 만화 생성 */}
         {!busy && session.phase === "plot" && plotSummary && (
           <div className="ending">
             <div style={{ fontFamily: "'Jua', sans-serif", fontSize: 17, marginBottom: 10 }}>
@@ -285,6 +305,67 @@ export default function MeokdolChat({ onBack }: Props) {
                 {i + 1}. {s}
               </p>
             ))}
+
+            {/* 4컷 만화 생성 버튼 */}
+            {comicUrls.length === 0 && (
+              <button
+                onClick={generateComic}
+                disabled={genBusy}
+                style={{
+                  marginTop: 16, width: "100%",
+                  background: "var(--red)", color: "#fff",
+                  border: "none", borderRadius: 12,
+                  fontFamily: "'Jua', sans-serif", fontSize: 15,
+                  padding: "13px 0", cursor: "pointer",
+                  opacity: genBusy ? .65 : 1,
+                }}
+              >
+                {genBusy ? "4컷 만화 그리는 중…" : "✦ 4컷 만화로 만들기"}
+              </button>
+            )}
+
+            {/* 생성 중 / 완료 이미지 그리드 */}
+            {comicUrls.length > 0 && (
+              <div style={{
+                marginTop: 16,
+                display: "grid",
+                gridTemplateColumns: "1fr 1fr",
+                gap: 10,
+              }}>
+                {comicUrls.map((url, i) => (
+                  <div key={i} style={{
+                    aspectRatio: "3/2",
+                    borderRadius: 10,
+                    overflow: "hidden",
+                    background: "#EFE7D6",
+                    border: "1px solid var(--border)",
+                    boxShadow: "0 4px 12px rgba(61,26,8,.12)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    position: "relative",
+                  }}>
+                    {url ? (
+                      <>
+                        <img src={url} alt={`${i + 1}컷`} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        <span style={{
+                          position: "absolute", top: 6, left: 6,
+                          width: 20, height: 20, borderRadius: "50%",
+                          background: "rgba(26,22,18,.6)", color: "#fff",
+                          fontSize: 11, fontFamily: "'Jua',sans-serif",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                        }}>{i + 1}</span>
+                      </>
+                    ) : (
+                      <div style={{ textAlign: "center", color: "var(--mbook-ink-soft)" }}>
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ opacity: .5, animation: "spin 1.2s linear infinite" }}>
+                          <path d="M21 12a9 9 0 1 1-6.219-8.56" />
+                        </svg>
+                        <div style={{ fontSize: 11, marginTop: 6, fontFamily: "'Gowun Dodum',sans-serif" }}>{i + 1}컷 그리는 중</div>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
 

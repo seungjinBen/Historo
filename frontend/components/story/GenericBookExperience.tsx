@@ -11,7 +11,7 @@ import { MeokdolChatLauncher } from "@/components/mascots/MeokdolChatLauncher";
 import { ComicCutViewer } from "@/components/story/ComicCutViewer";
 import { api, type ApiComicCut, type ApiComicQuestions, type ApiComicStoryline } from "@/lib/api";
 import { GRADES, type GradeKey } from "@/features/myeongnyang/data";
-import { GRADE_INTRO } from "@/lib/grade-content";
+import { GRADE_INTRO, GRADE_Q } from "@/lib/grade-content";
 import type { EventMeta, Tree } from "@/lib/types";
 
 // ── 선택지 키 매핑 ────────────────────────────
@@ -187,8 +187,8 @@ function IntroImage({ comic }: { comic: ComicData | null }) {
 }
 
 // ── LEFT PAGE ─────────────────────────────────
-function LeftPage({ spread, picks, comic, event }: {
-  spread: SpreadKey; picks: number[]; comic: ComicData | null; event: EventMeta;
+function LeftPage({ spread, picks, comic, event, grade }: {
+  spread: SpreadKey; picks: number[]; comic: ComicData | null; event: EventMeta; grade: GradeKey;
 }) {
   const cuts = picks.length === 3 && comic
     ? comic.storylines.find(
@@ -209,6 +209,8 @@ function LeftPage({ spread, picks, comic, event }: {
 
   if (spread === 1 || spread === 2 || spread === 3) {
     const upto = spread - 1;
+    // 학년별 선택지 레이블 — 1-2/3-4학년은 GRADE_Q 우선, 5-6학년은 comic 원본
+    const gradeQ = (grade === "1-2" || grade === "3-4") ? GRADE_Q[event.id]?.[grade] : undefined;
     return (
       <div className="mbook-side mbook-side-recap">
         <span className="mbook-eyebrow">지나온 선택</span>
@@ -219,8 +221,14 @@ function LeftPage({ spread, picks, comic, event }: {
         ) : (
           <ol className="mbook-recap-list">
             {Array.from({ length: upto }).map((_, i) => {
-              const keys = [comic?.choices.q1, comic?.choices.q2, comic?.choices.q3][i];
-              const label = keys?.[picks[i]]?.label ?? picks[i];
+              let label: string;
+              if (gradeQ) {
+                const gradeChoices = [gradeQ.choices.q1, gradeQ.choices.q2, gradeQ.choices.q3][i];
+                label = gradeChoices?.[picks[i]] ?? String(picks[i]);
+              } else {
+                const keys = [comic?.choices.q1, comic?.choices.q2, comic?.choices.q3][i];
+                label = keys?.[picks[i]]?.label ?? String(picks[i]);
+              }
               return (
                 <li key={i} className="mbook-recap-item">
                   <span className="mbook-recap-step">{i + 1}</span>
@@ -323,8 +331,17 @@ function RightPage({ spread, picks, comic, event, speak, stop, speaking, onChoos
 
   if (spread === 1 || spread === 2 || spread === 3) {
     const qIdx = spread - 1;
-    const qText = [comic?.questions.Q1, comic?.questions.Q2, comic?.questions.Q3][qIdx] ?? "";
-    const opts = [comic?.choices.q1, comic?.choices.q2, comic?.choices.q3][qIdx] ?? [];
+    // 1-2/3-4학년은 GRADE_Q 우선, 5-6학년은 원본 JSON 텍스트
+    const gradeQ = (grade === "1-2" || grade === "3-4") ? GRADE_Q[event.id]?.[grade] : undefined;
+    const qText = gradeQ
+      ? [gradeQ.Q1, gradeQ.Q2, gradeQ.Q3][qIdx]
+      : ([comic?.questions.Q1, comic?.questions.Q2, comic?.questions.Q3][qIdx] ?? "");
+    const opts: { key: string; label: string }[] = gradeQ
+      ? [gradeQ.choices.q1, gradeQ.choices.q2, gradeQ.choices.q3][qIdx].map((label, i) => ({
+          key: [Q1_KEYS, Q2_KEYS, Q3_KEYS][qIdx][i],
+          label,
+        }))
+      : ([comic?.choices.q1, comic?.choices.q2, comic?.choices.q3][qIdx] ?? []);
     return (
       <div className="mbook-side mbook-side-q">
         <span className="mbook-eyebrow">{STEP_LABELS[qIdx]}</span>
@@ -508,7 +525,7 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
   const leafBackSpread: SpreadKey | null = flip ? (flip.dir === "next" ? flip.to : flip.from) : null;
   const noop = () => {};
 
-  const shared = { event, picks, comic };
+  const shared = { event, picks, comic, grade };
 
   return (
     <div className="screen mbook-screen" key="gbook" style={{ "--gbook-cover-bg": coverBg } as React.CSSProperties}>
