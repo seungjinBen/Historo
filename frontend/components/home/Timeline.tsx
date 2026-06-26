@@ -5,20 +5,16 @@
 import { useEffect, useState } from "react";
 import { GlossText } from "@/components/common/Glossary";
 import { HeritageIcon } from "@/components/common/HeritageIcon";
-import { HISTORY_CONTENT, NODE_PREVIEW_PATH } from "@/lib/home-content";
+import { HISTORY_CONTENT } from "@/lib/home-content";
 import { api, EVENT_TO_EPISODE } from "@/lib/api";
-import { imgUrl } from "@/lib/images";
 import type { EventMeta, HeritageEvent, HeritageItem } from "@/lib/types";
 
-function MiniPanel({ localSrc, s3Src, n }: { localSrc: string; s3Src?: string; n: number }) {
-  const [localErr, setLocalErr] = useState(false);
-  const [s3Err, setS3Err] = useState(false);
+// CDN 이미지만 사용 — 로컬 파일 의존 제거
+function MiniPanel({ src, n }: { src?: string; n: number }) {
   const [ok, setOk] = useState(false);
+  const [err, setErr] = useState(false);
 
-  const src = localErr ? (s3Src && !s3Err ? s3Src : null) : localSrc;
-
-  if (!src) return <div className="mini-panel"><div className="mini-ph">{n}</div></div>;
-
+  if (!src || err) return <div className="mini-panel"><div className="mini-ph">{n}</div></div>;
   return (
     <div className="mini-panel">
       <img
@@ -26,10 +22,7 @@ function MiniPanel({ localSrc, s3Src, n }: { localSrc: string; s3Src?: string; n
         alt={`${n}번 컷`}
         className={ok ? "loaded" : ""}
         onLoad={() => setOk(true)}
-        onError={() => {
-          if (!localErr) { setLocalErr(true); setOk(false); }
-          else setS3Err(true);
-        }}
+        onError={() => setErr(true)}
       />
     </div>
   );
@@ -266,8 +259,7 @@ export function Timeline({
                                 {[1, 2, 3, 4].map((n) => (
                                   <MiniPanel
                                     key={n}
-                                    localSrc={imgUrl(ev.id, `${NODE_PREVIEW_PATH[ev.id] ?? "0-0-0"}_panel${n}.png`)}
-                                    s3Src={s3Cuts[ev.id]?.[n - 1]}
+                                    src={s3Cuts[ev.id]?.[n - 1]}
                                     n={n}
                                   />
                                 ))}

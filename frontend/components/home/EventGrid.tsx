@@ -2,14 +2,15 @@
 
 /* eslint-disable @next/next/no-img-element */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { KID_ORDER } from "@/lib/home-content";
+import { api, EVENT_TO_EPISODE } from "@/lib/api";
 import type { EventMeta, HeritageEvent } from "@/lib/types";
 
-function EventBoxThumb({ ev, heritage }: { ev: EventMeta; heritage: HeritageEvent | null }) {
+// CDN 첫 번째 컷을 썸네일로 — 로드 전엔 shimmer placeholder
+function EventBoxThumb({ ev, cdnUrl }: { ev: EventMeta; cdnUrl?: string }) {
   const [ok, setOk] = useState(false);
   const [err, setErr] = useState(false);
-  const [anchorErr, setAnchorErr] = useState(false);
 
   if (ev.status === "coming") {
     return (
@@ -22,28 +23,21 @@ function EventBoxThumb({ ev, heritage }: { ev: EventMeta; heritage: HeritageEven
     );
   }
 
-  const anchorSrc = `/images/${ev.id}/_anchor.png`;
-  const heritageSrc = heritage?.heritageItems?.[0]?.imagePath ?? null;
-  const src = !anchorErr ? anchorSrc : heritageSrc;
-
-  if (!src || err) {
+  if (!cdnUrl || err) {
     return (
-      <div className="event-thumb">
-        <div className="event-thumb-ph">그림 준비 중</div>
-      </div>
+      <div className="event-thumb event-thumb-shimmer" aria-hidden="true" />
     );
   }
   return (
     <div className="event-thumb">
+      {!ok && <div className="event-thumb-shimmer" style={{ position: "absolute", inset: 0 }} aria-hidden="true" />}
       <img
-        src={src}
+        src={cdnUrl}
         alt=""
         className={ok ? "loaded" : ""}
+        style={ok ? undefined : { opacity: 0, position: "absolute" }}
         onLoad={() => setOk(true)}
-        onError={() => {
-          if (!anchorErr) { setAnchorErr(true); setOk(false); }
-          else setErr(true);
-        }}
+        onError={() => setErr(true)}
       />
     </div>
   );
@@ -57,6 +51,22 @@ type Props = {
 
 export function EventGrid({ events, heritage, onOpenEvent }: Props) {
   const [expanded, setExpanded] = useState(false);
+  // 에피소드별 CDN 첫 번째 컷 (A-1-α 스토리라인)
+  const [cdnCut1, setCdnCut1] = useState<Record<string, string>>({});
+  useEffect(() => {
+    events
+      .filter((ev) => ev.status === "ready" && EVENT_TO_EPISODE[ev.id])
+      .forEach((ev) => {
+        api.getComic(ev.id)
+          .then((comic) => {
+            const sl = comic.storylines.find((s) => s.id === "A-1-α") ?? comic.storylines[0];
+            const url = sl?.cuts.sort((a, b) => a.number - b.number)[0]?.imageUrl;
+            if (url) setCdnCut1((prev) => ({ ...prev, [ev.id]: url }));
+          })
+          .catch(() => {});
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const sorted = events
     .slice()
     .sort((a, b) => {
@@ -84,7 +94,7 @@ export function EventGrid({ events, heritage, onOpenEvent }: Props) {
                 className={"event-box " + ev.status}
                 style={{ animationDelay: `${idx * 0.04}s` }}
               >
-                <EventBoxThumb ev={ev} heritage={heritageData} />
+                <EventBoxThumb ev={ev} cdnUrl={cdnCut1[ev.id]} />
                 <div className="event-body">
                   <div className="event-meta">
                     <span className="event-year">{ev.year}</span>
