@@ -229,7 +229,7 @@ function contextBlock(chunks) {
 }
 
 export function maxTokensFor(action) {
-  return action === "classify" ? 16 : action === "respond" ? 130 : action === "talk" ? 260 : action === "branch" ? 140 : action === "story" ? 800 : action === "story_chat" ? 600 : action === "compare" || action === "coach" ? 320 : 240;
+  return action === "classify" ? 16 : action === "respond" ? 130 : action === "talk" ? 340 : action === "branch" ? 140 : action === "story" ? 800 : action === "story_chat" ? 600 : action === "compare" || action === "coach" ? 320 : 240;
 }
 export function wantsHistory(action) {
   return action === "respond" || action === "chat" || action === "talk" || action === "story_chat";
@@ -291,8 +291,11 @@ export function buildPrompt({ action, payload, useRag }) {
 [되묻기는 이럴 때만]
 아이가 "먹돌이는 뭐가 좋아?"처럼 너의 취향을 직접 물을 때만 되물어라. 그 외에는 네가 먼저 흥미로운 내용을 채워줘라.
 
-대답은 3~4문장, 쉬운 말, 구체적인 장면 위주로. 이모지는 최대 1개. 역사와 무관한 이야기(먹을 것·게임 등)는 잠깐 받아주고 부드럽게 역사로 연결해. 욕설·이상한 말은 "우리 재미있는 이야기 하자!"로 돌려줘.${ref}`;
-    user = payload.text ? `아이의 말: "${payload.text}". 앞 대화에서 안 한 새로운 내용을 더해 3~4문장으로 답해줘.` : "안녕! 먼저 말을 걸어줘.";
+대답은 3~4문장, 쉬운 말, 구체적인 장면 위주로. 이모지는 최대 1개. 역사와 무관한 이야기(먹을 것·게임 등)는 잠깐 받아주고 부드럽게 역사로 연결해. 욕설·이상한 말은 "우리 재미있는 이야기 하자!"로 돌려줘.
+
+[추천 질문 — 반드시 지켜라]
+답변 맨 마지막 줄에 아이가 이어서 묻고 싶어할 만한 짧은 질문 3개를 아이 말투로 [SUGGESTIONS]질문1|질문2|질문3[/SUGGESTIONS] 형식으로 적어라. 이건 화면에 버튼으로 보이니 본문에서 따로 설명하지 마라. 질문은 방금 들려준 이야기에서 자연스럽게 이어지는 새로운 것으로, 앞에서 이미 다룬 내용과 겹치지 않게, 각 14자 이내로.${ref}`;
+    user = payload.text ? `아이의 말: "${payload.text}". 앞 대화에서 안 한 새로운 내용을 더해 3~4문장으로 답하고, 맨 끝에 추천 질문 3개를 [SUGGESTIONS]...[/SUGGESTIONS]로 붙여줘.` : "안녕! 먼저 말을 걸어줘.";
   } else if (action === "story_chat") {
     const sess = payload.session || {};
     const phase = sess.phase || "interest";

@@ -15,6 +15,27 @@ interface Props {
 const GREETING: Msg[] = [
   { role: "ai", text: "안녕! 나는 먹돌이야. 이야기를 만들다가 궁금한 게 생기면 언제든 물어봐!" },
 ];
+// 첫 화면에서 아이가 막막하지 않게 띄워 주는 시작 질문들
+const STARTERS = ["이건 무슨 이야기야?", "주인공은 누구야?", "그래서 어떻게 됐어?"];
+
+// AI 응답에서 [SUGGESTIONS]a|b|c[/SUGGESTIONS] 추천 질문을 떼어낸다
+function splitSuggestions(raw: string): { text: string; suggestions: string[] } {
+  const m = raw.match(/\[SUGGESTIONS\]([\s\S]*?)\[\/SUGGESTIONS\]/);
+  const suggestions = m
+    ? m[1].split("|").map((s) => s.trim()).filter(Boolean).slice(0, 3)
+    : [];
+  const text = raw.replace(/\[SUGGESTIONS\][\s\S]*?(\[\/SUGGESTIONS\]|$)/, "").trim();
+  return { text, suggestions };
+}
+
+// 스트리밍 중에는 마커(완성·미완성)가 깜빡이지 않게 가린다
+function stripForStream(raw: string): string {
+  const full = raw.indexOf("[SUGGESTIONS");
+  if (full >= 0) return raw.slice(0, full).trim();
+  const lb = raw.lastIndexOf("[");
+  if (lb >= 0 && "[SUGGESTIONS]".startsWith(raw.slice(lb))) return raw.slice(0, lb).trim();
+  return raw;
+}
 
 export function MeokdolChatLauncher({ context }: Props) {
   const [open, setOpen] = useState(false);
@@ -22,6 +43,7 @@ export function MeokdolChatLauncher({ context }: Props) {
   const [input, setInput] = useState("");
   const [busy, setBusy] = useState(false);
   const [streaming, setStreaming] = useState("");
+  const [suggestions, setSuggestions] = useState<string[]>(STARTERS);
   const bodyRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -38,14 +60,14 @@ export function MeokdolChatLauncher({ context }: Props) {
   useEffect(() => {
     const el = bodyRef.current;
     if (el) el.scrollTop = el.scrollHeight;
-  }, [msgs, streaming, open]);
+  }, [msgs, streaming, suggestions, open]);
 
   useEffect(() => {
     if (open) inputRef.current?.focus();
   }, [open]);
 
-  async function send() {
-    const text = input.trim();
+  async function send(override?: string) {
+    const text = (override ?? input).trim();
     if (!text || busy) return;
 
     const history = msgs.map((m) => ({ role: m.role, text: m.text }));
@@ -54,6 +76,7 @@ export function MeokdolChatLauncher({ context }: Props) {
     setInput("");
     setBusy(true);
     setStreaming("");
+    setSuggestions([]);
 
     // 책을 읽는 중이면 지금 사건을 컨텍스트로 살짝 얹어 그 이야기에 맞게 답하게 한다
     const sent = context ? `(지금 읽는 이야기: "${context}") ${text}` : text;
@@ -65,11 +88,12 @@ export function MeokdolChatLauncher({ context }: Props) {
       {
         onChunk: (t) => {
           full += t;
-          setStreaming(full);
+          setStreaming(stripForStream(full));
         },
         onDone: (d) => {
-          const out = (d.text || full).trim();
-          setMsgs([...next, { role: "ai", text: out || "음, 잘 못 들었어. 다시 한 번 물어봐 줄래?" }]);
+          const { text: clean, suggestions: sug } = splitSuggestions(d.text || full);
+          setMsgs([...next, { role: "ai", text: clean || "음, 잘 못 들었어. 다시 한 번 물어봐 줄래?" }]);
+          setSuggestions(sug);
           setStreaming("");
           setBusy(false);
         },
@@ -182,6 +206,20 @@ export function MeokdolChatLauncher({ context }: Props) {
                   )}
                 </div>
               )}
+              {!busy && suggestions.length > 0 && (
+                <div className="meokdol-chat-chips" role="group" aria-label="추천 질문">
+                  {suggestions.map((s, i) => (
+                    <button
+                      key={i}
+                      type="button"
+                      className="meokdol-chat-chip"
+                      onClick={() => send(s)}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <footer className="meokdol-chat-foot">
@@ -198,7 +236,7 @@ export function MeokdolChatLauncher({ context }: Props) {
                 />
                 <button
                   type="button"
-                  onClick={send}
+                  onClick={() => send()}
                   disabled={busy || !input.trim()}
                   aria-label="보내기"
                 >
