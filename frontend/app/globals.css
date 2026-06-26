@@ -4936,6 +4936,10 @@ body { transition: padding-right .28s cubic-bezier(.16,.8,.3,1); }
   flex: 1;
 }
 .mbook-cta.primary { background: var(--mbook-accent); color: #FBEDC4; border-color: var(--mbook-accent-deep); }
+.mbook-cta.mbook-cta-save { width: 100%; margin-bottom: 12px; background: var(--imagine); color: #fff; border-color: var(--imagine); font-size: 15px; padding: 13px 18px; }
+.mbook-cta.mbook-cta-save.saved { background: #4A7C59; border-color: #4A7C59; cursor: default; }
+.mbook-cta.mbook-cta-save:disabled { opacity: 0.7; }
+.mbook-cta-login-hint { font-family: 'Gowun Dodum', sans-serif; font-size: 13px; color: var(--mbook-ink-soft); margin-bottom: 12px; text-align: center; }
 .mbook-cta:hover { filter: brightness(1.05); }
 
 /* 컨트롤 바 (책 아래) */

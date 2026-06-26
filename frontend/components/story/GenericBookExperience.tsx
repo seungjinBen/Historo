@@ -12,6 +12,7 @@ import { ComicCutViewer } from "@/components/story/ComicCutViewer";
 import { api, type ApiComicCut, type ApiComicQuestions, type ApiComicStoryline } from "@/lib/api";
 import { GRADES, type GradeKey } from "@/features/myeongnyang/data";
 import { GRADE_INTRO, GRADE_Q } from "@/lib/grade-content";
+import { isSignedIn } from "@/lib/cognito";
 import type { EventMeta, Tree } from "@/lib/types";
 
 // ── 선택지 키 매핑 ────────────────────────────
@@ -273,11 +274,12 @@ function LeftPage({ spread, picks, comic, event, grade }: {
 }
 
 // ── RIGHT PAGE ───────────────────────────────
-function RightPage({ spread, picks, comic, event, speak, stop, speaking, onChoose, onRestart, onHome, grade, setGrade, gradeOpen, setGradeOpen }: {
+function RightPage({ spread, picks, comic, event, speak, stop, speaking, onChoose, onRestart, onHome, grade, setGrade, gradeOpen, setGradeOpen, cutsForPicks }: {
   spread: SpreadKey; picks: number[]; comic: ComicData | null; event: EventMeta;
   speak: (t: string) => void; stop: () => void; speaking: boolean;
   onChoose: (i: number) => void; onRestart: () => void; onHome: () => void;
   grade: GradeKey; setGrade: (g: GradeKey) => void; gradeOpen: boolean; setGradeOpen: (v: boolean) => void;
+  cutsForPicks: ApiComicCut[] | null;
 }) {
   const cuts = picks.length === 3 && comic
     ? comic.storylines.find(
@@ -400,12 +402,73 @@ function RightPage({ spread, picks, comic, event, speak, stop, speaking, onChoos
     );
   }
 
-  // spread 9 — CTA
+  // spread 9 — CTA (책장 저장 포함)
+  return (
+    <CtaPage
+      event={event}
+      picks={picks}
+      comic={comic}
+      cutsForPicks={cutsForPicks}
+      onRestart={onRestart}
+      onHome={onHome}
+    />
+  );
+}
+
+// ── 책장 저장 CTA ──────────────────────────────
+function CtaPage({ event, picks, comic, cutsForPicks, onRestart, onHome }: {
+  event: EventMeta; picks: number[]; comic: ComicData | null;
+  cutsForPicks: ApiComicCut[] | null;
+  onRestart: () => void; onHome: () => void;
+}) {
+  const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [signedIn, setSignedIn] = useState(false);
+
+  useEffect(() => { isSignedIn().then(setSignedIn); }, []);
+
+  async function handleSave() {
+    if (saving || saved || picks.length < 3 || !comic) return;
+    setSaving(true);
+    try {
+      const sl = comic.storylines.find(
+        (s) => s.q1 === Q1_KEYS[picks[0]] && s.q2 === Q2_KEYS[picks[1]] && s.q3 === Q3_KEYS[picks[2]]
+      );
+      await api.saveBookshelf({
+        eventId:      event.id,
+        title:        event.title,
+        picks,
+        pathText:     sl?.pathText ?? picks.join(" → "),
+        thumbnailUrl: cutsForPicks?.[0]?.imageUrl ?? undefined,
+      });
+      setSaved(true);
+    } catch {
+      alert("저장에 실패했어요. 다시 시도해 주세요.");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <div className="mbook-side mbook-side-cta">
       <span className="mbook-eyebrow">책을 덮으며</span>
       <h2 className="mbook-h2">너만의 {event.character?.name ?? event.title} 한 권</h2>
       <p className="mbook-narr">같은 역사, 하지만 너의 선택이 만든 단 한 권의 책이에요. 다른 선택으로 또 다른 결말을 만들어 볼까요?</p>
+
+      {/* 책장 저장 — 로그인 + 3선택 완료 시 */}
+      {signedIn && picks.length === 3 && (
+        <button
+          className={`mbook-cta mbook-cta-save${saved ? " saved" : ""}`}
+          onClick={handleSave}
+          disabled={saving || saved}
+        >
+          {saved ? "책장에 담겼어요!" : saving ? "저장 중…" : "내 책장에 담기"}
+        </button>
+      )}
+      {!signedIn && picks.length === 3 && (
+        <p className="mbook-cta-login-hint">로그인하면 이 이야기를 책장에 저장할 수 있어요.</p>
+      )}
+
       <div className="mbook-cta-row">
         <button className="mbook-cta primary" onClick={onRestart}>다시 펼치기 ↺</button>
         <button className="mbook-cta" onClick={onHome}>다른 이야기 고르기</button>
@@ -570,7 +633,7 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
               <div className="mbook-spine-shadow right" aria-hidden="true" />
             </div></div>
             <div className="mbook-half mbook-half-right"><div className="mbook-paper">
-              <RightPage spread={sourceSpread} {...shared} speak={speak} stop={stop} speaking={speaking} onChoose={choose} onRestart={restart} onHome={onHome} grade={grade} setGrade={setGrade} gradeOpen={gradeOpen} setGradeOpen={setGradeOpen} />
+              <RightPage spread={sourceSpread} {...shared} speak={speak} stop={stop} speaking={speaking} onChoose={choose} onRestart={restart} onHome={onHome} grade={grade} setGrade={setGrade} gradeOpen={gradeOpen} setGradeOpen={setGradeOpen} cutsForPicks={cutsForPicks} />
               <div className="mbook-noise" aria-hidden="true" />
               <div className="mbook-spine-shadow left" aria-hidden="true" />
             </div></div>
@@ -584,7 +647,7 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
                 <div className="mbook-spine-shadow right" aria-hidden="true" />
               </div></div>
               <div className="mbook-half mbook-half-right"><div className="mbook-paper">
-                <RightPage spread={targetSpread} {...shared} speak={speak} stop={stop} speaking={speaking} onChoose={noop as (i: number) => void} onRestart={restart} onHome={onHome} grade={grade} setGrade={setGrade} gradeOpen={gradeOpen} setGradeOpen={setGradeOpen} />
+                <RightPage spread={targetSpread} {...shared} speak={speak} stop={stop} speaking={speaking} onChoose={noop as (i: number) => void} onRestart={restart} onHome={onHome} grade={grade} setGrade={setGrade} gradeOpen={gradeOpen} setGradeOpen={setGradeOpen} cutsForPicks={cutsForPicks} />
                 <div className="mbook-noise" aria-hidden="true" />
                 <div className="mbook-spine-shadow left" aria-hidden="true" />
               </div></div>
@@ -594,7 +657,7 @@ export default function GenericBookExperience({ event, onHome, speak, stop, spea
           {flip && (
             <div className={"mbook-leaf to-" + flip.dir} onAnimationEnd={onLeafEnd}>
               <div className="mbook-leaf-face mbook-leaf-front"><div className="mbook-paper">
-                <RightPage spread={leafFrontSpread as SpreadKey} {...shared} speak={speak} stop={stop} speaking={speaking} onChoose={noop as (i: number) => void} onRestart={restart} onHome={onHome} grade={grade} setGrade={setGrade} gradeOpen={gradeOpen} setGradeOpen={setGradeOpen} />
+                <RightPage spread={leafFrontSpread as SpreadKey} {...shared} speak={speak} stop={stop} speaking={speaking} onChoose={noop as (i: number) => void} onRestart={restart} onHome={onHome} grade={grade} setGrade={setGrade} gradeOpen={gradeOpen} setGradeOpen={setGradeOpen} cutsForPicks={cutsForPicks} />
                 <div className="mbook-noise" aria-hidden="true" />
                 <div className="mbook-spine-shadow left" aria-hidden="true" />
               </div></div>
