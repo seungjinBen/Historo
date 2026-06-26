@@ -11,6 +11,7 @@ import { MeokdolChatLauncher } from "@/components/mascots/MeokdolChatLauncher";
 import { ComicCutViewer } from "@/components/story/ComicCutViewer";
 import { api, type ApiComicCut, type ApiComicQuestions, type ApiComicStoryline } from "@/lib/api";
 import { GRADES, type GradeKey } from "@/features/myeongnyang/data";
+import { GRADE_INTRO } from "@/lib/grade-content";
 import type { EventMeta, Tree } from "@/lib/types";
 
 // ── 선택지 키 매핑 ────────────────────────────
@@ -277,10 +278,10 @@ function RightPage({ spread, picks, comic, event, speak, stop, speaking, onChoos
     : null;
 
   if (spread === 0) {
-    // 학년별: 1~2는 factCard(쉬운 문장), 3~4·5~6는 Q1(전체 맥락)
-    const intro = grade === "1-2"
-      ? event.factCard
-      : (comic?.questions.Q1 ?? event.factCard);
+    // 학년별 맞춤 인트로 텍스트 — grade-content.ts 우선, 없으면 fallback
+    const gradeMap = GRADE_INTRO[event.id];
+    const intro = gradeMap?.[grade]
+      ?? (grade === "1-2" ? event.factCard : (comic?.questions.Q1 ?? event.factCard));
     return (
       <div className="mbook-side mbook-side-intro">
         <span className="mbook-eyebrow">제 1 장 · 이야기의 시작</span>
